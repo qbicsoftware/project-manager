@@ -1,114 +1,12 @@
-// If you edit this file you need to compile the theme. See README.md for details.
-
-// Global variable overrides. Must be declared before importing Valo.
-
-// Defines the plaintext font size, weight and family. Font size affects general component sizing.
-//$v-font-size: 16px;
-//$v-font-weight: 300;
-//$v-font-family: "Open Sans", sans-serif;
-
-// Defines the border used by all components.
-//$v-border: 1px solid (v-shade 0.7);
-//$v-border-radius: 4px;
-
-// Affects the color of some component elements, e.g Button, Panel title, etc
-//$v-background-color: hsl(210, 0%, 98%);
-// Affects the color of content areas, e.g  Panel and Window content, TextField input etc
-//$v-app-background-color: $v-background-color;
-
-// Affects the visual appearance of all components
-//$v-gradient: v-linear 8%;
-//$v-bevel-depth: 30%;
-//$v-shadow-opacity: 5%;
-
-// Defines colors for indicating status (focus, success, failure)
-//$v-focus-color: valo-focus-color(); // Calculates a suitable color automatically
-//$v-friendly-color: #2c9720;
-//$v-error-indicator-color: #ed473b;
-
-// For more information, see: https://vaadin.com/book/-/page/themes.valo.html
-// Example variants can be copy/pasted from https://vaadin.com/wiki/-/wiki/Main/Valo+Examples
-
+/* Import the valo theme. */
+/* This only allows us to use the mixins defined in it and does not add any styles by itself. */
 @import "../valo/valo.scss";
 
+/* This contains all of your theme. */
+/* If somebody wants to extend the theme she will include this mixin. */
 @mixin mytheme {
+  /* Include all the styles from the valo theme */
   @include valo;
 
-  // Insert your own theme rules here
-     .v-grid-cell-no{
-       	font-size: 14px;
-       	color: #464646;
-       	font-weight: bold;
-       }
-
-     .v-grid-cell-progress{
-        font-size: 14px;
-        color: #0F4FA8;
-        font-weight: bold;
-     }
-
-     .v-grid-cell-done{
-       font-size: 14px;
-       color: #00C618;
-       font-weight: bold;
-      }
-
-      .v-grid-cell-normal{
-        font-size: 14px;
-        color: #464646;
-      }
-
-      .myformlayout-sheetcontent{
-        padding: 0px 20px 20px 20px;
-      }
-
-      .overview-module-style{
-        width: 66%;
-        max-width: 1200px;
-        margin: 0px 20px 20px 0px;
-        }
-
-      .slider-description-label{
-        font-style: italic;
-      }
-
-      .v-sliderpanel-wrapper .v-sliderpanel-content {
-        background: #555;
-        color: #fff;
-      }
-        
-      .v-sliderpanel-wrapper .v-sliderpanel-tab {
-        background: #555;
-        color: #fff;
-
-      }
-
-      .statsmodule {
-        overflow: hidden;
-        width: 30%;
-        min-width: 300px;
-        max-width: 500px;
-      }
-
-      .mainpage {
-        margin: 0;
-        max-width: 1700px;
-        position: absolute;
-        left: 50%;
-        transform: translate(-50%, 0%);
-        background-color: white;
-      }
-
-      .numberindicator-header {
-        text-align: center;
-        font-size: 18px;
-        line-height: 110%;
-      }
-
-      .numberindicator-number {
-         text-align: center;
-         font-size: 48px;
-         color: rgb(50,50,50);
-       }
-
+  /* Insert your theme rules here */
 }

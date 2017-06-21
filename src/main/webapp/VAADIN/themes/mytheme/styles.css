@@ -999,7 +999,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "7.7.6";
+	content: "7.7.8";
 }
 
 .v-widget {
@@ -12983,79 +12983,4 @@ div.v-layout.v-horizontal.v-widget {
 	display: inline-block;
 	width: 19px;
 	overflow: hidden;
-}
-
-.mytheme .v-grid-cell-no {
-	font-size: 14px;
-	color: #464646;
-	font-weight: bold;
-}
-
-.mytheme .v-grid-cell-progress {
-	font-size: 14px;
-	color: #0F4FA8;
-	font-weight: bold;
-}
-
-.mytheme .v-grid-cell-done {
-	font-size: 14px;
-	color: #00C618;
-	font-weight: bold;
-}
-
-.mytheme .v-grid-cell-normal {
-	font-size: 14px;
-	color: #464646;
-}
-
-.mytheme .myformlayout-sheetcontent {
-	padding: 0px 20px 20px 20px;
-}
-
-.mytheme .overview-module-style {
-	width: 66%;
-	max-width: 1200px;
-	margin: 0px 20px 20px 0px;
-}
-
-.mytheme .slider-description-label {
-	font-style: italic;
-}
-
-.mytheme .v-sliderpanel-wrapper .v-sliderpanel-content {
-	background: #555;
-	color: #fff;
-}
-
-.mytheme .v-sliderpanel-wrapper .v-sliderpanel-tab {
-	background: #555;
-	color: #fff;
-}
-
-.mytheme .statsmodule {
-	overflow: hidden;
-	width: 30%;
-	min-width: 300px;
-	max-width: 500px;
-}
-
-.mytheme .mainpage {
-	margin: 0;
-	max-width: 1700px;
-	position: absolute;
-	left: 50%;
-	transform: translate(-50%, 0%);
-	background-color: white;
-}
-
-.mytheme .numberindicator-header {
-	text-align: center;
-	font-size: 18px;
-	line-height: 110%;
-}
-
-.mytheme .numberindicator-number {
-	text-align: center;
-	font-size: 48px;
-	color: #323232;
 }
