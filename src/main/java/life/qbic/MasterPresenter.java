@@ -74,9 +74,7 @@ public class MasterPresenter {
         projectOverviewPresenter.getIsChangedFlag().addValueChangeListener(this::refreshModuleViews);
 
         projectSheetPresenter.getInformationCommittedFlag().addValueChangeListener(this::refreshModuleViews);
-
         projectFilter.createFilter("projectID", projectFollowerPresenter.getFollowingProjects());
-
         projectFollowerPresenter.getIsChangedFlag().addValueChangeListener(event -> {
             final String selectedProject = projectFollowerPresenter.getCurrentProject();
             boolean doesDBEntryExist = projectOverviewPresenter.isProjectInFollowingTable(selectedProject);
@@ -86,7 +84,9 @@ public class MasterPresenter {
             refreshModuleViews(event);
         });
 
-        timeLineChartPresenter.setCategories(projectOverviewPresenter.getTimeLineStats());
+        if (projectFollowerPresenter.getFollowingProjects().size() > 0) {
+            timeLineChartPresenter.setCategories(projectOverviewPresenter.getTimeLineStats());
+        }
 
     }
 

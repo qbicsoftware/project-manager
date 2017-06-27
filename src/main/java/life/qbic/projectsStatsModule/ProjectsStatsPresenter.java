@@ -32,15 +32,25 @@ public class ProjectsStatsPresenter {
     public void update() {
         try {
             projects = model.loadFollowingProjects(userID, followingProjects, primaryKey);
-            overdueProjects = model.getNumberOfOverdueProjects(userID, projectsOverview);
         } catch (SQLException e) {
             log.error("Could not load the following/overdue projects.");
         } catch (WrongArgumentSettingsException e) {
             log.error("Could not load the following/overdue projects.");
         }
+
+        try {
+            if (projects.size() > 0) {
+                overdueProjects = model.getNumberOfOverdueProjects(userID, projectsOverview);
+            } else {
+                overdueProjects = 0;
+            };
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (WrongArgumentSettingsException e) {
+            e.printStackTrace();
+        }
         view.setNumberOfTotalProjects(projects.size());
         view.setNumberOfOverdueProjects(overdueProjects);
-
 
     }
 

@@ -42,13 +42,15 @@ public class ProjectsStatsModel {
         ResultSet followingProjectsQuery = query.getResults(0, 0);
         query.commit();
 
-        followingProjectsQuery.first();
+        if (followingProjectsQuery.first()) {
 
-        while (!followingProjectsQuery.isLast()) {
+            while (!followingProjectsQuery.isLast()) {
+                followingProjects.add(followingProjectsQuery.getString("project_id"));
+                followingProjectsQuery.next();
+            }
             followingProjects.add(followingProjectsQuery.getString("project_id"));
-            followingProjectsQuery.next();
         }
-        followingProjects.add(followingProjectsQuery.getString("project_id"));
+
         return followingProjects;
     }
 

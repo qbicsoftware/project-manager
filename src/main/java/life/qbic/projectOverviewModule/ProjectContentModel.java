@@ -3,6 +3,7 @@ package life.qbic.projectOverviewModule;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import life.qbic.database.*;
+import org.apache.commons.logging.Log;
 
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -37,12 +38,15 @@ public class ProjectContentModel {
 
     private HashMap<String, Double> keyFigures;
 
+    private final Log log;
+
     private List<String> followingProjects;
 
     public ProjectContentModel(ProjectDatabaseConnector projectDatabaseConnector,
-                               List followingProjects) {
+                               List followingProjects, Log log) {
         this.projectDatabaseConnector = projectDatabaseConnector;
         this.followingProjects = followingProjects;
+        this.log = log;
     }
 
     public List<String> getFollowingProjects() {
@@ -52,8 +56,11 @@ public class ProjectContentModel {
     public final void init() throws SQLException, IllegalArgumentException, WrongArgumentSettingsException {
         projectDatabaseConnector.connectToDatabase();
         this.tableContent = projectDatabaseConnector.loadSelectedTableData(queryArguments.get("table"), primaryKey);
-        querryKeyFigures();
-        getProjectesTimeLineStats();
+        if (getFollowingProjects().size() > 0) {
+            querryKeyFigures();
+            getProjectesTimeLineStats();
+        }
+
     }
 
     /**
@@ -90,7 +97,9 @@ public class ProjectContentModel {
 
     public void updateFigure() {
         try {
-            querryKeyFigures();
+            if (getFollowingProjects().size() > 0) {
+                querryKeyFigures();
+            }
         } catch (Exception exp) {
             exp.printStackTrace();
         }
@@ -98,7 +107,10 @@ public class ProjectContentModel {
 
     public void refresh() throws SQLException, WrongArgumentSettingsException {
         this.tableContent = projectDatabaseConnector.loadSelectedTableData(queryArguments.get("table"), primaryKey);
-        querryKeyFigures();
+        if (getFollowingProjects().size() > 0) {
+            querryKeyFigures();
+        }
+
     }
 
 

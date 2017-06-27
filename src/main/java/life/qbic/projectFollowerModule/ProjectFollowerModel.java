@@ -22,10 +22,9 @@ public class ProjectFollowerModel {
 
     private final ProjectDatabaseConnector projectDatabase;
 
-    private final List<String> allFollingProjects = new ArrayList<>();
+    private final List<String> allFollowingProjects = new ArrayList<>();
     private final HashMap<String, String> querySettings = new HashMap<>();
 
-    private final Map<String, String> spaceProjectMap = new HashMap<>();
 
 
     public ProjectFollowerModel(ProjectDatabaseConnector projectDatabase) {
@@ -34,7 +33,7 @@ public class ProjectFollowerModel {
 
 
     public List<String> getAllFollowingProjects() {
-        return allFollingProjects;
+        return allFollowingProjects;
     }
 
 
@@ -42,7 +41,7 @@ public class ProjectFollowerModel {
             throws SQLException, WrongArgumentSettingsException {
         projectDatabase.connectToDatabase();
 
-        allFollingProjects.clear();
+        allFollowingProjects.clear();
 
         querySettings.put("table", sqlTable);
         querySettings.put("user_id", userID);
@@ -50,18 +49,19 @@ public class ProjectFollowerModel {
         FreeformQuery query = projectDatabase.makeFreeFormQuery(QuerryType.GET_FOLLOWING_PROJECTS,
                 querySettings, primaryKey);
 
-
         query.beginTransaction();
         ResultSet followingProjectsQuery = query.getResults(0, 0);
         query.commit();
 
-        followingProjectsQuery.first();
+
+        if (followingProjectsQuery.first()) {
 
         while (!followingProjectsQuery.isLast()) {
-            allFollingProjects.add(followingProjectsQuery.getString("project_id"));
+            allFollowingProjects.add(followingProjectsQuery.getString("project_id"));
             followingProjectsQuery.next();
         }
-        allFollingProjects.add(followingProjectsQuery.getString("project_id"));
+        allFollowingProjects.add(followingProjectsQuery.getString("project_id"));
+        }
 
         return this;
     }
