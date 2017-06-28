@@ -173,13 +173,9 @@ public class ManagerUI extends UI {
         projectOverviewModule.setWidth(100, Unit.PERCENTAGE);
         log.info("12");
         projectOverviewModule.addStyleName("overview-module-style");
-        log.info("13");
         projectDescriptionLayout.setSizeFull();
-        log.info("14");
         projectDescriptionLayout.addComponent(projectOverviewModule);
-        log.info("15");
         projectDescriptionLayout.addComponent(projectSheetView.getProjectSheet());
-        log.info("1");
         projectSheetView.getProjectSheet().setSizeUndefined();
 
         Responsive.makeResponsive(projectDescriptionLayout);
@@ -191,7 +187,6 @@ public class ManagerUI extends UI {
                 .tabPosition(SliderTabPosition.MIDDLE)
                 .style("slider-format")
                 .animationDuration(100).build();
-        log.info("2");
 
         sliderFrame.addComponent(sliderPanel);
         //statisticsPanel.addComponent(pieChartStatusModule);
@@ -201,7 +196,6 @@ public class ManagerUI extends UI {
         statisticsPanel.setWidth(100, Unit.PERCENTAGE);
         statisticsPanel.addComponent(projectsStatsView.getProjectStats());
 
-        log.info("3");
         Responsive.makeResponsive(statisticsPanel);
 
         timeLineChart.setSizeUndefined();
@@ -211,11 +205,9 @@ public class ManagerUI extends UI {
         mainContent.addComponent(projectDescriptionLayout);
         mainFrame.addComponent(sliderFrame);
         mainFrame.addComponent(mainContent);
-        log.info("4");
         mainFrame.setExpandRatio(mainContent, 1);
         mainFrame.setStyleName("mainpage");
         setContent(mainFrame);
-        log.info("Set mainContent");
     }
 
     private String getPortletContextName(VaadinRequest request) {

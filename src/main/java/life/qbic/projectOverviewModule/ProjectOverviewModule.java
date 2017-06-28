@@ -3,6 +3,7 @@ package life.qbic.projectOverviewModule;
 import com.vaadin.server.Page;
 import com.vaadin.shared.Position;
 import com.vaadin.ui.Grid.Column;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 import life.qbic.MyGrid;
@@ -23,6 +24,7 @@ public class ProjectOverviewModule extends VerticalLayout implements ProjectOver
     private final Notification error;
     private final MyGrid overviewGrid;
     List<Column> columnList;
+    private VerticalLayout gridLayout;
 
     public final HashSet columnHide = new HashSet<String>() {{
         add("id");
@@ -37,6 +39,8 @@ public class ProjectOverviewModule extends VerticalLayout implements ProjectOver
         this.overviewGrid = new MyGrid();
         this.info = new Notification("", "", Notification.Type.TRAY_NOTIFICATION);
         this.error = new Notification("", "", Notification.Type.ERROR_MESSAGE);
+        gridLayout = new VerticalLayout();
+        this.addComponent(gridLayout);
         init();
     }
 
@@ -45,16 +49,17 @@ public class ProjectOverviewModule extends VerticalLayout implements ProjectOver
      */
     public void init() {
 
-        this.addComponents(overviewGrid);
         this.setSpacing(true);
-
-        overviewGrid.setWidth(100, Unit.PERCENTAGE);
-        overviewGrid.setHeight(100, Unit.PERCENTAGE);
-
-        overviewGrid.setEditorEnabled(true);
-        //fieldGroup.addCommitHandler(presenter.commitChanges());
         info.setDelayMsec(1000);
         info.setPosition(Position.TOP_CENTER);
+        overviewGrid.setWidth(100, Unit.PERCENTAGE);
+        overviewGrid.setHeight(100, Unit.PERCENTAGE);
+        overviewGrid.setEditorEnabled(true);
+
+
+
+        //fieldGroup.addCommitHandler(presenter.commitChanges());
+
     }
 
     /**
@@ -92,5 +97,16 @@ public class ProjectOverviewModule extends VerticalLayout implements ProjectOver
         return this.columnList;
     }
 
+    public void showGrid() {
+        gridLayout.removeAllComponents();
+        gridLayout.addComponent(overviewGrid);
+        this.setMargin(false);
+    }
+
+    public void noProjectMessage() {
+        gridLayout.removeAllComponents();
+        gridLayout.addComponent(new Label("You are currently not following any projects"));
+        this.setMargin(true);
+    }
 
 }

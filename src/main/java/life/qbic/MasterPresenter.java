@@ -96,6 +96,11 @@ public class MasterPresenter {
         //projectOverviewPresenter.getStatusKeyFigures().forEach(pieChartStatusModule::update);
         timeLineChartPresenter.updateData(projectOverviewPresenter.getTimeLineStats());
         projectsStatsPresenter.update();
+        if (projectFollowerPresenter.getFollowingProjects().size() == 0) {
+            projectSheetPresenter.getProjectSheetView().getProjectSheet().setVisible(false);
+        } else {
+            projectSheetPresenter.getProjectSheetView().getProjectSheet().setVisible(true);
+        }
     }
 
     private void makeFilter() {

@@ -58,7 +58,7 @@ public class ProjectContentModel {
         this.tableContent = projectDatabaseConnector.loadSelectedTableData(queryArguments.get("table"), primaryKey);
         if (getFollowingProjects().size() > 0) {
             querryKeyFigures();
-            getProjectesTimeLineStats();
+            getProjectsTimeLineStats();
         }
 
     }
@@ -123,7 +123,7 @@ public class ProjectContentModel {
      *
      * @return A map containing values for different categories
      */
-    public Map<String, Integer> getProjectesTimeLineStats() {
+    public Map<String, Integer> getProjectsTimeLineStats() {
         final Map<String, Integer> projectsStats = new HashMap<>();
 
         if (tableContent == null) {
@@ -143,45 +143,46 @@ public class ProjectContentModel {
      */
     private void writeNumberProjectsPerTimeIntervalFromStart(Map<String, Integer> container) {
 
-        Collection<?> itemIds = tableContent.getItemIds();
-
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-        List<Date> dateList = new ArrayList<>();
-
         container.put("0 to 2 weeks", 0);
         container.put("2 to 6 weeks", 0);
         container.put("6 to 12 weeks", 0);
         container.put("> 12 weeks", 0);
 
-        for (Object itemId : itemIds) {
-            String registeredDateCol = TableColumns.PROJECTOVERVIEWTABLE.get(ColumnTypes.RAWDATAREGISTERED);
-            Property property = tableContent.getContainerProperty(itemId, registeredDateCol);
+        if (getFollowingProjects().size() > 0) {
+            Collection<?> itemIds = tableContent.getItemIds();
 
-            try {
-                Date registration = dateFormat.parse((property.getValue()).toString());
-                if (registration != null) {
-                    dateList.add(registration);
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            List<Date> dateList = new ArrayList<>();
+
+            for (Object itemId : itemIds) {
+                String registeredDateCol = TableColumns.PROJECTOVERVIEWTABLE.get(ColumnTypes.RAWDATAREGISTERED);
+                Property property = tableContent.getContainerProperty(itemId, registeredDateCol);
+
+                try {
+                    Date registration = dateFormat.parse((property.getValue()).toString());
+                    if (registration != null) {
+                        dateList.add(registration);
+                    }
+                } catch (Exception exc) {
+                    //Do nothing
                 }
-            } catch (Exception exc) {
-                //Do nothing
+            }
+
+            Date currentDate = new Date();
+
+            for (Date date : dateList) {
+                long daysPassed = TimeUnit.DAYS.convert(currentDate.getTime() - date.getTime(), TimeUnit.MILLISECONDS);
+                if (daysPassed / 7 < 2)
+                    container.put("0 to 2 weeks", container.get("0 to 2 weeks") + 1);
+                else if (daysPassed / 7 < 6)
+                    container.put("2 to 6 weeks", container.get("2 to 6 weeks") + 1);
+                else if (daysPassed / 7 < 12)
+                    container.put("6 to 12 weeks", container.get("6 to 12 weeks") + 1);
+                else
+                    container.put("> 12 weeks", container.get("> 12 weeks") + 1);
             }
         }
-
-        Date currentDate = new Date();
-
-        for (Date date : dateList) {
-            long daysPassed = TimeUnit.DAYS.convert(currentDate.getTime() - date.getTime(), TimeUnit.MILLISECONDS);
-            if (daysPassed / 7 < 2)
-                container.put("0 to 2 weeks", container.get("0 to 2 weeks") + 1);
-            else if (daysPassed / 7 < 6)
-                container.put("2 to 6 weeks", container.get("2 to 6 weeks") + 1);
-            else if (daysPassed / 7 < 12)
-                container.put("6 to 12 weeks", container.get("6 to 12 weeks") + 1);
-            else
-                container.put("> 12 weeks", container.get("> 12 weeks") + 1);
-        }
     }
-
 
 }

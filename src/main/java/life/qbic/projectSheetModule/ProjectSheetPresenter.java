@@ -116,5 +116,9 @@ public class ProjectSheetPresenter {
         return this.informationCommittedFlag;
     }
 
+    public ProjectSheetView getProjectSheetView() {
+        return projectSheetView;
+    }
+
 
 }
