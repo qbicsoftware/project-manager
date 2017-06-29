@@ -97,16 +97,19 @@ public class ProjectOVPresenter{
         }
 
         log.info("Successfully connected to database");
+        if (contentModel.getFollowingProjects().size() == 0) {
+            this.overViewModule.noProjectMessage();
+        } else {
+            this.overViewModule.getOverviewGrid().setContainerDataSource(this.contentModel.getTableContent());
+            this.overViewModule.showGrid();
+            overViewModule.getOverviewGrid().isChanged.addValueChangeListener(this::triggerViewPropertyChanged);
 
-        overViewModule.getOverviewGrid().setContainerDataSource(contentModel.getTableContent());
-
-        overViewModule.getOverviewGrid().isChanged.addValueChangeListener(this::triggerViewPropertyChanged);
-
-        overViewModule.getOverviewGrid().addItemClickListener(event -> {
-            this.selectedProjectItem = event.getItem();
-            this.selectedProject.setValue((String) event.getItem().getItemProperty(TableColumns.PROJECTOVERVIEWTABLE.get(ColumnTypes.PROJECTID)).getValue());
-            System.out.println("Selected project changed to: " + this.selectedProject.getValue());
-        });
+            overViewModule.getOverviewGrid().addItemClickListener(event -> {
+                this.selectedProjectItem = event.getItem();
+                this.selectedProject.setValue((String) event.getItem().getItemProperty(TableColumns.PROJECTOVERVIEWTABLE.get(ColumnTypes.PROJECTID)).getValue());
+                System.out.println("Selected project changed to: " + this.selectedProject.getValue());
+            });
+        }
 
         renderTable();
 
@@ -327,7 +330,14 @@ public class ProjectOVPresenter{
             be refreshed properly
              */
             this.overViewModule.init();
-            this.overViewModule.getOverviewGrid().setContainerDataSource(this.contentModel.getTableContent());
+            log.info(contentModel.getFollowingProjects().size() + " Projects are followed currently");
+            if (contentModel.getFollowingProjects().size() == 0) {
+                this.overViewModule.noProjectMessage();
+            } else {
+                this.overViewModule.getOverviewGrid().setContainerDataSource(this.contentModel.getTableContent());
+                this.overViewModule.showGrid();
+            }
+
         } catch (Exception exc){
             log.error("Could not refresh the project overview model.", exc);
         }
@@ -401,6 +411,6 @@ public class ProjectOVPresenter{
     }
 
     public Map<String, Integer> getTimeLineStats(){
-        return this.contentModel.getProjectesTimeLineStats();
+        return this.contentModel.getProjectsTimeLineStats();
     }
 }

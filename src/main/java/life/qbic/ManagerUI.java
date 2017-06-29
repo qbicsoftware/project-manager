@@ -81,13 +81,6 @@ public class ManagerUI extends UI {
            log.info("UserID = " + userID);
         }
 
-        //userID = "zxmqw74";
-
-        //Map<String, String> credentials = getCredentialsFromEnvVariables();
-
-        //if (credentials == null) {
-         //   log.info("Database login credentials missing from environment");
-        //}
 
         final VerticalLayout mainFrame = new VerticalLayout();
 
@@ -134,17 +127,14 @@ public class ManagerUI extends UI {
 
         try {
             followerPresenter.startOrchestration();
-        } catch (SQLException exp) {
-            System.err.println("Could not connect to target SQL database. Reason: " + exp.getMessage());
-            exp.printStackTrace();
-        } catch (WrongArgumentSettingsException exp) {
-            System.err.println("You provided the wrong arguments for the openbis connection. Reason:" + exp.getMessage());
-        } catch (Exception exp) {
-            System.err.println("Un enexpected Exception occured.");
-            exp.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (WrongArgumentSettingsException e) {
+            e.printStackTrace();
         }
 
-        final ProjectContentModel model = new ProjectContentModel(projectDatabase, followerModel.getAllFollowingProjects());
+
+        final ProjectContentModel model = new ProjectContentModel(projectDatabase, followerModel.getAllFollowingProjects(), log);
 
         //final PieChartStatusModule pieChartStatusModule = new PieChartStatusModule();
 
@@ -167,7 +157,6 @@ public class ManagerUI extends UI {
         final TimeLineChartPresenter timeLineChartPresenter = new TimeLineChartPresenter(timeLineModel, timeLineChart);
 
         final ProjectsStatsView projectsStatsView = new ProjectsStatsViewImpl();
-
         //Init project stats
         final ProjectsStatsModel projectsStatsModel = new ProjectsStatsModel(projectDatabase);
         final ProjectsStatsPresenter projectsStatsPresenter = new ProjectsStatsPresenter(projectsStatsModel, projectsStatsView, openBisConnection, log);
@@ -177,17 +166,16 @@ public class ManagerUI extends UI {
         projectsStatsPresenter.setPrimaryKey("id");
         projectsStatsPresenter.update();
 
-
         //removed pieChartStatusModule #25
         final MasterPresenter masterPresenter = new MasterPresenter(projectOVPresenter, projectSheetPresenter, followerPresenter, projectFilter, timeLineChartPresenter, projectsStatsPresenter);
-
+        log.info("11");
 
         projectOverviewModule.setWidth(100, Unit.PERCENTAGE);
+        log.info("12");
         projectOverviewModule.addStyleName("overview-module-style");
         projectDescriptionLayout.setSizeFull();
         projectDescriptionLayout.addComponent(projectOverviewModule);
         projectDescriptionLayout.addComponent(projectSheetView.getProjectSheet());
-
         projectSheetView.getProjectSheet().setSizeUndefined();
 
         Responsive.makeResponsive(projectDescriptionLayout);
@@ -200,7 +188,6 @@ public class ManagerUI extends UI {
                 .style("slider-format")
                 .animationDuration(100).build();
 
-
         sliderFrame.addComponent(sliderPanel);
         //statisticsPanel.addComponent(pieChartStatusModule);
         //pieChartStatusModule.setStyleName("statsmodule");
@@ -208,7 +195,6 @@ public class ManagerUI extends UI {
         statisticsPanel.addComponent(timeLineChart);
         statisticsPanel.setWidth(100, Unit.PERCENTAGE);
         statisticsPanel.addComponent(projectsStatsView.getProjectStats());
-
 
         Responsive.makeResponsive(statisticsPanel);
 
@@ -219,7 +205,6 @@ public class ManagerUI extends UI {
         mainContent.addComponent(projectDescriptionLayout);
         mainFrame.addComponent(sliderFrame);
         mainFrame.addComponent(mainContent);
-
         mainFrame.setExpandRatio(mainContent, 1);
         mainFrame.setStyleName("mainpage");
         setContent(mainFrame);
