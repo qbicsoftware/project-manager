@@ -26,15 +26,6 @@ public class ProjectOverviewModule extends VerticalLayout implements ProjectOver
     List<Column> columnList;
     private VerticalLayout gridLayout;
 
-    public final HashSet columnHide = new HashSet<String>() {{
-        add("id");
-        add("investigatorID");
-        add("instrumentID");
-        add("projectRegistered");
-        add("barcodeSent");
-    }};
-
-
     public ProjectOverviewModule() {
         this.overviewGrid = new MyGrid();
         this.info = new Notification("", "", Notification.Type.TRAY_NOTIFICATION);
@@ -55,11 +46,6 @@ public class ProjectOverviewModule extends VerticalLayout implements ProjectOver
         overviewGrid.setWidth(100, Unit.PERCENTAGE);
         overviewGrid.setHeight(100, Unit.PERCENTAGE);
         overviewGrid.setEditorEnabled(true);
-
-
-
-        //fieldGroup.addCommitHandler(presenter.commitChanges());
-
     }
 
     /**
