@@ -4,10 +4,7 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import life.qbic.database.ProjectDatabase;
 import life.qbic.database.ProjectDatabaseConnector;
 import life.qbic.database.ProjectFilter;
@@ -186,8 +183,8 @@ public class ManagerUI extends UI {
                 .tabPosition(SliderTabPosition.MIDDLE)
                 .style("slider-format")
                 .animationDuration(100).build();
-
         sliderFrame.addComponent(sliderPanel);
+
         UI.getCurrent().addClickListener(new MouseEvents.ClickListener() {
             @Override
             public void click(MouseEvents.ClickEvent event) {
@@ -196,6 +193,9 @@ public class ManagerUI extends UI {
                 }
             }
         });
+
+        sliderFrame.setComponentAlignment(sliderPanel, Alignment.MIDDLE_CENTER);
+        sliderFrame.setWidth("50%");
         //statisticsPanel.addComponent(pieChartStatusModule);
         //pieChartStatusModule.setStyleName("statsmodule");
         timeLineChart.setStyleName("statsmodule");
@@ -211,6 +211,7 @@ public class ManagerUI extends UI {
         mainContent.addComponent(statisticsPanel);
         mainContent.addComponent(projectDescriptionLayout);
         mainFrame.addComponent(sliderFrame);
+        mainFrame.setComponentAlignment(sliderFrame, Alignment.MIDDLE_CENTER);
         mainFrame.addComponent(mainContent);
         mainFrame.setExpandRatio(mainContent, 1);
         mainFrame.setStyleName("mainpage");
