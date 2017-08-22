@@ -97,7 +97,7 @@ public class ManagerUI extends UI {
             projectDatabase.connectToDatabase();
             log.info("Connection to SQL project database was successful.");
         } catch (SQLException exp) {
-            log.info("Could not connect to SQL project database. Reason: " + exp.getMessage());
+            log.error("Could not connect to SQL project database. Reason: " + exp.getMessage());
         }
 
 
@@ -165,10 +165,8 @@ public class ManagerUI extends UI {
 
         //removed pieChartStatusModule #25
         final MasterPresenter masterPresenter = new MasterPresenter(projectOVPresenter, projectSheetPresenter, followerPresenter, projectFilter, timeLineChartPresenter, projectsStatsPresenter);
-        log.info("11");
 
         projectOverviewModule.setWidth(100, Unit.PERCENTAGE);
-        log.info("12");
         projectOverviewModule.addStyleName("overview-module-style");
         projectDescriptionLayout.setSizeFull();
         projectDescriptionLayout.addComponent(projectOverviewModule);

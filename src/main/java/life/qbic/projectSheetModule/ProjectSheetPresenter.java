@@ -22,9 +22,14 @@ public class ProjectSheetPresenter {
 
     private final ProjectDatabaseConnector dbConnector;
 
-    private final String sqlCommitCommand = String.format("UPDATE projectsoverview SET %s = ? " +
+    private final String sqlRegistrationDateCommitCommand = String.format("UPDATE projectsoverview SET %s = ? " +
                     "WHERE %s = ?",
             TableColumns.PROJECTOVERVIEWTABLE.get(ColumnTypes.REGISTRATIONDATE),
+            TableColumns.PROJECTOVERVIEWTABLE.get(ColumnTypes.ID));
+
+    private final String sqlBarcodeSentDateCommitCommand = String.format("UPDATE projectsoverview SET %s = ? " +
+                    "WHERE %s = ?",
+            TableColumns.PROJECTOVERVIEWTABLE.get(ColumnTypes.BARCODESENTDATE),
             TableColumns.PROJECTOVERVIEWTABLE.get(ColumnTypes.ID));
 
     private Item currentItem;
@@ -74,7 +79,7 @@ public class ProjectSheetPresenter {
             projectRegistered = (Date) currentItem.getItemProperty(
                     TableColumns.PROJECTOVERVIEWTABLE.get(ColumnTypes.REGISTRATIONDATE)).getValue();
             barcodeSent = (Date) currentItem.getItemProperty(
-                    TableColumns.PROJECTOVERVIEWTABLE.get(ColumnTypes.BARCODESSENTDATE)).getValue();
+                    TableColumns.PROJECTOVERVIEWTABLE.get(ColumnTypes.BARCODESENTDATE)).getValue();
         } catch (NullPointerException exp) {
             // Do nothing
         } finally {
@@ -86,28 +91,49 @@ public class ProjectSheetPresenter {
 
     private void commitChangesToDataBase() throws SQLException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
         String id = currentItem.getItemProperty(TableColumns.PROJECTOVERVIEWTABLE.get(ColumnTypes.ID)).getValue().toString();
         String projectRegisteredDate = dateFormat.format(projectSheetView.getRegistrationDateField().getValue());
         String project = (String) currentItem.getItemProperty(TableColumns.PROJECTOVERVIEWTABLE.get(ColumnTypes.PROJECTID)).getValue();
 
-        Connection con = dbConnector.getConnectionPool().reserveConnection();
+        Connection con_registrationDate = dbConnector.getConnectionPool().reserveConnection();
 
-        if (con == null) {
+        if (con_registrationDate == null) {
             throw new SQLException("Could not reserve any connection to the database.");
+
         }
 
-        PreparedStatement ps = con.prepareStatement(sqlCommitCommand);
+        PreparedStatement ps_registrationDate = con_registrationDate.prepareStatement(sqlRegistrationDateCommitCommand);
 
-        ps.setString(1, projectRegisteredDate);
-        ps.setString(2, id);
+        ps_registrationDate.setString(1, projectRegisteredDate);
+        ps_registrationDate.setString(2, id);
 
-        ps.execute();
-        con.commit();
+        ps_registrationDate.execute();
+        con_registrationDate.commit();
 
-        ps.close();
-        con.close();
-        log.info(String.format("Changes for project %s successfully updated.", project));
+        ps_registrationDate.close();
+        con_registrationDate.close();
+        log.info(String.format("Registration date for project %s successfully updated.", project));
+
+        String barcodeSentDate = dateFormat.format(projectSheetView.getBarcodeSentDateField().getValue());
+
+        Connection con_barcodeDate = dbConnector.getConnectionPool().reserveConnection();
+
+        if (con_barcodeDate == null) {
+            throw new SQLException("Could not reserve any connection to the database.");
+
+        }
+
+        PreparedStatement ps_barcodeDate = con_barcodeDate.prepareStatement(sqlBarcodeSentDateCommitCommand);
+
+        ps_barcodeDate.setString(1, barcodeSentDate);
+        ps_barcodeDate.setString(2, id);
+
+        ps_barcodeDate.execute();
+        con_barcodeDate.commit();
+
+        ps_barcodeDate.close();
+        con_barcodeDate.close();
+        log.info(String.format("Barcode date for project %s successfully updated.", project));
         informationCommittedFlag.setValue(!informationCommittedFlag.getValue());
 
     }

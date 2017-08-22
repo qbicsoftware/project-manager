@@ -5,7 +5,7 @@
 	<groupId>life.qbic</groupId>
 	<artifactId>project-manager</artifactId>
 	<version>1.0</version>
-	<name>QBiC Project Manager</name>
+	<name>Project Manager</name>
 
 	<properties>
 		<jetty.plugin.version>9.3.9.v20160517</jetty.plugin.version>
