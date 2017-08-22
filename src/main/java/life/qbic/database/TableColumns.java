@@ -10,7 +10,7 @@ import java.util.HashMap;
  */
 public class TableColumns {
 
-    public final static HashMap<ColumnTypes, String> PROJECTOVERVIEWTABLE = new HashMap<>();
+    public static  HashMap<ColumnTypes, String> PROJECTOVERVIEWTABLE = new HashMap<>();
 
     static {
         PROJECTOVERVIEWTABLE.put(ColumnTypes.ID, "id");
@@ -20,6 +20,4 @@ public class TableColumns {
         PROJECTOVERVIEWTABLE.put(ColumnTypes.BARCODESENTDATE, "barcodeSentDate");
         PROJECTOVERVIEWTABLE.put(ColumnTypes.RAWDATAREGISTERED, "rawDataRegistered");
     }
-
-
 }

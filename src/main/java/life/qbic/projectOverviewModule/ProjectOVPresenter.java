@@ -64,6 +64,8 @@ public class ProjectOVPresenter{
 
     private Item selectedProjectItem = null;
 
+    private final ColumnFieldTypes columnFieldTypes;
+
     public ProjectOVPresenter(ProjectContentModel model,
                               ProjectOverviewModule overViewModule,
                               ProjectDatabaseConnector connection,
@@ -74,6 +76,7 @@ public class ProjectOVPresenter{
         this.overViewModule = overViewModule;
         this.connection = connection;
         this.openBisConnection = openBisConnection;
+        columnFieldTypes = new ColumnFieldTypes();
     }
 
     /**
@@ -134,12 +137,12 @@ public class ProjectOVPresenter{
         overViewModule.getOverviewGrid().removeColumn("barcodeSent");
         overViewModule.getOverviewGrid().removeColumn("barcodeSentDate");
 
-        ColumnFieldTypes.clearFromParents();    // Clear from parent nodes (when reloading page)
+        columnFieldTypes.clearFromParents();    // Clear from parent nodes (when reloading page)
         //setFieldType("projectStatus", ColumnFieldTypes.PROJECTSTATUS);
-        setFieldType("dataProcessed", ColumnFieldTypes.DATAPROCESSED);
-        setFieldType("dataAnalyzed", ColumnFieldTypes.DATAANALYZED);
-        setFieldType("reportSent", ColumnFieldTypes.REPORTSENT);
-        setFieldType("rawDataRegistered", ColumnFieldTypes.RAWDATAREGISTERED);
+        setFieldType("dataProcessed", columnFieldTypes.getDATAPROCESSED());
+        setFieldType("dataAnalyzed", columnFieldTypes.getDATAANALYZED());
+        setFieldType("reportSent", columnFieldTypes.getREPORTSENT());
+        setFieldType("rawDataRegistered", columnFieldTypes.getRAWDATAREGISTERED());
 
         overViewModule.getOverviewGrid().setCellStyleGenerator(cellReference -> {
             if ("no".equals(cellReference.getValue())){
