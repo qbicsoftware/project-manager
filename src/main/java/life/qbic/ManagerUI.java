@@ -3,10 +3,8 @@ package life.qbic;
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
+import com.vaadin.ui.themes.ValoTheme;
 import life.qbic.database.ProjectDatabase;
 import life.qbic.database.ProjectDatabaseConnector;
 import life.qbic.database.ProjectFilter;
@@ -49,6 +47,8 @@ import java.util.Properties;
 
 import javax.portlet.PortletContext;
 import javax.portlet.PortletSession;
+import javax.swing.*;
+import javax.validation.constraints.Null;
 
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.service.UserLocalServiceUtil;
@@ -168,14 +168,32 @@ public class ManagerUI extends UI {
 
         //removed pieChartStatusModule #25
         final MasterPresenter masterPresenter = new MasterPresenter(projectOVPresenter, projectSheetPresenter, followerPresenter, projectFilter, timeLineChartPresenter, projectsStatsPresenter);
-        log.info("11");
 
         projectOverviewModule.setWidth(100, Unit.PERCENTAGE);
-        log.info("12");
         projectOverviewModule.addStyleName("overview-module-style");
         projectDescriptionLayout.setSizeFull();
         projectDescriptionLayout.addComponent(projectOverviewModule);
         projectDescriptionLayout.addComponent(projectSheetView.getProjectSheet());
+        final Button unfollowButton = new Button("Unfollow");
+        unfollowButton.setStyleName(ValoTheme.BUTTON_DANGER);
+        unfollowButton.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+
+                try {
+                    String id = projectOVPresenter.getSelectedProject().getValue();
+                    followerModel.unfollowProject("followingprojects", id , userID, "id");
+                    followerPresenter.refreshProjects();
+                    followerPresenter.switchIsChangedFlag();
+                    log.info("Unfollow: " + id);
+                    Utils.notification("Unfollow successful", "You unfollowed project " + id, "success" );
+                } catch (SQLException|WrongArgumentSettingsException|NullPointerException e) {
+                    log.error("Unfollowing project failed");
+                    Utils.notification("Unfollowing project failed", "Please try again later.", "error" );
+                }
+            }
+        });
+        projectDescriptionLayout.addComponent(unfollowButton);
         projectSheetView.getProjectSheet().setSizeUndefined();
 
         Responsive.makeResponsive(projectDescriptionLayout);
