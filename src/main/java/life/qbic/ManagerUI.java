@@ -1,6 +1,7 @@
 package life.qbic;
 
 import com.vaadin.annotations.Theme;
+import com.vaadin.event.MouseEvents;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.*;
@@ -183,6 +184,16 @@ public class ManagerUI extends UI {
                 .style("slider-format")
                 .animationDuration(100).build();
         sliderFrame.addComponent(sliderPanel);
+
+        UI.getCurrent().addClickListener(new MouseEvents.ClickListener() {
+            @Override
+            public void click(MouseEvents.ClickEvent event) {
+                if (sliderPanel.isExpanded()) {
+                    sliderPanel.collapse();
+                }
+            }
+        });
+
         sliderFrame.setComponentAlignment(sliderPanel, Alignment.MIDDLE_CENTER);
         sliderFrame.setWidth("50%");
         //statisticsPanel.addComponent(pieChartStatusModule);
