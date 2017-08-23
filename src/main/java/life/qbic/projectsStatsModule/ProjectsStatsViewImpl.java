@@ -21,11 +21,12 @@ public class ProjectsStatsViewImpl implements ProjectsStatsView {
         projectStatsLayout.setWidth(33, Sizeable.Unit.PERCENTAGE);
 
         this.totalProjectsNI = new NumberIndicator();
-        totalProjectsNI.setHeader("Total Projects");
+        totalProjectsNI.setHeader("Projects");
         totalProjectsNI.setNumber(0);
         this.overdueProjectsNI = new NumberIndicator();
-        overdueProjectsNI.setHeader("Overdue Projects");
+        overdueProjectsNI.setHeader("Overdue");
         overdueProjectsNI.setNumber(0);
+        overdueProjectsNI.getNumber().setStyleName("overdue");
         projectStatsLayout.addComponent(totalProjectsNI);
         projectStatsLayout.addComponent(overdueProjectsNI);
     }
