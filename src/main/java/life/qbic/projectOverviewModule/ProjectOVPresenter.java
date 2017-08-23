@@ -233,7 +233,7 @@ public class ProjectOVPresenter{
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setSpacing(true);
         firstHeaderRow.getCell("projectID").setComponent(buttonLayout);
-        Button clearAllFilters = new Button("clearAllFilters", (Button.ClickListener) clickEvent ->
+        Button clearAllFilters = new Button("clear All Filters", (Button.ClickListener) clickEvent ->
                 filter.clearAllFilters());
         clearAllFilters.setIcon(FontAwesome.TIMES);
         clearAllFilters.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);

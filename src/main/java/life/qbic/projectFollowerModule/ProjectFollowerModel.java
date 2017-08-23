@@ -66,7 +66,7 @@ public class ProjectFollowerModel {
         return this;
     }
 
-    void followProject(String sqlTable, String projectCode, String userID, String primaryKey)
+    public void followProject(String sqlTable, String projectCode, String userID, String primaryKey)
             throws SQLException, WrongArgumentSettingsException {
         projectDatabase.connectToDatabase();
         querySettings.put("table", sqlTable);
@@ -79,7 +79,7 @@ public class ProjectFollowerModel {
     }
 
 
-    void unfollowProject(String sqlTableName, String selectedProject, String userID, String primaryKey)
+    public void unfollowProject(String sqlTableName, String selectedProject, String userID, String primaryKey)
             throws SQLException, WrongArgumentSettingsException {
         projectDatabase.connectToDatabase();
         querySettings.put("table", sqlTableName);
@@ -91,7 +91,7 @@ public class ProjectFollowerModel {
         exectuteStatement(query.getQueryString());
     }
 
-    private void exectuteStatement(String statementString) throws SQLException {
+    public void exectuteStatement(String statementString) throws SQLException {
         JDBCConnectionPool pool = projectDatabase.getConnectionPool();
         Connection conn = pool.reserveConnection();
         if (conn != null) {
