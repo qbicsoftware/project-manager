@@ -10,16 +10,14 @@ import java.util.HashMap;
  */
 public class TableColumns {
 
-    public final static HashMap<ColumnTypes, String> PROJECTOVERVIEWTABLE = new HashMap<>();
+    public static  HashMap<ColumnTypes, String> PROJECTOVERVIEWTABLE = new HashMap<>();
 
     static {
         PROJECTOVERVIEWTABLE.put(ColumnTypes.ID, "id");
         PROJECTOVERVIEWTABLE.put(ColumnTypes.PROJECTID, "projectID");
         PROJECTOVERVIEWTABLE.put(ColumnTypes.PROJECTREGISTERED, "projectRegistered");
         PROJECTOVERVIEWTABLE.put(ColumnTypes.REGISTRATIONDATE, "projectRegisteredDate");
-        PROJECTOVERVIEWTABLE.put(ColumnTypes.BARCODESSENTDATE, "barcodesSentDate");
+        PROJECTOVERVIEWTABLE.put(ColumnTypes.BARCODESENTDATE, "barcodeSentDate");
         PROJECTOVERVIEWTABLE.put(ColumnTypes.RAWDATAREGISTERED, "rawDataRegistered");
     }
-
-
 }

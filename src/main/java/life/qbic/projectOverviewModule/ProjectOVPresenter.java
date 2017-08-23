@@ -64,6 +64,8 @@ public class ProjectOVPresenter{
 
     private Item selectedProjectItem = null;
 
+    private final ColumnFieldTypes columnFieldTypes;
+
     public ProjectOVPresenter(ProjectContentModel model,
                               ProjectOverviewModule overViewModule,
                               ProjectDatabaseConnector connection,
@@ -74,6 +76,7 @@ public class ProjectOVPresenter{
         this.overViewModule = overViewModule;
         this.connection = connection;
         this.openBisConnection = openBisConnection;
+        columnFieldTypes = new ColumnFieldTypes();
     }
 
     /**
@@ -119,20 +122,27 @@ public class ProjectOVPresenter{
      * Beautify the grid
      */
     private void renderTable(){
+        overViewModule.getOverviewGrid().setWidth("100%");
         overViewModule.columnList = overViewModule.getOverviewGrid().getColumns();
-        overViewModule.columnList.forEach((Grid.Column column) -> {
-            String colName = column.getPropertyId().toString();
-            if (colName.contains("Date") || overViewModule.columnHide.contains(colName)) {
-                overViewModule.getOverviewGrid().removeColumn(colName);
-            }
-        });
+        // removes project status column #25
+        overViewModule.getOverviewGrid().removeColumn("projectStatus");
+        overViewModule.getOverviewGrid().removeColumn("id");
+        overViewModule.getOverviewGrid().removeColumn("investigatorID");
+        overViewModule.getOverviewGrid().removeColumn("instrumentID");
+        overViewModule.getOverviewGrid().removeColumn("projectRegistered");
+        overViewModule.getOverviewGrid().removeColumn("projectRegisteredDate");
+        overViewModule.getOverviewGrid().removeColumn("dataProcessedDate");
+        overViewModule.getOverviewGrid().removeColumn("dataAnalyzedDate");
+        overViewModule.getOverviewGrid().removeColumn("reportSentDate");
+        overViewModule.getOverviewGrid().removeColumn("barcodeSent");
+        overViewModule.getOverviewGrid().removeColumn("barcodeSentDate");
 
-        ColumnFieldTypes.clearFromParents();    // Clear from parent nodes (when reloading page)
-        setFieldType("projectStatus", ColumnFieldTypes.PROJECTSTATUS);
-        setFieldType("dataProcessed", ColumnFieldTypes.DATAPROCESSED);
-        setFieldType("dataAnalyzed", ColumnFieldTypes.DATAANALYZED);
-        setFieldType("reportSent", ColumnFieldTypes.REPORTSENT);
-        setFieldType("rawDataRegistered", ColumnFieldTypes.RAWDATAREGISTERED);
+        columnFieldTypes.clearFromParents();    // Clear from parent nodes (when reloading page)
+        //setFieldType("projectStatus", ColumnFieldTypes.PROJECTSTATUS);
+        setFieldType("dataProcessed", columnFieldTypes.getDATAPROCESSED());
+        setFieldType("dataAnalyzed", columnFieldTypes.getDATAANALYZED());
+        setFieldType("reportSent", columnFieldTypes.getREPORTSENT());
+        setFieldType("rawDataRegistered", columnFieldTypes.getRAWDATAREGISTERED());
 
         overViewModule.getOverviewGrid().setCellStyleGenerator(cellReference -> {
             if ("no".equals(cellReference.getValue())){
@@ -183,17 +193,6 @@ public class ProjectOVPresenter{
 
         overViewModule.getOverviewGrid().getColumn("rawDataRegistered").
                 setRenderer(new DateRenderer(new SimpleDateFormat("yyyy-MM-dd")));
-        overViewModule.getOverviewGrid().getColumn("rawDataRegistered").setMaximumWidth(250d);
-        overViewModule.getOverviewGrid().getColumn("projectID").setMaximumWidth(120d);
-        overViewModule.getOverviewGrid().getColumn("offerID").setMaximumWidth(120d);
-        //overViewModule.getOverviewGrid().getColumn("projectStatus").setMaximumWidth(140d);
-        overViewModule.getOverviewGrid().getColumn("dataProcessed").setMaximumWidth(140d);
-        overViewModule.getOverviewGrid().getColumn("dataAnalyzed").setMaximumWidth(140d);
-        overViewModule.getOverviewGrid().getColumn("reportSent").setMaximumWidth(140d);
-        overViewModule.getOverviewGrid().getColumn("invoice").setMaximumWidth(140d);
-
-        // removes project status column #25
-        overViewModule.getOverviewGrid().removeColumn("projectStatus");
     }
 
     /**

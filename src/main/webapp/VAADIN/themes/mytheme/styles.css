@@ -12984,3 +12984,28 @@ div.v-layout.v-horizontal.v-widget {
 	width: 19px;
 	overflow: hidden;
 }
+
+.mytheme .number {
+	font-size: 50px;
+	text-align: center;
+}
+
+.mytheme .overdue {
+	color: #ed473b;
+	font-size: 50px;
+	text-align: center;
+}
+
+.mytheme .center {
+	text-align: center;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.mytheme .header {
+	font-size: 25px;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	font-weight: bold;
+}

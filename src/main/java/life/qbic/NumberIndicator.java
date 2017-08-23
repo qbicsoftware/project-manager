@@ -20,8 +20,8 @@ public class NumberIndicator extends VerticalLayout {
     }
 
     private void init() {
-        this.caption.setStyleName("numberindicator-header");
-        this.number.setStyleName("numberindicator-number");
+        this.caption.setStyleName("header");
+        this.number.setStyleName("number");
         this.addComponent(caption);
         this.addComponent(number);
         this.setComponentAlignment(caption, Alignment.MIDDLE_CENTER);
@@ -35,6 +35,10 @@ public class NumberIndicator extends VerticalLayout {
 
     public void setNumber(Integer number) {
         this.number.setValue(number.toString());
+    }
+
+    public Label getNumber() {
+        return number;
     }
 
 

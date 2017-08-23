@@ -1,6 +1,7 @@
 package life.qbic;
 
 import com.vaadin.annotations.Theme;
+import com.vaadin.event.MouseEvents;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.*;
@@ -37,21 +38,8 @@ import org.vaadin.sliderpanel.SliderPanel;
 import org.vaadin.sliderpanel.SliderPanelBuilder;
 import org.vaadin.sliderpanel.client.SliderMode;
 import org.vaadin.sliderpanel.client.SliderTabPosition;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.portlet.PortletContext;
-import javax.portlet.PortletSession;
-
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.service.UserLocalServiceUtil;
 import com.vaadin.annotations.Widgetset;
-import com.vaadin.server.WrappedPortletSession;
 
 
 @Theme("mytheme")
@@ -61,7 +49,6 @@ public class ManagerUI extends UI {
 
 
     private String userID;
-    private Properties properties;
     /**
      * Get static logger instance
      */
@@ -90,7 +77,8 @@ public class ManagerUI extends UI {
 
         final CssLayout statisticsPanel = new CssLayout();
 
-        ConfigurationManager config = new ConfigurationManagerFactory().getInstance();
+        new ConfigurationManagerFactory();
+        final ConfigurationManager config = ConfigurationManagerFactory.getInstance();
 
         final ProjectDatabaseConnector projectDatabase = new ProjectDatabase(config.getMysqlUser(), config.getMysqlPass(), projectFilter);
 
@@ -98,7 +86,7 @@ public class ManagerUI extends UI {
             projectDatabase.connectToDatabase();
             log.info("Connection to SQL project database was successful.");
         } catch (SQLException exp) {
-            log.info("Could not connect to SQL project database. Reason: " + exp.getMessage());
+            log.error("Could not connect to SQL project database. Reason: " + exp.getMessage());
         }
 
 
@@ -125,9 +113,7 @@ public class ManagerUI extends UI {
 
         try {
             followerPresenter.startOrchestration();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (WrongArgumentSettingsException e) {
+        } catch (SQLException|WrongArgumentSettingsException e) {
             e.printStackTrace();
         }
 
@@ -204,8 +190,22 @@ public class ManagerUI extends UI {
                 .tabPosition(SliderTabPosition.MIDDLE)
                 .style("slider-format")
                 .animationDuration(100).build();
-
         sliderFrame.addComponent(sliderPanel);
+
+        UI.getCurrent().addClickListener(new MouseEvents.ClickListener() {
+            @Override
+            public void click(MouseEvents.ClickEvent event) {
+                if (sliderPanel.isExpanded()) {
+                    sliderPanel.collapse();
+                }
+            }
+        });
+        sliderPanel.setResponsive(true);
+        Responsive.makeResponsive(sliderPanel);
+        sliderFrame.setComponentAlignment(sliderPanel, Alignment.MIDDLE_CENTER);
+        sliderFrame.setWidth("50%");
+        sliderFrame.setResponsive(true);
+        Responsive.makeResponsive(sliderFrame);
         //statisticsPanel.addComponent(pieChartStatusModule);
         //pieChartStatusModule.setStyleName("statsmodule");
         timeLineChart.setStyleName("statsmodule");
@@ -221,55 +221,11 @@ public class ManagerUI extends UI {
         mainContent.addComponent(statisticsPanel);
         mainContent.addComponent(projectDescriptionLayout);
         mainFrame.addComponent(sliderFrame);
+        mainFrame.setComponentAlignment(sliderFrame, Alignment.MIDDLE_CENTER);
         mainFrame.addComponent(mainContent);
         mainFrame.setExpandRatio(mainContent, 1);
         mainFrame.setStyleName("mainpage");
         setContent(mainFrame);
     }
 
-    private String getPortletContextName(VaadinRequest request) {
-        WrappedPortletSession wrappedPortletSession = (WrappedPortletSession) request
-                .getWrappedSession();
-        PortletSession portletSession = wrappedPortletSession
-                .getPortletSession();
-
-        final PortletContext context = portletSession.getPortletContext();
-        final String portletContextName = context.getPortletContextName();
-        return portletContextName;
-    }
-
-    private Integer getPortalCountOfRegisteredUsers() {
-        Integer result = null;
-
-        try {
-            result = UserLocalServiceUtil.getUsersCount();
-        } catch (SystemException e) {
-            log.error(e);
-        }
-
-        return result;
-    }
-
-    private Map<String, String> getCredentialsFromEnvVariables() {
-        final Map<String, String> credentials = new HashMap<>();
-        credentials.put("sqluser", properties.getProperty("mysql.user"));
-        credentials.put("sqlpassword", properties.getProperty("mysql.pass"));
-
-        if (credentials.get("sqluser") != null && credentials.get("sqlpassword") != null) {
-            return credentials;
-        } else {
-            return null;
-        }
-    }
-
-    private Properties getPropertiesFromFile(String path) {
-        Properties properties = new Properties();
-        try {
-            properties.load(Files.newBufferedReader(Paths.get(path)));
-        } catch (Exception exp) {
-            System.err.println(("Could not open or read from properties file!"));
-        }
-
-        return properties;
-    }
 }
