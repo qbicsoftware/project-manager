@@ -23,7 +23,7 @@ public class TimeLineChart extends Chart {
         configuration = this.getConfiguration();
         plotOptions = new PlotOptionsColumn();
         plotOptions.setColorByPoint(true);
-        plotOptions.setColors(new SolidColor("#197DE1"), new SolidColor("#197DE1"), new SolidColor("#197DE1"), new SolidColor("#ed473b"));
+        plotOptions.setColors(new SolidColor("#ff9933"), new SolidColor("#197DE1"),  new SolidColor("#197DE1"), new SolidColor("#197DE1"), new SolidColor("#ed473b"));
         xAxis = new XAxis();
         yAxis = new YAxis();
         yAxis.setAllowDecimals(false);

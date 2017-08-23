@@ -178,9 +178,12 @@ public class ManagerUI extends UI {
                 }
             }
         });
-
+        sliderPanel.setResponsive(true);
+        Responsive.makeResponsive(sliderPanel);
         sliderFrame.setComponentAlignment(sliderPanel, Alignment.MIDDLE_CENTER);
         sliderFrame.setWidth("50%");
+        sliderFrame.setResponsive(true);
+        Responsive.makeResponsive(sliderFrame);
         //statisticsPanel.addComponent(pieChartStatusModule);
         //pieChartStatusModule.setStyleName("statsmodule");
         timeLineChart.setStyleName("statsmodule");
