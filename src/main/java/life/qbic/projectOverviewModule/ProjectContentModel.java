@@ -32,6 +32,8 @@ public class ProjectContentModel {
 
     private double projectsWithOpenStatus;
 
+    private int unregisteredProjects;
+
     private SQLContainer tableContent;
 
     private final ProjectDatabaseConnector projectDatabaseConnector;
@@ -124,7 +126,7 @@ public class ProjectContentModel {
      * @return A map containing values for different categories
      */
     public Map<String, Integer> getProjectsTimeLineStats() {
-        final Map<String, Integer> projectsStats = new HashMap<>();
+        final LinkedHashMap<String, Integer> projectsStats = new LinkedHashMap<>();
 
         if (tableContent == null) {
             return projectsStats;
@@ -141,8 +143,9 @@ public class ProjectContentModel {
      *
      * @param container map that is going to be filled with stats
      */
-    private void writeNumberProjectsPerTimeIntervalFromStart(Map<String, Integer> container) {
+    private void writeNumberProjectsPerTimeIntervalFromStart(LinkedHashMap<String, Integer> container) {
 
+        container.put("unregistered", 0);
         container.put("0 to 2 weeks", 0);
         container.put("2 to 6 weeks", 0);
         container.put("6 to 12 weeks", 0);
@@ -170,7 +173,8 @@ public class ProjectContentModel {
             }
 
             Date currentDate = new Date();
-
+            unregisteredProjects = followingProjects.size()-dateList.size();
+            container.put("unregistered", unregisteredProjects);
             for (Date date : dateList) {
                 long daysPassed = TimeUnit.DAYS.convert(currentDate.getTime() - date.getTime(), TimeUnit.MILLISECONDS);
                 if (daysPassed / 7 < 2)
@@ -183,6 +187,10 @@ public class ProjectContentModel {
                     container.put("> 12 weeks", container.get("> 12 weeks") + 1);
             }
         }
+    }
+
+    public int getUnregisteredProjects() {
+        return unregisteredProjects;
     }
 
 }

@@ -2,6 +2,7 @@ package life.qbic.projectsStatsModule;
 
 import life.qbic.OpenBisConnection;
 import life.qbic.database.WrongArgumentSettingsException;
+import life.qbic.projectOverviewModule.ProjectContentModel;
 import org.apache.commons.logging.Log;
 
 import java.sql.SQLException;
@@ -18,7 +19,7 @@ public class ProjectsStatsPresenter {
     private String primaryKey;
     private String followingProjects, projectsOverview;
     private List<String> projects;
-    private Integer overdueProjects;
+    private Integer overdueProjects, unregisteredProjects;
     private OpenBisConnection connection;
     private final Log log;
 
@@ -51,7 +52,6 @@ public class ProjectsStatsPresenter {
         }
         view.setNumberOfTotalProjects(projects.size());
         view.setNumberOfOverdueProjects(overdueProjects);
-
     }
 
     public void setUserID(String userID) {

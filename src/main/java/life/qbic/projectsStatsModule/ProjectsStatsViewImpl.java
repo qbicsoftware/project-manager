@@ -9,26 +9,26 @@ import life.qbic.NumberIndicator;
  */
 public class ProjectsStatsViewImpl implements ProjectsStatsView {
 
-    VerticalLayout projectStatsLayout;
-    NumberIndicator totalProjectsNI, overdueProjectsNI;
+    private VerticalLayout projectStatsLayout;
+    private NumberIndicator totalProjectsNI, overdueProjectsNI;
 
     public ProjectsStatsViewImpl() {
-        this.projectStatsLayout = new VerticalLayout();
+        projectStatsLayout = new VerticalLayout();
         init();
     }
 
     public void init() {
+        projectStatsLayout.removeAllComponents();
         projectStatsLayout.setWidth(33, Sizeable.Unit.PERCENTAGE);
 
-        this.totalProjectsNI = new NumberIndicator();
+        totalProjectsNI = new NumberIndicator();
         totalProjectsNI.setHeader("Projects");
         totalProjectsNI.setNumber(0);
-        this.overdueProjectsNI = new NumberIndicator();
+        overdueProjectsNI = new NumberIndicator();
         overdueProjectsNI.setHeader("Overdue");
         overdueProjectsNI.setNumber(0);
         overdueProjectsNI.getNumber().setStyleName("overdue");
-        projectStatsLayout.addComponent(totalProjectsNI);
-        projectStatsLayout.addComponent(overdueProjectsNI);
+        projectStatsLayout.addComponents(totalProjectsNI, overdueProjectsNI);
     }
 
     @Override
@@ -45,4 +45,5 @@ public class ProjectsStatsViewImpl implements ProjectsStatsView {
     public void setNumberOfOverdueProjects(double number) {
         overdueProjectsNI.setNumber((int) number);
     }
+
 }
