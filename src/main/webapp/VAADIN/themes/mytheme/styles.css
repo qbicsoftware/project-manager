@@ -12986,7 +12986,6 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .number {
-	color: #246ebf;
 	font-size: 50px;
 	text-align: center;
 }
@@ -13004,7 +13003,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .header {
-	font-size: 30px;
+	font-size: 25px;
 	text-align: center;
 	margin-left: auto;
 	margin-right: auto;
