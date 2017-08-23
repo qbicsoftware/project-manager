@@ -2,6 +2,7 @@ package life.qbic;
 
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
+import com.vaadin.shared.Position;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -42,6 +43,7 @@ public class Utils {
       notify.setIcon(FontAwesome.COMMENT);
       notify.setStyleName(ValoTheme.NOTIFICATION_TRAY + " " + ValoTheme.NOTIFICATION_CLOSABLE);
     }
+    notify.setPosition(Position.TOP_CENTER);
     notify.show(Page.getCurrent());
   }
 }

@@ -47,8 +47,6 @@ import java.util.Properties;
 
 import javax.portlet.PortletContext;
 import javax.portlet.PortletSession;
-import javax.swing.*;
-import javax.validation.constraints.Null;
 
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.service.UserLocalServiceUtil;
@@ -187,6 +185,7 @@ public class ManagerUI extends UI {
                     followerPresenter.switchIsChangedFlag();
                     log.info("Unfollow: " + id);
                     Utils.notification("Unfollow successful", "You unfollowed project " + id, "success" );
+                    projectOverviewModule.getOverviewGrid().deselectAll();
                 } catch (SQLException|WrongArgumentSettingsException|NullPointerException e) {
                     log.error("Unfollowing project failed");
                     Utils.notification("Unfollowing project failed", "Please try again later.", "error" );
