@@ -12986,13 +12986,13 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .number {
-	font-size: 50px;
+	font-size: 40px;
 	text-align: center;
 }
 
 .mytheme .overdue {
 	color: #ed473b;
-	font-size: 50px;
+	font-size: 40px;
 	text-align: center;
 }
 
@@ -13003,7 +13003,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .header {
-	font-size: 25px;
+	font-size: 15px;
 	text-align: center;
 	margin-left: auto;
 	margin-right: auto;
