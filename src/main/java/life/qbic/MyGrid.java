@@ -1,10 +1,13 @@
 package life.qbic;
 
+import com.vaadin.addon.charts.themes.ValoDarkTheme;
+import com.vaadin.addon.charts.themes.ValoLightTheme;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.server.Extension;
 import com.vaadin.server.communication.data.RpcDataProviderExtension;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.themes.ValoTheme;
 
 import java.util.Collection;
 

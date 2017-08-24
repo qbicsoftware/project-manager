@@ -84,11 +84,8 @@ public class ProjectContentModel {
         HashMap<String, Double> keyFigures = new HashMap<>();
 
         projectsWithOpenStatus = (double) projectDatabaseConnector.makeFreeFormQuery(QuerryType.PROJECTSTATUS_OPEN, queryArguments, primaryKey, followingProjects).getCount();
-        System.out.println(projectsWithOpenStatus);
         projectsWithClosedStatus = (double) projectDatabaseConnector.makeFreeFormQuery(QuerryType.PROJECTSTATUS_CLOSED, queryArguments, primaryKey, followingProjects).getCount();
-        System.out.println(projectsWithClosedStatus);
         projectsWithInProgressStatus = (double) projectDatabaseConnector.makeFreeFormQuery(QuerryType.PROJECTSTATUS_INPROGRESS, queryArguments, primaryKey, followingProjects).getCount();
-        System.out.println(projectsWithInProgressStatus);
 
         keyFigures.put("closed", projectsWithClosedStatus);
         keyFigures.put("open", projectsWithOpenStatus);

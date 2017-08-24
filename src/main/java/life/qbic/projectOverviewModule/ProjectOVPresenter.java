@@ -8,6 +8,7 @@ import com.vaadin.data.util.converter.Converter;
 import com.vaadin.data.util.filter.Like;
 import com.vaadin.data.util.sqlcontainer.connection.JDBCConnectionPool;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.Responsive;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Grid;
@@ -110,7 +111,7 @@ public class ProjectOVPresenter{
             overViewModule.getOverviewGrid().addItemClickListener(event -> {
                 this.selectedProjectItem = event.getItem();
                 this.selectedProject.setValue((String) event.getItem().getItemProperty(TableColumns.PROJECTOVERVIEWTABLE.get(ColumnTypes.PROJECTID)).getValue());
-                System.out.println("Selected project changed to: " + this.selectedProject.getValue());
+                log.info("Selected project changed to: " + this.selectedProject.getValue());
             });
         }
 
@@ -122,8 +123,13 @@ public class ProjectOVPresenter{
      * Beautify the grid
      */
     private void renderTable(){
-        overViewModule.getOverviewGrid().setWidth("100%");
+        overViewModule.getOverviewGrid().setSizeFull();
         overViewModule.columnList = overViewModule.getOverviewGrid().getColumns();
+        for (Grid.Column column : overViewModule.columnList) {
+            column.setMinimumWidth(100);
+        }
+        Responsive.makeResponsive(overViewModule.getOverviewGrid());
+        overViewModule.getOverviewGrid().setResponsive(true);
         // removes project status column #25
         overViewModule.getOverviewGrid().removeColumn("projectStatus");
         overViewModule.getOverviewGrid().removeColumn("id");
@@ -364,7 +370,6 @@ public class ProjectOVPresenter{
                 try {
                     resultSet.last();
                     size = resultSet.getRow();
-                    System.out.println(size);
                     resultSet.beforeFirst();
                 }
                 catch(Exception ex) {

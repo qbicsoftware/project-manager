@@ -61,7 +61,6 @@ public class ProjectDatabase implements ProjectDatabaseConnector {
 
     @Override
     public FreeformQuery makeFreeFormQuery(QuerryType type, HashMap arguments, String primaryKey) throws SQLException, WrongArgumentSettingsException {
-        //System.out.println(SatusQuerryGenerator.getQuerryFromType(type, arguments));
         FreeformQuery query = new FreeformQuery(SatusQuerryGenerator.getQuerryFromType(type, arguments, null), pool, primaryKey);
         return query;
     }
@@ -69,7 +68,6 @@ public class ProjectDatabase implements ProjectDatabaseConnector {
     @Override
     public FreeformQuery makeFreeFormQuery(QuerryType type, HashMap arguments, String primaryKey, List<String> followingProjects) throws SQLException, WrongArgumentSettingsException {
         FreeformQuery query = new FreeformQuery(SatusQuerryGenerator.getQuerryFromType(type, arguments, followingProjects), pool, primaryKey);
-        System.out.println(query.getQueryString());
         return query;
     }
 

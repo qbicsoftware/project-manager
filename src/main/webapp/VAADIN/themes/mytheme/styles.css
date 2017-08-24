@@ -13009,3 +13009,12 @@ div.v-layout.v-horizontal.v-widget {
 	margin-right: auto;
 	font-weight: bold;
 }
+
+.mytheme .v-grid-row.overdue {
+	color: #ed473b;
+	font-weight: bold;
+}
+
+.mytheme .v-grid-row.unregistered {
+	color: #ff9933;
+}

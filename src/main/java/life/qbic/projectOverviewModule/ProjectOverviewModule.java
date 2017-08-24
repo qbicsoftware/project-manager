@@ -45,7 +45,6 @@ public class ProjectOverviewModule extends VerticalLayout implements ProjectOver
         info.setPosition(Position.TOP_CENTER);
         overviewGrid.setWidth(100, Unit.PERCENTAGE);
         overviewGrid.setHeight(100, Unit.PERCENTAGE);
-        overviewGrid.setEditorEnabled(true);
     }
 
     /**
