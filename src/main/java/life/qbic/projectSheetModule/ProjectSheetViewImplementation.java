@@ -3,6 +3,7 @@ package life.qbic.projectSheetModule;
 
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.*;
+import com.vaadin.ui.themes.ValoTheme;
 
 import java.util.Date;
 
@@ -21,7 +22,7 @@ public class ProjectSheetViewImplementation implements ProjectSheetView {
 
     private DateField registrationDateField;
 
-    private Button saveButton;
+    private Button saveButton, unfollowButton;
 
     private DateField barcodeSendDateField;
 
@@ -48,6 +49,11 @@ public class ProjectSheetViewImplementation implements ProjectSheetView {
         registrationDateField.setDateFormat("yyyy-MM-dd");
 
         saveButton = new Button("Save");
+        saveButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
+        saveButton.addStyleName(ValoTheme.BUTTON_SMALL);
+        unfollowButton = new Button("Unfollow");
+        unfollowButton.setStyleName(ValoTheme.BUTTON_DANGER);
+        unfollowButton.addStyleName(ValoTheme.BUTTON_SMALL);
 
         projectCodeLabel.setCaption("Project code");
         registrationDateField.setCaption("Registration date");
@@ -74,12 +80,17 @@ public class ProjectSheetViewImplementation implements ProjectSheetView {
     @Override
     public void showProjectLayout() {
         final FormLayout projectLayout = new FormLayout();
+        projectLayout.setSpacing(true);
+        final HorizontalLayout buttonsLayout = new HorizontalLayout();
+        buttonsLayout.setSpacing(true);
         projectCodeLabel.setValue(this.projectCode);
 
         projectLayout.addComponent(projectCodeLabel);
         projectLayout.addComponent(registrationDateField);
         projectLayout.addComponent(barcodeSendDateField);
-        projectLayout.addComponent(saveButton);
+        buttonsLayout.addComponent(saveButton);
+        buttonsLayout.addComponent(unfollowButton);
+        projectLayout.addComponent(buttonsLayout);
         projectLayout.addStyleName("myformlayout-sheetcontent");
 
         this.projectSheet.setContent(projectLayout);
@@ -101,6 +112,11 @@ public class ProjectSheetViewImplementation implements ProjectSheetView {
     @Override
     public Button getSaveButton() {
         return this.saveButton;
+    }
+
+    @Override
+    public Button getUnfollowButton() {
+        return this.unfollowButton;
     }
 
     @Override

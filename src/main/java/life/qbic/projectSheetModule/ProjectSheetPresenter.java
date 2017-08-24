@@ -2,9 +2,12 @@ package life.qbic.projectSheetModule;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.ui.Button;
+import life.qbic.Utils;
 import life.qbic.database.ColumnTypes;
 import life.qbic.database.ProjectDatabaseConnector;
 import life.qbic.database.TableColumns;
+import life.qbic.database.WrongArgumentSettingsException;
 import org.apache.commons.logging.Log;
 
 import java.sql.Connection;
@@ -52,6 +55,8 @@ public class ProjectSheetPresenter {
                 commitChangesToDataBase();
             } catch (SQLException exc) {
                 log.fatal("Could not update saved changes to database", exc);
+            } catch (NullPointerException e) {
+                log.info("One or more fields where empty and have not been saved to the database");
             }
         });
     }

@@ -158,31 +158,24 @@ public class ManagerUI extends UI {
         projectDescriptionLayout.setSizeFull();
         projectDescriptionLayout.addComponent(projectOverviewModule);
         projectDescriptionLayout.addComponent(projectSheetView.getProjectSheet());
-        final Button unfollowButton = new Button("Unfollow");
-        unfollowButton.setStyleName(ValoTheme.BUTTON_DANGER);
-        unfollowButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-
-                try {
-                    String id = projectOVPresenter.getSelectedProject().getValue();
-                    followerModel.unfollowProject("followingprojects", id , userID, "id");
-                    followerPresenter.refreshProjects();
-                    followerPresenter.switchIsChangedFlag();
-                    log.info("Unfollow: " + id);
-                    Utils.notification("Unfollow successful", "You unfollowed project " + id, "success" );
-                    projectOverviewModule.getOverviewGrid().deselectAll();
-                } catch (SQLException|WrongArgumentSettingsException|NullPointerException e) {
-                    log.error("Unfollowing project failed");
-                    Utils.notification("Unfollowing project failed", "Please try again later.", "error" );
-                }
-            }
-        });
-        projectDescriptionLayout.addComponent(unfollowButton);
         projectSheetView.getProjectSheet().setSizeUndefined();
 
         Responsive.makeResponsive(projectDescriptionLayout);
-
+        projectSheetView.getUnfollowButton().addClickListener(event -> {
+            try {
+                String id = projectOVPresenter.getSelectedProject().getValue();
+                followerModel.unfollowProject("followingprojects", id, userID, "id");
+                followerPresenter.refreshProjects();
+                followerPresenter.switchIsChangedFlag();
+                log.info("Unfollow: " + id);
+                Utils.notification("Unfollow successful", "You unfollowed project " + id, "success");
+                projectOverviewModule.getOverviewGrid().deselectAll();
+                projectSheetView.setDefaultContent();
+            } catch (SQLException | WrongArgumentSettingsException | NullPointerException e) {
+                log.error("Unfollowing project failed");
+                Utils.notification("Unfollowing project failed", "Please try again later.", "error");
+            }
+        });
 
         final SliderPanel sliderPanel = new SliderPanelBuilder(followerView.getUI())
                 .caption("FOLLOW PROJECTS")
