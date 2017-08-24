@@ -25,6 +25,8 @@ public interface ProjectSheetView {
 
     Button getSaveButton();
 
+    Button getUnfollowButton();
+
     DateField getRegistrationDateField();
 
     DateField getBarcodeSentDateField();
