@@ -182,7 +182,7 @@ public class ManagerUI extends UI {
                 .mode(SliderMode.TOP)
                 .tabPosition(SliderTabPosition.MIDDLE)
                 .style("slider-format")
-                .animationDuration(100).build();
+                .animationDuration(100).zIndex(1).build();
         sliderFrame.addComponent(sliderPanel);
 
         UI.getCurrent().addClickListener(new MouseEvents.ClickListener() {
@@ -196,7 +196,7 @@ public class ManagerUI extends UI {
         sliderPanel.setResponsive(true);
         Responsive.makeResponsive(sliderPanel);
         sliderFrame.setComponentAlignment(sliderPanel, Alignment.MIDDLE_CENTER);
-        sliderFrame.setWidth("50%");
+        sliderFrame.setSizeFull();
         sliderFrame.setResponsive(true);
         Responsive.makeResponsive(sliderFrame);
         //statisticsPanel.addComponent(pieChartStatusModule);
