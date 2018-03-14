@@ -5,12 +5,13 @@ import com.vaadin.event.MouseEvents;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.*;
-import com.vaadin.ui.themes.ValoTheme;
 import life.qbic.database.ProjectDatabase;
 import life.qbic.database.ProjectDatabaseConnector;
 import life.qbic.database.ProjectFilter;
 import life.qbic.database.WrongArgumentSettingsException;
 import life.qbic.openbis.openbisclient.OpenBisClient;
+import life.qbic.overviewChart.OverviewChartPresenter;
+import life.qbic.overviewChart.OverviewChartView;
 import life.qbic.portal.liferayandvaadinhelpers.main.ConfigurationManager;
 import life.qbic.portal.liferayandvaadinhelpers.main.ConfigurationManagerFactory;
 import life.qbic.portal.liferayandvaadinhelpers.main.LiferayAndVaadinUtils;
@@ -18,7 +19,6 @@ import life.qbic.projectFollowerModule.ProjectFollowerModel;
 import life.qbic.projectFollowerModule.ProjectFollowerPresenter;
 import life.qbic.projectFollowerModule.ProjectFollowerView;
 import life.qbic.projectFollowerModule.ProjectFollowerViewImpl;
-import life.qbic.projectOverviewModule.ProjectContentModel;
 import life.qbic.projectOverviewModule.ProjectOVPresenter;
 import life.qbic.projectOverviewModule.ProjectOverviewModule;
 import life.qbic.projectSheetModule.ProjectSheetPresenter;
@@ -28,17 +28,19 @@ import life.qbic.projectsStatsModule.ProjectsStatsModel;
 import life.qbic.projectsStatsModule.ProjectsStatsPresenter;
 import life.qbic.projectsStatsModule.ProjectsStatsView;
 import life.qbic.projectsStatsModule.ProjectsStatsViewImpl;
-import life.qbic.projectsTimeLineChart.TimeLineChart;
-import life.qbic.projectsTimeLineChart.TimeLineChartPresenter;
-import life.qbic.projectsTimeLineChart.TimeLineModel;
-import life.qbic.projectsTimeLineChart.TimeLineStats;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.vaadin.sliderpanel.SliderPanel;
 import org.vaadin.sliderpanel.SliderPanelBuilder;
 import org.vaadin.sliderpanel.client.SliderMode;
 import org.vaadin.sliderpanel.client.SliderTabPosition;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.Properties;
+
 import com.vaadin.annotations.Widgetset;
 
 
@@ -48,7 +50,7 @@ import com.vaadin.annotations.Widgetset;
 public class ManagerUI extends UI {
 
 
-    private String userID;
+    private String userID, url, pw, mysqlUser, mysqlPW;
     /**
      * Get static logger instance
      */
@@ -60,6 +62,9 @@ public class ManagerUI extends UI {
 
         log.info("Started project-manager.");
 
+        getCredentials();
+
+        userID = "zxmqw74";
         //set userID here:
         if (LiferayAndVaadinUtils.isLiferayPortlet()) {
            userID = LiferayAndVaadinUtils.getUser().getScreenName();
@@ -80,7 +85,12 @@ public class ManagerUI extends UI {
         new ConfigurationManagerFactory();
         final ConfigurationManager config = ConfigurationManagerFactory.getInstance();
 
-        final ProjectDatabaseConnector projectDatabase = new ProjectDatabase(config.getMysqlUser(), config.getMysqlPass(), projectFilter);
+        final ProjectDatabaseConnector projectDatabase;
+        if (LiferayAndVaadinUtils.isLiferayPortlet()) {
+            projectDatabase = new ProjectDatabase(config.getMysqlUser(), config.getMysqlPass(), projectFilter);
+        } else {
+            projectDatabase = new ProjectDatabase(mysqlUser, mysqlPW, projectFilter);
+        }
 
         try {
             projectDatabase.connectToDatabase();
@@ -91,8 +101,12 @@ public class ManagerUI extends UI {
 
 
         final CssLayout projectDescriptionLayout = new CssLayout();
-        final OpenBisClient openBisClient = new OpenBisClient(config.getDataSourceUser(),
-                config.getDataSourcePassword(), config.getDataSourceUrl());
+        final OpenBisClient openBisClient;
+        if (LiferayAndVaadinUtils.isLiferayPortlet()) {
+            openBisClient = new OpenBisClient(config.getDataSourceUser(), config.getDataSourcePassword(), config.getDataSourceUrl());
+        } else {
+            openBisClient = new OpenBisClient(userID, pw, url);
+        }
 
 
         final ProjectFollowerModel followerModel = new ProjectFollowerModel(projectDatabase);
@@ -132,26 +146,27 @@ public class ManagerUI extends UI {
 
         final ProjectSheetPresenter projectSheetPresenter = new ProjectSheetPresenter(projectSheetView, projectDatabase, log);
 
-        final TimeLineChart timeLineChart = new TimeLineChart();
+//        final TimeLineChart timeLineChart = new TimeLineChart();
+//
+//        timeLineChart.setTitle("Time since raw data arrived");
+//
+//        final TimeLineStats timeLineModel = new TimeLineModel();
+//
+//        final TimeLineChartPresenter timeLineChartPresenter = new TimeLineChartPresenter(timeLineModel, timeLineChart);
 
-        timeLineChart.setTitle("Time since raw data arrived");
-
-        final TimeLineStats timeLineModel = new TimeLineModel();
-
-        final TimeLineChartPresenter timeLineChartPresenter = new TimeLineChartPresenter(timeLineModel, timeLineChart);
+        final OverviewChartView overviewChartView = new OverviewChartView();
+        final OverviewChartPresenter overviewChartPresenter = new OverviewChartPresenter(model, overviewChartView);
 
         final ProjectsStatsView projectsStatsView = new ProjectsStatsViewImpl();
         //Init project stats
         final ProjectsStatsModel projectsStatsModel = new ProjectsStatsModel(projectDatabase);
-        final ProjectsStatsPresenter projectsStatsPresenter = new ProjectsStatsPresenter(projectsStatsModel, projectsStatsView, openBisConnection, log);
-        projectsStatsPresenter.setUserID(userID);
-        projectsStatsPresenter.setFollowingprojects("followingprojects");
-        projectsStatsPresenter.setProjectsoverview("projectsoverview");
-        projectsStatsPresenter.setPrimaryKey("id");
+        final ProjectsStatsPresenter projectsStatsPresenter = new ProjectsStatsPresenter(model, projectsStatsView);
         projectsStatsPresenter.update();
 
         //removed pieChartStatusModule #25
-        final MasterPresenter masterPresenter = new MasterPresenter(projectOVPresenter, projectSheetPresenter, followerPresenter, projectFilter, timeLineChartPresenter, projectsStatsPresenter);
+        final MasterPresenter masterPresenter = new MasterPresenter(projectOVPresenter, projectSheetPresenter, followerPresenter, projectFilter, //timeLineChartPresenter,
+                overviewChartPresenter,
+                projectsStatsPresenter);
 
         projectOverviewModule.setWidth(100, Unit.PERCENTAGE);
         projectOverviewModule.addStyleName("overview-module-style");
@@ -185,12 +200,9 @@ public class ManagerUI extends UI {
                 .animationDuration(100).zIndex(1).build();
         sliderFrame.addComponent(sliderPanel);
 
-        UI.getCurrent().addClickListener(new MouseEvents.ClickListener() {
-            @Override
-            public void click(MouseEvents.ClickEvent event) {
-                if (sliderPanel.isExpanded()) {
-                    sliderPanel.collapse();
-                }
+        UI.getCurrent().addClickListener((MouseEvents.ClickListener) event -> {
+            if (sliderPanel.isExpanded()) {
+                sliderPanel.collapse();
             }
         });
         sliderPanel.setResponsive(true);
@@ -201,14 +213,17 @@ public class ManagerUI extends UI {
         Responsive.makeResponsive(sliderFrame);
         //statisticsPanel.addComponent(pieChartStatusModule);
         //pieChartStatusModule.setStyleName("statsmodule");
-        timeLineChart.setStyleName("statsmodule");
-        statisticsPanel.addComponent(timeLineChart);
+        //timeLineChart.setStyleName("statsmodule");
+       // statisticsPanel.addComponent(timeLineChart);
+        statisticsPanel.addComponent(overviewChartView);
         statisticsPanel.setWidth(100, Unit.PERCENTAGE);
         statisticsPanel.addComponent(projectsStatsView.getProjectStats());
 
         Responsive.makeResponsive(statisticsPanel);
 
-        timeLineChart.setSizeUndefined();
+        overviewChartView.setSizeUndefined();
+
+        projectsStatsPresenter.update();
         //pieChartStatusModule.setSizeUndefined();
 
         mainContent.addComponent(statisticsPanel);
@@ -219,6 +234,37 @@ public class ManagerUI extends UI {
         mainFrame.setExpandRatio(mainContent, 1);
         mainFrame.setStyleName("mainpage");
         setContent(mainFrame);
+    }
+
+    public void getCredentials() {
+        Properties prop = new Properties();
+        InputStream input = null;
+
+        try {
+
+            input = new FileInputStream("/Users/spaethju/liferay/qbic-ext.properties");
+
+            // load a properties file
+            prop.load(input);
+
+            // get the property value and print it out
+            url = prop.getProperty("datasource.url");
+            pw = prop.getProperty("datasource.password");
+            mysqlPW = prop.getProperty("mysql.pass");
+            mysqlUser = prop.getProperty("mysql.user");
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
     }
 
 }

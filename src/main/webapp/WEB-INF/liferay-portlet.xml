@@ -3,7 +3,7 @@
 
 <liferay-portlet-app>
 	<portlet>
-		<portlet-name>QBiC Project Manager</portlet-name>
+		<portlet-name>Project Manager</portlet-name>
 	</portlet>
 	<role-mapper>
 		<role-name>administrator</role-name>

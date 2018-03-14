@@ -9,8 +9,12 @@ public interface ProjectsStatsView {
 
     VerticalLayout getProjectStats();
 
-    void setNumberOfTotalProjects(double number);
+    void setNumberOfTotalProjects(int number);
 
-    void setNumberOfOverdueProjects(double number);
+    void setNumberOfOverdueProjects(int number);
+
+    void setNumberOfUnregisteredProjects(int number);
+
+    void setNumberOfInTimeProjects(int number);
 
 }

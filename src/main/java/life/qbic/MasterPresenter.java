@@ -2,6 +2,7 @@ package life.qbic;
 
 import com.vaadin.data.Property;
 import life.qbic.database.ProjectFilter;
+import life.qbic.overviewChart.OverviewChartPresenter;
 import life.qbic.projectFollowerModule.ProjectFollowerPresenter;
 import life.qbic.projectOverviewModule.ProjectOVPresenter;
 import life.qbic.projectSheetModule.ProjectSheetPresenter;
@@ -27,7 +28,9 @@ public class MasterPresenter {
 
     private final ProjectFilter projectFilter;
 
-    private final TimeLineChartPresenter timeLineChartPresenter;
+    //private final TimeLineChartPresenter timeLineChartPresenter;
+
+    private final OverviewChartPresenter overviewChartPresenter;
 
     private final ProjectsStatsPresenter projectsStatsPresenter;
 
@@ -39,13 +42,16 @@ public class MasterPresenter {
                     ProjectSheetPresenter projectSheetPresenter,
                     ProjectFollowerPresenter projectFollowerPresenter,
                     ProjectFilter projectFilter,
-                    TimeLineChartPresenter timeLineChartPresenter, ProjectsStatsPresenter projectsStatsPresenter) {
+                    //TimeLineChartPresenter timeLineChartPresenter,
+                    OverviewChartPresenter overviewChartPresenter,
+                    ProjectsStatsPresenter projectsStatsPresenter) {
         //this.pieChartStatusModule = pieChartStatusModule;
         this.projectOverviewPresenter = projectOverviewPresenter;
         this.projectFollowerPresenter = projectFollowerPresenter;
         this.projectSheetPresenter = projectSheetPresenter;
         this.projectFilter = projectFilter;
-        this.timeLineChartPresenter = timeLineChartPresenter;
+        //this.timeLineChartPresenter = timeLineChartPresenter;
+        this.overviewChartPresenter = overviewChartPresenter;
         this.projectsStatsPresenter = projectsStatsPresenter;
 
         init();
@@ -85,7 +91,9 @@ public class MasterPresenter {
         });
 
         if (projectFollowerPresenter.getFollowingProjects().size() > 0) {
-            timeLineChartPresenter.setCategories(projectOverviewPresenter.getTimeLineStats());
+            //timeLineChartPresenter.setCategories(projectOverviewPresenter.getTimeLineStats());
+            makeFilter();
+            overviewChartPresenter.update();
         }
 
     }
@@ -94,7 +102,8 @@ public class MasterPresenter {
         makeFilter();
         projectOverviewPresenter.refreshView();
         //projectOverviewPresenter.getStatusKeyFigures().forEach(pieChartStatusModule::update);
-        timeLineChartPresenter.updateData(projectOverviewPresenter.getTimeLineStats());
+        //timeLineChartPresenter.updateData(projectOverviewPresenter.getTimeLineStats());
+        overviewChartPresenter.update();
         projectsStatsPresenter.update();
         if (projectFollowerPresenter.getFollowingProjects().size() == 0) {
             projectSheetPresenter.getProjectSheetView().getProjectSheet().setVisible(false);

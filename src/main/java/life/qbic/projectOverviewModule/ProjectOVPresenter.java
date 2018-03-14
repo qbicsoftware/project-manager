@@ -17,6 +17,7 @@ import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import life.qbic.OpenBisConnection;
+import life.qbic.ProjectContentModel;
 import life.qbic.database.ColumnTypes;
 import life.qbic.database.ProjectDatabaseConnector;
 import life.qbic.database.TableColumns;

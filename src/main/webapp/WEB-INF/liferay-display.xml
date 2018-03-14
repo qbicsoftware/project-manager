@@ -3,6 +3,6 @@
 
 <display>
 	<category name="Portlets">
-		<portlet id="QBiC Project Manager" />
+		<portlet id="Project Manager" />
 	</category>
 </display>

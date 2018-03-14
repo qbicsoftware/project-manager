@@ -1,4 +1,4 @@
-package life.qbic.projectOverviewModule;
+package life.qbic;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
@@ -32,7 +32,7 @@ public class ProjectContentModel {
 
     private double projectsWithOpenStatus;
 
-    private int unregisteredProjects;
+    private int unregisteredProjects, inTimeProjects, overdueProjects;
 
     private SQLContainer tableContent;
 
@@ -104,11 +104,18 @@ public class ProjectContentModel {
         }
     }
 
-    public void refresh() throws SQLException, WrongArgumentSettingsException {
-        this.tableContent = projectDatabaseConnector.loadSelectedTableData(queryArguments.get("table"), primaryKey);
-        if (getFollowingProjects().size() > 0) {
-            querryKeyFigures();
+    public void refresh()  {
+        try {
+            this.tableContent = projectDatabaseConnector.loadSelectedTableData(queryArguments.get("table"), primaryKey);
+            if (getFollowingProjects().size() > 0) {
+                querryKeyFigures();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (WrongArgumentSettingsException e) {
+            e.printStackTrace();
         }
+
 
     }
 
@@ -123,30 +130,26 @@ public class ProjectContentModel {
      * @return A map containing values for different categories
      */
     public Map<String, Integer> getProjectsTimeLineStats() {
-        final LinkedHashMap<String, Integer> projectsStats = new LinkedHashMap<>();
+        LinkedHashMap<String, Integer> projectsStats = new LinkedHashMap<>();
 
         if (tableContent == null) {
             return projectsStats;
         }
 
-        writeNumberProjectsPerTimeIntervalFromStart(projectsStats);
+        projectsStats = writeNumberProjectsPerTimeIntervalFromStart();
 
         return projectsStats;
 
     }
 
-    /**
-     * Helper function that computes the project timeline statistics
-     *
-     * @param container map that is going to be filled with stats
-     */
-    private void writeNumberProjectsPerTimeIntervalFromStart(LinkedHashMap<String, Integer> container) {
+
+    private LinkedHashMap<String, Integer> writeNumberProjectsPerTimeIntervalFromStart() {
+
+        LinkedHashMap<String, Integer> container = new LinkedHashMap<>();
 
         container.put("unregistered", 0);
-        container.put("0 to 2 weeks", 0);
-        container.put("2 to 6 weeks", 0);
-        container.put("6 to 12 weeks", 0);
-        container.put("> 12 weeks", 0);
+        container.put("in time", 0);
+        container.put("overdue", 0);
 
         if (getFollowingProjects().size() > 0) {
             Collection<?> itemIds = tableContent.getItemIds();
@@ -174,20 +177,26 @@ public class ProjectContentModel {
             container.put("unregistered", unregisteredProjects);
             for (Date date : dateList) {
                 long daysPassed = TimeUnit.DAYS.convert(currentDate.getTime() - date.getTime(), TimeUnit.MILLISECONDS);
-                if (daysPassed / 7 < 2)
-                    container.put("0 to 2 weeks", container.get("0 to 2 weeks") + 1);
-                else if (daysPassed / 7 < 6)
-                    container.put("2 to 6 weeks", container.get("2 to 6 weeks") + 1);
-                else if (daysPassed / 7 < 12)
-                    container.put("6 to 12 weeks", container.get("6 to 12 weeks") + 1);
+                if (daysPassed / 7 < 6)
+                    container.put("in time", container.get("in time") + 1);
                 else
-                    container.put("> 12 weeks", container.get("> 12 weeks") + 1);
+                    container.put("overdue", container.get("overdue") + 1);
             }
+            inTimeProjects = container.get("in time");
+            overdueProjects = container.get("overdue");
         }
+        return container;
     }
 
     public int getUnregisteredProjects() {
         return unregisteredProjects;
     }
 
+    public int getInTimeProjects() {
+        return inTimeProjects;
+    }
+
+    public int getOverdueProjects() {
+        return overdueProjects;
+    }
 }

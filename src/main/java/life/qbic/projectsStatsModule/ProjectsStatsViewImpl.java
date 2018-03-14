@@ -10,7 +10,7 @@ import life.qbic.NumberIndicator;
 public class ProjectsStatsViewImpl implements ProjectsStatsView {
 
     private VerticalLayout projectStatsLayout;
-    private NumberIndicator totalProjectsNI, overdueProjectsNI;
+    private NumberIndicator totalProjectsNI, overdueProjectsNI, unregisteredProjectsNI, inTimeProjectsNI;
 
     public ProjectsStatsViewImpl() {
         projectStatsLayout = new VerticalLayout();
@@ -28,7 +28,15 @@ public class ProjectsStatsViewImpl implements ProjectsStatsView {
         overdueProjectsNI.setHeader("Overdue");
         overdueProjectsNI.setNumber(0);
         overdueProjectsNI.getNumber().setStyleName("overdue");
-        projectStatsLayout.addComponents(totalProjectsNI, overdueProjectsNI);
+        unregisteredProjectsNI = new NumberIndicator();
+        unregisteredProjectsNI.setHeader("Unregistered");
+        unregisteredProjectsNI.setNumber(0);
+        unregisteredProjectsNI.getNumber().setStyleName("unregistered");
+        inTimeProjectsNI = new NumberIndicator();
+        inTimeProjectsNI.setHeader("In Time");
+        inTimeProjectsNI.setNumber(0);
+        inTimeProjectsNI.getNumber().setStyleName("intime");
+        projectStatsLayout.addComponents(totalProjectsNI, overdueProjectsNI, unregisteredProjectsNI, inTimeProjectsNI);
     }
 
     @Override
@@ -37,13 +45,23 @@ public class ProjectsStatsViewImpl implements ProjectsStatsView {
     }
 
     @Override
-    public void setNumberOfTotalProjects(double number) {
-        totalProjectsNI.setNumber((int) number);
+    public void setNumberOfTotalProjects(int number) {
+        totalProjectsNI.setNumber(number);
     }
 
     @Override
-    public void setNumberOfOverdueProjects(double number) {
-        overdueProjectsNI.setNumber((int) number);
+    public void setNumberOfOverdueProjects(int number) {
+        overdueProjectsNI.setNumber( number);
+    }
+
+    @Override
+    public void setNumberOfUnregisteredProjects(int number) {
+        unregisteredProjectsNI.setNumber( number);
+    }
+
+    @Override
+    public void setNumberOfInTimeProjects(int number) {
+        inTimeProjectsNI.setNumber( number);
     }
 
 }

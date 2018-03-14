@@ -7,9 +7,9 @@
 	version="2.0">
 
 	<portlet>
-		<description>This is a QBiC Project Manager Portlet</description>
-		<portlet-name>QBiC Project Manager</portlet-name>
-		<display-name>QBiC Project Manager</display-name>
+		<description>This is a Project Manager Portlet</description>
+		<portlet-name>Project Manager</portlet-name>
+		<display-name>Project Manager</display-name>
 
 		<portlet-class>com.vaadin.server.VaadinPortlet</portlet-class>
 
@@ -30,8 +30,8 @@
 
 
 		<portlet-info>
-			<title>QBiC Project Manager</title>
-			<short-title>QBiC Project Manager</short-title>
+			<title>Project Manager</title>
+			<short-title>Project Manager</short-title>
 			<keywords>Vaadin 7</keywords>
 		</portlet-info>
 
