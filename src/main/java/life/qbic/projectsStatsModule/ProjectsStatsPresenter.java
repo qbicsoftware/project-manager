@@ -2,10 +2,7 @@ package life.qbic.projectsStatsModule;
 
 import life.qbic.OpenBisConnection;
 import life.qbic.ProjectContentModel;
-import life.qbic.database.WrongArgumentSettingsException;
-import org.apache.commons.logging.Log;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -26,17 +23,17 @@ public class ProjectsStatsPresenter {
 
     public void update() {
 
-            projects = model.getFollowingProjects();
+        projects = model.getFollowingProjects();
 
-            if (projects.size() > 0) {
-                overdueProjects = model.getOverdueProjects();
-                unregisteredProjects = model.getUnregisteredProjects();
-                intimeProjects = model.getInTimeProjects();
-            } else {
-                overdueProjects = 0;
-                intimeProjects = 0;
-                overdueProjects = 0;
-            }
+        if (projects.size() > 0) {
+            overdueProjects = model.getOverdueProjects();
+            unregisteredProjects = model.getUnregisteredProjects();
+            intimeProjects = model.getInTimeProjects();
+        } else {
+            overdueProjects = 0;
+            intimeProjects = 0;
+            overdueProjects = 0;
+        }
 
         view.setNumberOfTotalProjects(projects.size());
         view.setNumberOfOverdueProjects(overdueProjects);

@@ -3,6 +3,7 @@ package life.qbic.projectSheetModule;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
 
 import java.util.Date;
 
@@ -11,7 +12,7 @@ import java.util.Date;
  */
 public interface ProjectSheetView {
 
-    Panel getProjectSheet();
+    VerticalLayout getProjectSheet();
 
     void setDefaultContent();
 
@@ -19,16 +20,5 @@ public interface ProjectSheetView {
 
     void showProjectLayout();
 
-    void setRegistrationDate(Date date);
-
-    void setBarcodeSentDate(Date date);
-
-    Button getSaveButton();
-
-    Button getUnfollowButton();
-
-    DateField getRegistrationDateField();
-
-    DateField getBarcodeSentDateField();
 
 }

@@ -9,14 +9,13 @@ import java.util.Map;
  */
 public interface TimeLineStats {
 
-    void setCategories(String ... categories);
+    void setCategories(String... categories);
 
-    void setNumberForCategory(String category, int number);
 
     String[] getCategories();
 
-    ListSeries getValues();
-
     void setCategories(Map<String, Integer> statistics);
+
+    ListSeries getValues();
 
 }

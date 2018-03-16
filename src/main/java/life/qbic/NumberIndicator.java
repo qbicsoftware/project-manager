@@ -33,12 +33,12 @@ public class NumberIndicator extends VerticalLayout {
         this.caption.setValue(caption);
     }
 
-    public void setNumber(Integer number) {
-        this.number.setValue(number.toString());
-    }
-
     public Label getNumber() {
         return number;
+    }
+
+    public void setNumber(Integer number) {
+        this.number.setValue(number.toString());
     }
 
 

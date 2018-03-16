@@ -13,7 +13,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by sven on 12/17/16.
@@ -24,7 +23,6 @@ public class ProjectFollowerModel {
 
     private final List<String> allFollowingProjects = new ArrayList<>();
     private final HashMap<String, String> querySettings = new HashMap<>();
-
 
 
     public ProjectFollowerModel(ProjectDatabaseConnector projectDatabase) {
@@ -56,11 +54,11 @@ public class ProjectFollowerModel {
 
         if (followingProjectsQuery.first()) {
 
-        while (!followingProjectsQuery.isLast()) {
+            while (!followingProjectsQuery.isLast()) {
+                allFollowingProjects.add(followingProjectsQuery.getString("project_id"));
+                followingProjectsQuery.next();
+            }
             allFollowingProjects.add(followingProjectsQuery.getString("project_id"));
-            followingProjectsQuery.next();
-        }
-        allFollowingProjects.add(followingProjectsQuery.getString("project_id"));
         }
 
         return this;

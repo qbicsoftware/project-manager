@@ -1,6 +1,7 @@
 package life.qbic.projectsStatsModule;
 
 import com.vaadin.server.Sizeable;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 import life.qbic.NumberIndicator;
 
@@ -9,20 +10,26 @@ import life.qbic.NumberIndicator;
  */
 public class ProjectsStatsViewImpl implements ProjectsStatsView {
 
-    private VerticalLayout projectStatsLayout;
+    private HorizontalLayout projectStatsLayout;
+    private VerticalLayout stats1Layout, stats2Layout;
     private NumberIndicator totalProjectsNI, overdueProjectsNI, unregisteredProjectsNI, inTimeProjectsNI;
 
     public ProjectsStatsViewImpl() {
-        projectStatsLayout = new VerticalLayout();
+        projectStatsLayout = new HorizontalLayout();
+        stats2Layout = new VerticalLayout();
+        stats1Layout = new VerticalLayout();
         init();
     }
 
     public void init() {
         projectStatsLayout.removeAllComponents();
-        projectStatsLayout.setWidth(33, Sizeable.Unit.PERCENTAGE);
+        projectStatsLayout.setHeight("200px");
+
+        stats1Layout.removeAllComponents();
+        stats2Layout.removeAllComponents();
 
         totalProjectsNI = new NumberIndicator();
-        totalProjectsNI.setHeader("Projects");
+        totalProjectsNI.setHeader("All Projects");
         totalProjectsNI.setNumber(0);
         overdueProjectsNI = new NumberIndicator();
         overdueProjectsNI.setHeader("Overdue");
@@ -36,13 +43,17 @@ public class ProjectsStatsViewImpl implements ProjectsStatsView {
         inTimeProjectsNI.setHeader("In Time");
         inTimeProjectsNI.setNumber(0);
         inTimeProjectsNI.getNumber().setStyleName("intime");
-        projectStatsLayout.addComponents(totalProjectsNI, overdueProjectsNI, unregisteredProjectsNI, inTimeProjectsNI);
+        stats1Layout.addComponents(totalProjectsNI, inTimeProjectsNI);
+        stats2Layout.addComponents(overdueProjectsNI, unregisteredProjectsNI);
+        projectStatsLayout.addComponents(stats1Layout, stats2Layout);
+        projectStatsLayout.setSizeFull();
+        stats1Layout.setSpacing(true);
+        stats2Layout.setSpacing(true);
+        projectStatsLayout.setSpacing(true);
     }
 
     @Override
-    public VerticalLayout getProjectStats() {
-        return this.projectStatsLayout;
-    }
+    public HorizontalLayout getProjectStats() { return projectStatsLayout; }
 
     @Override
     public void setNumberOfTotalProjects(int number) {
@@ -51,17 +62,17 @@ public class ProjectsStatsViewImpl implements ProjectsStatsView {
 
     @Override
     public void setNumberOfOverdueProjects(int number) {
-        overdueProjectsNI.setNumber( number);
+        overdueProjectsNI.setNumber(number);
     }
 
     @Override
     public void setNumberOfUnregisteredProjects(int number) {
-        unregisteredProjectsNI.setNumber( number);
+        unregisteredProjectsNI.setNumber(number);
     }
 
     @Override
     public void setNumberOfInTimeProjects(int number) {
-        inTimeProjectsNI.setNumber( number);
+        inTimeProjectsNI.setNumber(number);
     }
 
 }

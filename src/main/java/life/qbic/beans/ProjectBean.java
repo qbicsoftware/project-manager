@@ -1,10 +1,10 @@
 package life.qbic.beans;
 
+import com.vaadin.ui.ProgressBar;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
-
-import com.vaadin.ui.ProgressBar;
 
 public class ProjectBean implements Serializable {
 
@@ -60,16 +60,16 @@ public class ProjectBean implements Serializable {
         return code;
     }
 
-    public void setSecondaryName(String secondaryName) {
-        this.secondaryName = secondaryName;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getSecondaryName() {
         return secondaryName;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setSecondaryName(String secondaryName) {
+        this.secondaryName = secondaryName;
     }
 
     public String getDescription() {

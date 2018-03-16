@@ -18,31 +18,21 @@ import java.util.concurrent.TimeUnit;
  */
 public class ProjectContentModel {
 
+    private final ProjectDatabaseConnector projectDatabaseConnector;
+    private final Log log;
     private HashMap<String, String> queryArguments = new HashMap<>();
+    private String primaryKey = "projectID";
+    private double projectsWithClosedStatus;
+    private double projectsWithInProgressStatus;
+    private double projectsWithOpenStatus;
+    private int unregisteredProjects, inTimeProjects, overdueProjects;
+    private SQLContainer tableContent;
+    private HashMap<String, Double> keyFigures;
+    private List<String> followingProjects;
 
     {
         queryArguments.put("table", "projectsoverview");
     }
-
-    private String primaryKey = "projectID";
-
-    private double projectsWithClosedStatus;
-
-    private double projectsWithInProgressStatus;
-
-    private double projectsWithOpenStatus;
-
-    private int unregisteredProjects, inTimeProjects, overdueProjects;
-
-    private SQLContainer tableContent;
-
-    private final ProjectDatabaseConnector projectDatabaseConnector;
-
-    private HashMap<String, Double> keyFigures;
-
-    private final Log log;
-
-    private List<String> followingProjects;
 
     public ProjectContentModel(ProjectDatabaseConnector projectDatabaseConnector,
                                List followingProjects, Log log) {
@@ -104,7 +94,7 @@ public class ProjectContentModel {
         }
     }
 
-    public void refresh()  {
+    public void refresh() {
         try {
             this.tableContent = projectDatabaseConnector.loadSelectedTableData(queryArguments.get("table"), primaryKey);
             if (getFollowingProjects().size() > 0) {
@@ -173,7 +163,7 @@ public class ProjectContentModel {
             }
 
             Date currentDate = new Date();
-            unregisteredProjects = followingProjects.size()-dateList.size();
+            unregisteredProjects = followingProjects.size() - dateList.size();
             container.put("unregistered", unregisteredProjects);
             for (Date date : dateList) {
                 long daysPassed = TimeUnit.DAYS.convert(currentDate.getTime() - date.getTime(), TimeUnit.MILLISECONDS);

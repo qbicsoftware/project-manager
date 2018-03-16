@@ -11,12 +11,12 @@ public class TimeLineChartPresenter {
     private final TimeLineStats timeLineModel;
     private final TimeLineChart chart;
 
-    public TimeLineChartPresenter(TimeLineStats timeLineModel, TimeLineChart chart){
+    public TimeLineChartPresenter(TimeLineStats timeLineModel, TimeLineChart chart) {
         this.timeLineModel = timeLineModel;
         this.chart = chart;
     }
 
-    public void setCategories(Map<String, Integer> stats){
+    public void setCategories(Map<String, Integer> stats) {
         this.timeLineModel.setCategories(stats);
 
         this.chart.setCategories("Project age", timeLineModel.getCategories());
@@ -25,11 +25,10 @@ public class TimeLineChartPresenter {
         this.chart.createChart();
     }
 
-    public void updateData(Map<String, Integer> stats){
+    public void updateData(Map<String, Integer> stats) {
         this.timeLineModel.setCategories(stats);
         this.chart.updateChart(timeLineModel.getValues());
     }
-
 
 
 }

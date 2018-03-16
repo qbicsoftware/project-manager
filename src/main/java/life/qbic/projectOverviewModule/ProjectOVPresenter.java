@@ -13,6 +13,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.renderers.ButtonRenderer;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -23,7 +24,6 @@ import life.qbic.database.ProjectDatabaseConnector;
 import life.qbic.database.TableColumns;
 import life.qbic.database.WrongArgumentSettingsException;
 import org.apache.commons.logging.Log;
-import org.vaadin.gridutil.GridUtil;
 import org.vaadin.gridutil.cell.GridCellFilter;
 
 import java.sql.Connection;
@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
  * the SQL connection and contains the information to be shown.
  * Issues and Errors will be directed to the user via a notification message.
  */
-public class ProjectOVPresenter{
+public class ProjectOVPresenter {
 
     private final ProjectContentModel contentModel;
 
@@ -62,40 +62,49 @@ public class ProjectOVPresenter{
 
     private final OpenBisConnection openBisConnection;
 
+    private final Button unfollowButton = new Button("Unfollow");
+    private final Button detailsButton = new Button("Details");
+
     private final String portalURL = "https://portal.qbic.uni-tuebingen.de/portal/web/qbic/qnavigator#!project/";
-
-    private Item selectedProjectItem = null;
-
     private final ColumnFieldTypes columnFieldTypes;
+    private Item selectedProjectItem = null;
 
     public ProjectOVPresenter(ProjectContentModel model,
                               ProjectOverviewModule overViewModule,
                               ProjectDatabaseConnector connection,
                               OpenBisConnection openBisConnection,
-                              Log log){
+                              Log log) {
         this.contentModel = model;
         this.log = log;
         this.overViewModule = overViewModule;
         this.connection = connection;
         this.openBisConnection = openBisConnection;
         columnFieldTypes = new ColumnFieldTypes();
+
+        unfollowButton.setIcon(FontAwesome.MINUS_CIRCLE);
+        unfollowButton.setStyleName(ValoTheme.BUTTON_DANGER);
+        unfollowButton.setEnabled(false);
+
+        detailsButton.setIcon(FontAwesome.INFO_CIRCLE);
+        detailsButton.setStyleName(ValoTheme.BUTTON_FRIENDLY);
+        detailsButton.setEnabled(false);
     }
 
     /**
      * Call and validate database connection of the business logic.
      */
-    public void init() throws Exception{
-        if (contentModel == null){
+    public void init() throws Exception {
+        if (contentModel == null) {
             log.error("The model was not instantiated yet!");
             return;
         }
-        try{
+        try {
             contentModel.init();
         } catch (SQLException exp) {
             log.error(exp);
             overViewModule.sendError("Database Error", "Could not connect to database :(");
             return;
-        } catch (WrongArgumentSettingsException exp){
+        } catch (WrongArgumentSettingsException exp) {
             log.error(exp);
             overViewModule.sendError("Database Error", "Could not connect to database");
             return;
@@ -116,6 +125,19 @@ public class ProjectOVPresenter{
             });
         }
 
+        selectedProject.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if (selectedProject.getValue() != null) {
+                    unfollowButton.setEnabled(true);
+                    detailsButton.setEnabled(true);
+                } else {
+                    unfollowButton.setEnabled(false);
+                    detailsButton.setEnabled(true);
+                }
+            }
+        });
+
         renderTable();
 
     }
@@ -123,7 +145,7 @@ public class ProjectOVPresenter{
     /**
      * Beautify the grid
      */
-    private void renderTable(){
+    private void renderTable() {
         overViewModule.getOverviewGrid().setSizeFull();
         overViewModule.columnList = overViewModule.getOverviewGrid().getColumns();
         for (Grid.Column column : overViewModule.columnList) {
@@ -131,41 +153,15 @@ public class ProjectOVPresenter{
         }
         Responsive.makeResponsive(overViewModule.getOverviewGrid());
         overViewModule.getOverviewGrid().setResponsive(true);
-        // removes project status column #25
-        overViewModule.getOverviewGrid().removeColumn("projectStatus");
-        overViewModule.getOverviewGrid().removeColumn("id");
-        overViewModule.getOverviewGrid().removeColumn("investigatorID");
-        overViewModule.getOverviewGrid().removeColumn("instrumentID");
-        overViewModule.getOverviewGrid().removeColumn("projectRegistered");
-        overViewModule.getOverviewGrid().removeColumn("projectRegisteredDate");
-        overViewModule.getOverviewGrid().removeColumn("dataProcessedDate");
-        overViewModule.getOverviewGrid().removeColumn("dataAnalyzedDate");
-        overViewModule.getOverviewGrid().removeColumn("reportSentDate");
-        overViewModule.getOverviewGrid().removeColumn("barcodeSent");
-        overViewModule.getOverviewGrid().removeColumn("barcodeSentDate");
-
+        overViewModule.getOverviewGrid().removeAllColumns();
+        overViewModule.getOverviewGrid().addColumn("projectID").setHeaderCaption("Project");
+        overViewModule.getOverviewGrid().addColumn("investigatorID").setHeaderCaption("Principal Investigator");
+        overViewModule.getOverviewGrid().addColumn("projectRegisteredDate").setHeaderCaption("Project Registered");
+        overViewModule.getOverviewGrid().addColumn("rawDataRegistered").setHeaderCaption("Raw Data Registered");
+        overViewModule.getOverviewGrid().addColumn("dataAnalyzedDate").setHeaderCaption("Data Analyzed");
+        overViewModule.getOverviewGrid().addColumn("offerID").setHeaderCaption("Offer");
+        overViewModule.getOverviewGrid().addColumn("invoice").setHeaderCaption("Invoice");
         columnFieldTypes.clearFromParents();    // Clear from parent nodes (when reloading page)
-        //setFieldType("projectStatus", ColumnFieldTypes.PROJECTSTATUS);
-        setFieldType("dataProcessed", columnFieldTypes.getDATAPROCESSED());
-        setFieldType("dataAnalyzed", columnFieldTypes.getDATAANALYZED());
-        setFieldType("reportSent", columnFieldTypes.getREPORTSENT());
-        setFieldType("rawDataRegistered", columnFieldTypes.getRAWDATAREGISTERED());
-
-        overViewModule.getOverviewGrid().setCellStyleGenerator(cellReference -> {
-            if ("no".equals(cellReference.getValue())){
-                return "v-grid-cell-no";
-            }
-            if ("in progress".equals(cellReference.getValue())){
-                return "v-grid-cell-progress";
-            }
-            if ("done".equals(cellReference.getValue())){
-                return "v-grid-cell-done";
-            }
-            if (cellReference.getPropertyId().equals("rawDataRegistered")){
-                return GridUtil.ALIGN_CELL_CENTER;
-            }
-            return "v-grid-cell-normal";
-        });
 
         final Grid.Column projectID = overViewModule.getOverviewGrid().
                 getColumn(TableColumns.PROJECTOVERVIEWTABLE.get(ColumnTypes.PROJECTID));
@@ -195,6 +191,8 @@ public class ProjectOVPresenter{
         });
 
 
+
+
         final GridCellFilter filter = new GridCellFilter(overViewModule.getOverviewGrid());
         configureFilter(filter);
 
@@ -204,6 +202,7 @@ public class ProjectOVPresenter{
 
     /**
      * Configures the filter header in the grid
+     *
      * @param filter
      */
     private void configureFilter(GridCellFilter filter) {
@@ -229,14 +228,15 @@ public class ProjectOVPresenter{
 
     /**
      * Implement the filter row in the header of the grid
-     * @param grid The overview Grid reference
+     *
+     * @param grid   The overview Grid reference
      * @param filter The GridCellFilter reference
      */
-    private void initExtraHeaderRow(final Grid grid, final GridCellFilter filter){
+    private void initExtraHeaderRow(final Grid grid, final GridCellFilter filter) {
         Grid.HeaderRow firstHeaderRow = grid.prependHeaderRow();
         // "projectStatus removed (#25)
-        firstHeaderRow.join("projectID", "offerID", "rawDataRegistered",
-                "dataProcessed", "dataAnalyzed", "reportSent", "invoice");
+        firstHeaderRow.join("projectID", "investigatorID", "projectRegisteredDate",
+                "rawDataRegistered", "dataAnalyzedDate", "offerID", "invoice");
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setSpacing(true);
         firstHeaderRow.getCell("projectID").setComponent(buttonLayout);
@@ -244,56 +244,60 @@ public class ProjectOVPresenter{
                 filter.clearAllFilters());
         clearAllFilters.setIcon(FontAwesome.TIMES);
         clearAllFilters.addStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
-        buttonLayout.addComponent(clearAllFilters);
+        buttonLayout.addComponents(clearAllFilters, unfollowButton, detailsButton);
+        buttonLayout.setSizeFull();
     }
 
 
-    private void setFieldType(String columnID, Field fieldType){
-        try{
+    private void setFieldType(String columnID, Field fieldType) {
+        try {
             overViewModule.getOverviewGrid().getColumn(columnID).setEditorField(fieldType);
-        } catch (Exception exp){
+        } catch (Exception exp) {
             log.error(String.format("Could not set editor field %s. Reason: %s", columnID, exp.getMessage()));
         }
     }
 
     /**
      * Query the status key figures from the model for the statistics overview
+     *
      * @return A map with the key figures
      */
-    public Map<String, Double> getStatusKeyFigures(){
+    public Map<String, Double> getStatusKeyFigures() {
         return contentModel.getKeyFigures();
     }
 
-    public void setFilter(String column, String filter){
+    public void setFilter(String column, String filter) {
         Container.Filter tmpFilter = new Like(column, filter);
-        if(!contentModel.getTableContent().getContainerFilters().contains(tmpFilter)){
+        if (!contentModel.getTableContent().getContainerFilters().contains(tmpFilter)) {
             //contentModel.getTableContent().removeContainerFilters("projectStatus");
             contentModel.getTableContent().addContainerFilter(new Like(column, filter));
-        } else{
+        } else {
             contentModel.getTableContent().removeContainerFilter(tmpFilter);
         }
 
     }
 
-    public void sendError(String caption, String message){
+    public void sendError(String caption, String message) {
         overViewModule.sendError(caption, message);
     }
 
-    public void sendInfo(String caption, String message){
+    public void sendInfo(String caption, String message) {
         overViewModule.sendInfo(caption, message);
     }
 
-    private void triggerViewPropertyChanged(Property.ValueChangeEvent event){
+    private void triggerViewPropertyChanged(Property.ValueChangeEvent event) {
         this.contentModel.updateFigure();
         this.overviewModuleChanged.setValue(!overviewModuleChanged.getValue());
 
     }
 
-    public ObjectProperty<Boolean> getIsChangedFlag(){
+    public ObjectProperty<Boolean> getIsChangedFlag() {
         return this.overviewModuleChanged;
     }
 
-    public ObjectProperty<String> getSelectedProject() {return this.selectedProject;}
+    public ObjectProperty<String> getSelectedProject() {
+        return this.selectedProject;
+    }
 
     public Item getSelectedProjectItem() {
         return this.selectedProjectItem;
@@ -303,7 +307,7 @@ public class ProjectOVPresenter{
      * Refreshes the grid
      */
     public void refreshView() {
-        try{
+        try {
             // First, refresh the model (new SQL query!)
             this.contentModel.refresh();
 
@@ -314,15 +318,15 @@ public class ProjectOVPresenter{
             Since we are doing autocommit to the backend database,
             we have to wait until this is finished.
              */
-            while(true){
-                try{
+            while (true) {
+                try {
                     this.overViewModule.getOverviewGrid().cancelEditor();
-                } catch (Exception exp){
+                } catch (Exception exp) {
 
                 }
-                if (timer == 5){
+                if (timer == 5) {
                     break;
-                } else if(!this.overViewModule.getOverviewGrid().isEditorActive()){
+                } else if (!this.overViewModule.getOverviewGrid().isEditorActive()) {
                     break;
                 }
                 TimeUnit.MILLISECONDS.sleep(500);
@@ -344,7 +348,7 @@ public class ProjectOVPresenter{
                 this.overViewModule.showGrid();
             }
 
-        } catch (Exception exc){
+        } catch (Exception exc) {
             log.error("Could not refresh the project overview model.", exc);
         }
     }
@@ -355,9 +359,9 @@ public class ProjectOVPresenter{
 
         JDBCConnectionPool pool = connection.getConnectionPool();
         Connection conn = null;
-        try{
+        try {
             conn = pool.reserveConnection();
-        } catch (SQLException exc){
+        } catch (SQLException exc) {
             log.error("Could not reserve a SQL connection.", exc);
         }
 
@@ -372,14 +376,13 @@ public class ProjectOVPresenter{
                     resultSet.last();
                     size = resultSet.getRow();
                     resultSet.beforeFirst();
-                }
-                catch(Exception ex) {
+                } catch (Exception ex) {
                     size = 0;
                 }
                 statement.close();
                 conn.commit();
             }
-        } catch (SQLException exc){
+        } catch (SQLException exc) {
             log.error("Exception during statement creation!", exc);
         } finally {
             pool.releaseConnection(conn);
@@ -394,9 +397,9 @@ public class ProjectOVPresenter{
 
         JDBCConnectionPool pool = connection.getConnectionPool();
         Connection conn = null;
-        try{
+        try {
             conn = pool.reserveConnection();
-        } catch (SQLException exc){
+        } catch (SQLException exc) {
             log.error("Could not reserve a SQL connection.", exc);
         }
 
@@ -407,7 +410,7 @@ public class ProjectOVPresenter{
                 statement.close();
                 conn.commit();
             }
-        } catch (SQLException exc){
+        } catch (SQLException exc) {
             log.error("Exception during statement creation!", exc);
         } finally {
             pool.releaseConnection(conn);
@@ -415,7 +418,17 @@ public class ProjectOVPresenter{
 
     }
 
-    public Map<String, Integer> getTimeLineStats(){
+    public void clearSelection() {
+        overViewModule.getOverviewGrid().getSelectionModel().reset();
+        unfollowButton.setEnabled(false);
+        detailsButton.setEnabled(false);
+    }
+
+    public Map<String, Integer> getTimeLineStats() {
         return this.contentModel.getProjectsTimeLineStats();
+    }
+
+    public Button getUnfollowButton() {
+        return unfollowButton;
     }
 }

@@ -3,7 +3,6 @@ package life.qbic.projectFollowerModule;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
 import life.qbic.OpenBisConnection;
-import life.qbic.Utils;
 import life.qbic.beans.ProjectBean;
 import life.qbic.database.WrongArgumentSettingsException;
 import org.vaadin.teemu.switchui.Switch;
@@ -13,8 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
 
 /**
  * Created by sven on 12/18/16.
@@ -182,7 +179,6 @@ public class ProjectFollowerPresenter {
     public List<String> getFollowingProjects() {
         try {
             refreshProjects();
-            followingProjects.forEach(System.out::println);
         } catch (Exception exp) {
             System.err.println("Refreshing failed.");
         }

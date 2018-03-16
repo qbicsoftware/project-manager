@@ -7,7 +7,6 @@ import life.qbic.projectFollowerModule.ProjectFollowerPresenter;
 import life.qbic.projectOverviewModule.ProjectOVPresenter;
 import life.qbic.projectSheetModule.ProjectSheetPresenter;
 import life.qbic.projectsStatsModule.ProjectsStatsPresenter;
-import life.qbic.projectsTimeLineChart.TimeLineChartPresenter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -20,22 +19,16 @@ public class MasterPresenter {
 
     //private final PieChartStatusModule pieChartStatusModule;
 
-    private final ProjectOVPresenter projectOverviewPresenter;
-
-    private final ProjectSheetPresenter projectSheetPresenter;
-
-    private final ProjectFollowerPresenter projectFollowerPresenter;
-
-    private final ProjectFilter projectFilter;
-
-    //private final TimeLineChartPresenter timeLineChartPresenter;
-
-    private final OverviewChartPresenter overviewChartPresenter;
-
-    private final ProjectsStatsPresenter projectsStatsPresenter;
-
     private final static Log log =
             LogFactory.getLog(ManagerUI.class.getName());
+    private final ProjectOVPresenter projectOverviewPresenter;
+    private final ProjectSheetPresenter projectSheetPresenter;
+    private final ProjectFollowerPresenter projectFollowerPresenter;
+
+    //private final TimeLineChartPresenter timeLineChartPresenter;
+    private final ProjectFilter projectFilter;
+    private final OverviewChartPresenter overviewChartPresenter;
+    private final ProjectsStatsPresenter projectsStatsPresenter;
 
     //removed PieChartStatusModule pieChartStatusModule #25
     MasterPresenter(ProjectOVPresenter projectOverviewPresenter,

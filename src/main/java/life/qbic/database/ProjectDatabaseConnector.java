@@ -24,9 +24,9 @@ public interface ProjectDatabaseConnector {
 
     FreeformQuery makeFreeFormQuery(QuerryType type, HashMap arguments, String primaryKey, List<String> followingProjects) throws SQLException, WrongArgumentSettingsException;
 
-    void setProjectFilter(ProjectFilter filter);
-
     ProjectFilter getProjectFilter();
+
+    void setProjectFilter(ProjectFilter filter);
 
     SQLContainer loadSelectedTableData(String tableName, String primaryKey)
             throws SQLException, RuntimeException;

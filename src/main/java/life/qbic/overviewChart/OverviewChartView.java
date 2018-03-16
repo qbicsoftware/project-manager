@@ -1,41 +1,45 @@
 package life.qbic.overviewChart;
 
 import com.vaadin.addon.charts.Chart;
-import com.vaadin.addon.charts.PointClickEvent;
-import com.vaadin.addon.charts.model.*;
+import com.vaadin.addon.charts.model.ChartType;
+import com.vaadin.addon.charts.model.Configuration;
+import com.vaadin.addon.charts.model.DataSeries;
+import com.vaadin.addon.charts.model.PlotOptionsPie;
 import com.vaadin.addon.charts.model.style.SolidColor;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+public class OverviewChartView extends Chart {
 
-public class OverviewChartView extends Chart{
+    private DataSeries series;
 
-        private DataSeries series;
+    private Configuration conf;
 
-        private Configuration conf;
-
-        private PlotOptionsPie plotOptions;
+    private PlotOptionsPie plotOptions;
 
 
-        public OverviewChartView() {
-            super(ChartType.PIE);
-            conf = this.getConfiguration();
-            series = new DataSeries();
+    public OverviewChartView() {
+        super(ChartType.PIE);
+        conf = this.getConfiguration();
+        series = new DataSeries();
 
-            plotOptions = new PlotOptionsPie();
-            plotOptions.setShowInLegend(false);
-            plotOptions.setColors(new SolidColor("#e67e22"), new SolidColor("#2c9720"), new SolidColor("#ed473b"));
+        plotOptions = new PlotOptionsPie();
+        plotOptions.setShowInLegend(true);
+        // unregistered - in time - overdue
+        plotOptions.setColors(new SolidColor("#ff9a00"), new SolidColor("#26A65B"), new SolidColor("#c20047"));
+        plotOptions.setSize("100px");
+        this.setHeight("300px");
+        this.setWidth("400px");
+        conf.setPlotOptions(plotOptions);
+        conf.setTitle("Project Manager");
+        conf.setSubTitle("Project Status");
+        conf.getChart().setBackgroundColor(new SolidColor("#fafafa"));
 
-            conf.setPlotOptions(plotOptions);
+        series.setName("projects");
+        conf.setSeries(series);
+        this.drawChart(conf);
 
-            series.setName("projects");
-            conf.setSeries(series);
-            this.drawChart(conf);
+    }
 
-        }
-
-        public DataSeries getSeries() {
-            return series;
-        }
+    public DataSeries getSeries() {
+        return series;
+    }
 }

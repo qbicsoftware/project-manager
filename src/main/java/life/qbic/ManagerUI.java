@@ -1,10 +1,12 @@
 package life.qbic;
 
 import com.vaadin.annotations.Theme;
+import com.vaadin.annotations.Widgetset;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.*;
+import com.vaadin.ui.themes.ValoTheme;
 import life.qbic.database.ProjectDatabase;
 import life.qbic.database.ProjectDatabaseConnector;
 import life.qbic.database.ProjectFilter;
@@ -41,8 +43,6 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import com.vaadin.annotations.Widgetset;
-
 
 @Theme("mytheme")
 @SuppressWarnings("serial")
@@ -50,12 +50,12 @@ import com.vaadin.annotations.Widgetset;
 public class ManagerUI extends UI {
 
 
-    private String userID, url, pw, mysqlUser, mysqlPW;
     /**
      * Get static logger instance
      */
     private final static Log log =
             LogFactory.getLog(ManagerUI.class.getName());
+    private String userID, url, pw, mysqlUser, mysqlPW;
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -67,8 +67,8 @@ public class ManagerUI extends UI {
         userID = "zxmqw74";
         //set userID here:
         if (LiferayAndVaadinUtils.isLiferayPortlet()) {
-           userID = LiferayAndVaadinUtils.getUser().getScreenName();
-           log.info("UserID = " + userID);
+            userID = LiferayAndVaadinUtils.getUser().getScreenName();
+            log.info("UserID = " + userID);
         }
 
 
@@ -80,7 +80,7 @@ public class ManagerUI extends UI {
 
         final ProjectFilter projectFilter = new ProjectFilter();
 
-        final CssLayout statisticsPanel = new CssLayout();
+        final HorizontalLayout statisticsPanel = new HorizontalLayout();
 
         new ConfigurationManagerFactory();
         final ConfigurationManager config = ConfigurationManagerFactory.getInstance();
@@ -127,14 +127,12 @@ public class ManagerUI extends UI {
 
         try {
             followerPresenter.startOrchestration();
-        } catch (SQLException|WrongArgumentSettingsException e) {
+        } catch (SQLException | WrongArgumentSettingsException e) {
             e.printStackTrace();
         }
 
 
         final ProjectContentModel model = new ProjectContentModel(projectDatabase, followerModel.getAllFollowingProjects(), log);
-
-        //final PieChartStatusModule pieChartStatusModule = new PieChartStatusModule();
 
         final ProjectOverviewModule projectOverviewModule = new ProjectOverviewModule();
 
@@ -144,15 +142,7 @@ public class ManagerUI extends UI {
 
         final ProjectSheetView projectSheetView = new ProjectSheetViewImplementation("Project Sheet");
 
-        final ProjectSheetPresenter projectSheetPresenter = new ProjectSheetPresenter(projectSheetView, projectDatabase, log);
-
-//        final TimeLineChart timeLineChart = new TimeLineChart();
-//
-//        timeLineChart.setTitle("Time since raw data arrived");
-//
-//        final TimeLineStats timeLineModel = new TimeLineModel();
-//
-//        final TimeLineChartPresenter timeLineChartPresenter = new TimeLineChartPresenter(timeLineModel, timeLineChart);
+        final ProjectSheetPresenter projectSheetPresenter = new ProjectSheetPresenter(projectSheetView, log);
 
         final OverviewChartView overviewChartView = new OverviewChartView();
         final OverviewChartPresenter overviewChartPresenter = new OverviewChartPresenter(model, overviewChartView);
@@ -172,11 +162,10 @@ public class ManagerUI extends UI {
         projectOverviewModule.addStyleName("overview-module-style");
         projectDescriptionLayout.setSizeFull();
         projectDescriptionLayout.addComponent(projectOverviewModule);
-        projectDescriptionLayout.addComponent(projectSheetView.getProjectSheet());
         projectSheetView.getProjectSheet().setSizeUndefined();
 
         Responsive.makeResponsive(projectDescriptionLayout);
-        projectSheetView.getUnfollowButton().addClickListener(event -> {
+        projectOVPresenter.getUnfollowButton().addClickListener(event -> {
             try {
                 String id = projectOVPresenter.getSelectedProject().getValue();
                 followerModel.unfollowProject("followingprojects", id, userID, "id");
@@ -200,10 +189,15 @@ public class ManagerUI extends UI {
                 .animationDuration(100).zIndex(1).build();
         sliderFrame.addComponent(sliderPanel);
 
+
         UI.getCurrent().addClickListener((MouseEvents.ClickListener) event -> {
             if (sliderPanel.isExpanded()) {
                 sliderPanel.collapse();
             }
+            projectOVPresenter.getSelectedProject().setValue(null);
+            projectOVPresenter.clearSelection();
+            projectSheetView.setDefaultContent();
+            projectSheetView.setProjectCode("");
         });
         sliderPanel.setResponsive(true);
         Responsive.makeResponsive(sliderPanel);
@@ -211,17 +205,12 @@ public class ManagerUI extends UI {
         sliderFrame.setSizeFull();
         sliderFrame.setResponsive(true);
         Responsive.makeResponsive(sliderFrame);
-        //statisticsPanel.addComponent(pieChartStatusModule);
-        //pieChartStatusModule.setStyleName("statsmodule");
-        //timeLineChart.setStyleName("statsmodule");
-       // statisticsPanel.addComponent(timeLineChart);
         statisticsPanel.addComponent(overviewChartView);
-        statisticsPanel.setWidth(100, Unit.PERCENTAGE);
         statisticsPanel.addComponent(projectsStatsView.getProjectStats());
+        statisticsPanel.addComponent(projectSheetView.getProjectSheet());
+        statisticsPanel.setStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
 
         Responsive.makeResponsive(statisticsPanel);
-
-        overviewChartView.setSizeUndefined();
 
         projectsStatsPresenter.update();
         //pieChartStatusModule.setSizeUndefined();

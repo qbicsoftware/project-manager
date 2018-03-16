@@ -77,13 +77,13 @@ public class ProjectDatabase implements ProjectDatabaseConnector {
     }
 
     @Override
-    public void setProjectFilter(ProjectFilter filter) {
-        this.filter = filter;
+    public ProjectFilter getProjectFilter() {
+        return this.filter;
     }
 
     @Override
-    public ProjectFilter getProjectFilter() {
-        return this.filter;
+    public void setProjectFilter(ProjectFilter filter) {
+        this.filter = filter;
     }
 
     @Override

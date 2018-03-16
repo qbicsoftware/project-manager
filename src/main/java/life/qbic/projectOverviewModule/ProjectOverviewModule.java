@@ -8,7 +8,6 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 import life.qbic.MyGrid;
 
-import java.util.HashSet;
 import java.util.List;
 
 /**

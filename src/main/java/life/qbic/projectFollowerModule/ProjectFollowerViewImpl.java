@@ -16,7 +16,7 @@ public class ProjectFollowerViewImpl implements ProjectFollowerView {
     private ComboBox projectBox;
 
     private VerticalLayout mainContent;
-    private VerticalLayout centralWrapper;
+    private HorizontalLayout centralWrapper;
 
     private HorizontalLayout boxWrapper;
 
@@ -69,7 +69,7 @@ public class ProjectFollowerViewImpl implements ProjectFollowerView {
         this.spaceBox = new ComboBox(spaceCaption);
         this.projectBox = new ComboBox(projectCaption);
         this.boxWrapper = new HorizontalLayout();
-        this.centralWrapper = new VerticalLayout();
+        this.centralWrapper = new HorizontalLayout();
         this.followSwitch = new Switch();
         this.descriptionField = new Label();
 
@@ -105,6 +105,7 @@ public class ProjectFollowerViewImpl implements ProjectFollowerView {
         mainContent.setMargin(true);
         boxWrapper.setMargin(true);
         boxWrapper.setSpacing(true);
+        mainContent.setHeight("300px");
         return this;
     }
 

@@ -7,7 +7,7 @@ import ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.Project;
  */
 public class ProjectToProjectBeanConverter {
 
-    public static ProjectBean convertToProjectBean(Project project){
+    public static ProjectBean convertToProjectBean(Project project) {
         ProjectBean newProject = new ProjectBean();
         newProject.setId(project.getPermId() != null ? project.getPermId() : "");
         newProject.setSpace(project.getSpaceCode() != null ? project.getSpaceCode() : "");

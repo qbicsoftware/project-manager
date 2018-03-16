@@ -18,7 +18,7 @@ public class TimeLineChart extends Chart {
 
     private PlotOptionsColumn plotOptions;
 
-    public TimeLineChart(){
+    public TimeLineChart() {
         super(ChartType.COLUMN);
         configuration = this.getConfiguration();
         plotOptions = new PlotOptionsColumn();
@@ -32,37 +32,37 @@ public class TimeLineChart extends Chart {
         configuration.addPlotOptions(plotOptions);
     }
 
-    public TimeLineChart setTitle(String title){
+    public TimeLineChart setTitle(String title) {
         configuration.setTitle(title);
         return this;
     }
 
-    public TimeLineChart setCategories(String title, String... categories ){
+    public TimeLineChart setCategories(String title, String... categories) {
         xAxis.setCategories(categories);
         xAxis.setTitle(title);
         configuration.addxAxis(xAxis);
         return this;
     }
 
-    public TimeLineChart addSeries(ListSeries ... listSeries){
-        for (ListSeries series : listSeries){
+    public TimeLineChart addSeries(ListSeries... listSeries) {
+        for (ListSeries series : listSeries) {
             configuration.addSeries(series);
         }
         return this;
     }
 
-    public TimeLineChart setYaxis(String title){
+    public TimeLineChart setYaxis(String title) {
         yAxis.setTitle(title);
         configuration.addyAxis(yAxis);
         return this;
     }
 
-    public TimeLineChart createChart(){
+    public TimeLineChart createChart() {
         this.drawChart(configuration);
         return this;
     }
 
-    public void updateChart(ListSeries listSeries){
+    public void updateChart(ListSeries listSeries) {
         configuration.setSeries(listSeries);
         createChart();
     }

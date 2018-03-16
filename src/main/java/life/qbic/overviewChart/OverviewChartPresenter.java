@@ -1,4 +1,5 @@
 package life.qbic.overviewChart;
+
 import com.vaadin.addon.charts.model.DataSeriesItem;
 import life.qbic.ProjectContentModel;
 

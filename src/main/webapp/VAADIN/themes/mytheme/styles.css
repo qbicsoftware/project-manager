@@ -12986,25 +12986,25 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .number {
-	font-size: 40px;
+	font-size: 60px;
 	text-align: center;
 }
 
 .mytheme .overdue {
-	color: #ed473b;
-	font-size: 40px;
+	color: #c20047;
+	font-size: 60px;
 	text-align: center;
 }
 
 .mytheme .unregistered {
-	color: #e67e22;
-	font-size: 40px;
+	color: #ff9a00;
+	font-size: 60px;
 	text-align: center;
 }
 
 .mytheme .intime {
-	color: #2c9720;
-	font-size: 40px;
+	color: #26A65B;
+	font-size: 60px;
 	text-align: center;
 }
 
@@ -13015,7 +13015,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .header {
-	font-size: 15px;
+	font-size: 18px;
 	text-align: center;
 	margin-left: auto;
 	margin-right: auto;
@@ -13023,10 +13023,18 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-grid-row.overdue {
-	color: #ed473b;
+	color: #c20047;
 	font-weight: bold;
 }
 
 .mytheme .v-grid-row.unregistered {
 	color: #ff9933;
+}
+
+.mytheme .v-error-indicator-color {
+	color: #c20047;
+}
+
+.mytheme .v-friendly-color {
+	color: #26A65B;
 }
