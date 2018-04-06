@@ -1,20 +1,21 @@
 <?xml version="1.0"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+<web-app version="2.4"
+  xmlns="http://java.sun.com/xml/ns/j2ee"
 >
-    <display-name>Project Manager</display-name>
-    <servlet>
-        <servlet-name>Project Manager</servlet-name>
-        <servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
+  <display-name>Project Manager</display-name>
+  <servlet>
+    <servlet-name>Project Manager</servlet-name>
+    <servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
 
-        <init-param>
-            <param-name>UI</param-name>
-            <param-value>life.qbic.ManagerUI</param-value>
-        </init-param>
+    <init-param>
+      <param-name>UI</param-name>
+      <param-value>life.qbic.ManagerUI</param-value>
+    </init-param>
 
-    </servlet>
+  </servlet>
 
-    <servlet-mapping>
-        <servlet-name>Project Manager</servlet-name>
-        <url-pattern>/*</url-pattern>
-    </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Project Manager</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
 </web-app>

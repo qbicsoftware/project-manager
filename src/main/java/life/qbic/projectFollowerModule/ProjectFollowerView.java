@@ -11,21 +11,21 @@ import org.vaadin.teemu.switchui.Switch;
  */
 public interface ProjectFollowerView {
 
-    MyGrid getProjectGrid();
+  MyGrid getProjectGrid();
 
-    ComboBox getSpaceComboBox();
+  ComboBox getSpaceComboBox();
 
-    ComboBox getProjectComboBox();
+  ComboBox getProjectComboBox();
 
-    ProjectFollowerView setSpaceCaption(String caption);
+  ProjectFollowerView setSpaceCaption(String caption);
 
-    ProjectFollowerView setProjectCaption(String caption);
+  ProjectFollowerView setProjectCaption(String caption);
 
-    Label getDescriptionField();
+  Label getDescriptionField();
 
-    ProjectFollowerView build();
+  ProjectFollowerView build();
 
-    Switch getFollowSwitch();
+  Switch getFollowSwitch();
 
-    VerticalLayout getUI();
+  VerticalLayout getUI();
 }

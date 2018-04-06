@@ -8,27 +8,27 @@ import java.util.Map;
 public class TimeLineChartPresenter {
 
 
-    private final TimeLineStats timeLineModel;
-    private final TimeLineChart chart;
+  private final TimeLineStats timeLineModel;
+  private final TimeLineChart chart;
 
-    public TimeLineChartPresenter(TimeLineStats timeLineModel, TimeLineChart chart) {
-        this.timeLineModel = timeLineModel;
-        this.chart = chart;
-    }
+  public TimeLineChartPresenter(TimeLineStats timeLineModel, TimeLineChart chart) {
+    this.timeLineModel = timeLineModel;
+    this.chart = chart;
+  }
 
-    public void setCategories(Map<String, Integer> stats) {
-        this.timeLineModel.setCategories(stats);
+  public void setCategories(Map<String, Integer> stats) {
+    this.timeLineModel.setCategories(stats);
 
-        this.chart.setCategories("Project age", timeLineModel.getCategories());
-        this.chart.setYaxis("Number of projects");
-        this.chart.addSeries(timeLineModel.getValues());
-        this.chart.createChart();
-    }
+    this.chart.setCategories("Project age", timeLineModel.getCategories());
+    this.chart.setYaxis("Number of projects");
+    this.chart.addSeries(timeLineModel.getValues());
+    this.chart.createChart();
+  }
 
-    public void updateData(Map<String, Integer> stats) {
-        this.timeLineModel.setCategories(stats);
-        this.chart.updateChart(timeLineModel.getValues());
-    }
+  public void updateData(Map<String, Integer> stats) {
+    this.timeLineModel.setCategories(stats);
+    this.chart.updateChart(timeLineModel.getValues());
+  }
 
 
 }

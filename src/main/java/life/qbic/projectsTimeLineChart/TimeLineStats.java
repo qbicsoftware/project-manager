@@ -1,7 +1,6 @@
 package life.qbic.projectsTimeLineChart;
 
 import com.vaadin.addon.charts.model.ListSeries;
-
 import java.util.Map;
 
 /**
@@ -9,13 +8,13 @@ import java.util.Map;
  */
 public interface TimeLineStats {
 
-    void setCategories(String... categories);
+  void setCategories(String... categories);
 
 
-    String[] getCategories();
+  String[] getCategories();
 
-    void setCategories(Map<String, Integer> statistics);
+  void setCategories(Map<String, Integer> statistics);
 
-    ListSeries getValues();
+  ListSeries getValues();
 
 }
