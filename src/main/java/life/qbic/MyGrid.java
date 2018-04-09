@@ -16,7 +16,7 @@ public class MyGrid extends Grid {
   public final ObjectProperty<Boolean> isChanged = new ObjectProperty<>(true, Boolean.class);
 
   public MyGrid() {
-    setEditorEnabled(false);
+    setEditorEnabled(true);
     setSelectionMode(SelectionMode.SINGLE);
     setHeightMode(HeightMode.ROW);
     setHeightByRows(5d);

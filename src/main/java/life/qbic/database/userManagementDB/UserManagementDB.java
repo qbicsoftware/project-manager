@@ -42,7 +42,8 @@ public class UserManagementDB {
         projectID = rs.getInt("id");
       }
     } catch (Exception e) {
-      Utils.notification("Project not found", "The project could not been found in our database", "error");
+      Utils.notification("Project not found", "The project could not been found in our database",
+          "error");
     } finally {
       if (stmt != null) {
         try {
@@ -86,14 +87,14 @@ public class UserManagementDB {
     String pi = null;
     String query = "SELECT * " +
         "FROM " + "qbic_usermanagement_db" + ".persons" +
-        " WHERE " + "id" + "=" + personID ;
+        " WHERE " + "id" + "=" + personID;
     try {
       stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(query);
       while (rs.next()) {
-        String title  = rs.getString("title");
-        String first  = rs.getString("first_name");
-        String family  = rs.getString("family_name");
+        String title = rs.getString("title");
+        String first = rs.getString("first_name");
+        String family = rs.getString("family_name");
         pi = title + " " + first + " " + family;
       }
     } catch (SQLException e) {
@@ -116,13 +117,13 @@ public class UserManagementDB {
     String email = null;
     String query = "SELECT email " +
         "FROM " + "qbic_usermanagement_db" + ".persons" +
-        " WHERE " + "id" + "=" + personID ;
+        " WHERE " + "id" + "=" + personID;
     System.out.println(query);
     try {
       stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(query);
       while (rs.next()) {
-        email  = rs.getString("email");
+        email = rs.getString("email");
       }
     } catch (SQLException e) {
       //
@@ -143,8 +144,6 @@ public class UserManagementDB {
     System.out.println(pi);
     return pi;
   }
-
-
 
 
 }

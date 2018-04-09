@@ -1,8 +1,8 @@
 package life.qbic.projectsStatsModule;
 
 import java.util.List;
-import life.qbic.openbis.OpenBisConnection;
 import life.qbic.ProjectContentModel;
+import life.qbic.openbis.OpenBisConnection;
 
 /**
  * Created by spaethju on 12.04.17.

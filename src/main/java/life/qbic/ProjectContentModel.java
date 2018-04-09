@@ -1,6 +1,7 @@
 package life.qbic;
 
 import ch.systemsx.cisd.openbis.dss.client.api.v1.DataSet;
+import ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.Sample;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import java.sql.SQLException;
@@ -38,18 +39,24 @@ public class ProjectContentModel {
   private List<String> followingProjects;
   private OpenBisClient openBisClient;
   private UserManagementDB userManagementDB;
+  private Map<String, String> taxMapInversed = new HashMap<>();
 
   {
     queryArguments.put("table", "projectsoverview");
   }
 
-  public ProjectContentModel(ProjectDatabaseConnector projectDatabaseConnector, UserManagementDB userManagementDB,
+  public ProjectContentModel(ProjectDatabaseConnector projectDatabaseConnector,
+      UserManagementDB userManagementDB,
       List followingProjects, Log log, OpenBisClient openbisClient) {
     this.projectDatabaseConnector = projectDatabaseConnector;
     this.followingProjects = followingProjects;
     this.log = log;
     this.openBisClient = openbisClient;
     this.userManagementDB = userManagementDB;
+    Map<String, String> taxMap = openBisClient.getVocabCodesAndLabelsForVocab("Q_NCBI_TAXONOMY");
+    for (String key : taxMap.keySet()) {
+      taxMapInversed.put(taxMap.get(key), key);
+    }
   }
 
   public List<String> getFollowingProjects() {
@@ -76,14 +83,10 @@ public class ProjectContentModel {
   }
 
 
-
   public void update() {
     try {
       if (getFollowingProjects().size() > 0) {
-        writeProjectDate();
-        writeProjectPI();
-        writeRawDate();
-        writeDataAnalyzedDate();
+        writeInfos();
       }
     } catch (Exception exp) {
       exp.printStackTrace();
@@ -120,91 +123,124 @@ public class ProjectContentModel {
 
   }
 
-  private void writeProjectDate() {
-    int counter = 0;
-    log.info("Update project registration dates");
-    if (getFollowingProjects().size() > 0){
-      Collection<?> itemIds = tableContent.getItemIds();
-      for (Object itemId : itemIds) {
-      if (tableContent.getContainerProperty(itemId, "projectRegisteredDate").getValue() == null) {
-         String projectID = tableContent.getContainerProperty(itemId, "projectID").getValue()
-            .toString();
-        counter = counter + 1;
-          tableContent.getContainerProperty(itemId, "projectRegisteredDate")
-              .setValue(openBisClient.getProjectByCode(projectID).getRegistrationDetails().getRegistrationDate());
-        }
-      }
-    }
-    log.info(counter + " Projects updated.");
-  }
-
-  private void writeDataAnalyzedDate() {
-    int counter = 0;
-    log.info("Update data analyzed date");
-    if (getFollowingProjects().size() > 0){
-      Collection<?> itemIds = tableContent.getItemIds();
-      for (Object itemId : itemIds) {
-        if (tableContent.getContainerProperty(itemId, "dataAnalyzedDate").getValue() == null) {
-          String projectID = tableContent.getContainerProperty(itemId, "projectID").getValue()
-              .toString();
-          counter = counter + 1;
-          String projectIdentifier = openBisClient.getProjectByCode(projectID).getIdentifier();
-          List<DataSet> dataSets = openBisClient.getDataSetsOfProjectByIdentifier(projectIdentifier);
-          List<Date> resultDates = new ArrayList<>();
-          for (DataSet ds  : dataSets) {
-            if (ds.getDataSetTypeCode().contains("RESULTS")) {
-              resultDates.add(ds.getRegistrationDate());
-            }
-          }
-          if (!resultDates.isEmpty()) {
-            Date lastResult = Collections.max(resultDates);
-            tableContent.getContainerProperty(itemId, "dataAnalyzedDate").setValue(lastResult);
-          }
-        }
-      }
-    }
-    log.info(counter + " Projects updated.");
-  }
-
-  private void writeRawDate() {
-    int counter = 0;
-    log.info("Update raw data registration dates");
-    if (getFollowingProjects().size() > 0){
-      Collection<?> itemIds = tableContent.getItemIds();
-      for (Object itemId : itemIds) {
-        if (tableContent.getContainerProperty(itemId, "rawDataRegistered").getValue() == null) {
-          String projectID = tableContent.getContainerProperty(itemId, "projectID").getValue()
-            .toString();
-          counter = counter + 1;
-          String projectIdentifier = openBisClient.getProjectByCode(projectID).getIdentifier();
-          try {
-            tableContent.getContainerProperty(itemId, "rawDataRegistered")
-                .setValue(openBisClient.getDataSetsOfProjectByIdentifier(projectIdentifier).get(0)
-                    .getRegistrationDate());
-          } catch (IndexOutOfBoundsException ex) {
-            tableContent.getContainerProperty(itemId, "rawDataRegistered").setValue(null);
-          }
-        }
-      }
-    }
-    log.info(counter + " Projects updated.");
-  }
-
-  private void writeProjectPI() {
-    log.info("Update project PIs");
-    int counter = 0;
+  private void writeInfos() {
     if (getFollowingProjects().size() > 0) {
       Collection<?> itemIds = tableContent.getItemIds();
       for (Object itemId : itemIds) {
-       if (tableContent.getContainerProperty(itemId, "investigatorName").getValue() == null || tableContent.getContainerProperty(itemId, "investigatorName").getValue().equals("")) {
-         counter = counter + 1;
-         String projectID = tableContent.getContainerProperty(itemId, "projectID").getValue()
-            .toString();
-          tableContent.getContainerProperty(itemId, "investigatorName").setValue(userManagementDB.getProjectPI(projectID));
-        }
+          String projectID = tableContent.getContainerProperty(itemId, "projectID").getValue()
+              .toString();
+         log.info("Update " + projectID);
+          String projectIdentifier = openBisClient.getProjectByCode(projectID).getIdentifier();
+          writeProjectDate(itemId, projectIdentifier);
+          writeDataAnalyzedDate(itemId, projectIdentifier);
+          writeRawDate(itemId, projectIdentifier);
+          writeProjectPI(itemId, projectID);
+          writeFurtherInfo(itemId, projectIdentifier);
       }
     }
-    log.info(counter + " Projects updated.");
+  }
+
+  private void writeProjectDate(Object itemId, String projectIdentifier) {
+    if (tableContent.getContainerProperty(itemId, "projectRegisteredDate")
+        .getValue() == null) {
+      tableContent.getContainerProperty(itemId, "projectRegisteredDate")
+          .setValue(openBisClient.getProjectByIdentifier(projectIdentifier).getRegistrationDetails()
+              .getRegistrationDate());
+    }
+  }
+
+  private void writeDataAnalyzedDate(Object itemId, String projectIdentifier) {
+    if (tableContent.getContainerProperty(itemId, "dataAnalyzedDate")
+        .getValue() == null) {
+      List<DataSet> dataSets = openBisClient
+          .getDataSetsOfProjectByIdentifier(projectIdentifier);
+      List<Date> resultDates = new ArrayList<>();
+      for (DataSet ds : dataSets) {
+        if (ds.getDataSetTypeCode().contains("RESULT") ||
+            ds.getDataSetTypeCode().contains("result")) {
+          resultDates.add(ds.getRegistrationDate());
+        }
+        HashMap<String, String> properties = ds.getProperties();
+        String attachment_type = properties.get("Q_ATTACHMENT_TYPE");
+        if (attachment_type != null) {
+          if (attachment_type.equals("RESULT")) {
+            resultDates.add(ds.getRegistrationDate());
+          }
+        }
+      }
+      if (!resultDates.isEmpty()) {
+        Date lastResult = Collections.max(resultDates);
+        tableContent.getContainerProperty(itemId, "dataAnalyzedDate").setValue(lastResult);
+      }
+    }
+  }
+
+
+  public void writeFurtherInfo(Object itemId, String projectIdentifier) {
+          String species = null;
+          int sample_counter = 0;
+    if (tableContent.getContainerProperty(itemId, "description")
+        .getValue() == null) {
+      String description = openBisClient.getProjectByIdentifier(projectIdentifier).getDescription();
+      tableContent.getContainerProperty(itemId, "description").setValue(description);
+    }
+    if (tableContent.getContainerProperty(itemId, "samples")
+        .getValue() == null || (tableContent.getContainerProperty(itemId, "species")
+        .getValue() == null)) {
+      for (Sample sample : openBisClient.getSamplesOfProject(projectIdentifier)) {
+        if (sample.getSampleTypeCode().equals("Q_BIOLOGICAL_ENTITY")) {
+          species = sample.getProperties().get("Q_NCBI_ORGANISM");
+        }
+        if (!sample.getSampleTypeCode().equals("Q_BIOLOGICAL_ENTITY") &&
+            !sample.getSampleTypeCode().equals("Q_BIOLOGICAL_SAMPLE") &&
+            !sample.getSampleTypeCode().equals("Q_TEST_SAMPLE") &&
+            !sample.getSampleTypeCode().equals("Q_ATTACHMENT_SAMPLE")) {
+          sample_counter = sample_counter + 1;
+        }
+      }
+      species = taxMapInversed.get(species);
+      tableContent.getContainerProperty(itemId, "species").setValue(species);
+      tableContent.getContainerProperty(itemId, "samples").setValue(sample_counter);
+    }
+  }
+
+
+
+  private void writeRawDate(Object itemId, String projectIdentifier) {
+    if (tableContent.getContainerProperty(itemId, "rawDataRegistered")
+        .getValue() == null) {
+      try {
+        List<DataSet> dataSets = openBisClient
+            .getDataSetsOfProjectByIdentifier(projectIdentifier);
+        List<Date> rawDates = new ArrayList<>();
+        for (DataSet ds : dataSets) {
+          if (!ds.getDataSetTypeCode().contains("RESULT") ||
+              !ds.getDataSetTypeCode().contains("result")) {
+            rawDates.add(ds.getRegistrationDate());
+          }
+          HashMap<String, String> properties = ds.getProperties();
+          String attachment_type = properties.get("Q_ATTACHMENT_TYPE");
+          if (attachment_type != null) {
+            if (!attachment_type.equals("RESULT")) {
+              rawDates.add(ds.getRegistrationDate());
+            }
+          }
+        }
+        if (!rawDates.isEmpty()) {
+          Date lastResult = Collections.max(rawDates);
+          tableContent.getContainerProperty(itemId, "rawDataRegistered").setValue(lastResult);
+        }
+      } catch (IndexOutOfBoundsException ex) {
+        tableContent.getContainerProperty(itemId, "rawDataRegistered").setValue(null);
+      }
+    }
+  }
+
+  private void writeProjectPI(Object itemId, String projectID) {
+    if (tableContent.getContainerProperty(itemId, "investigatorName")
+        .getValue() == null) {
+      tableContent.getContainerProperty(itemId, "investigatorName").setValue(userManagementDB.getProjectPI(projectID));
+    }
   }
 
   private LinkedHashMap<String, Integer> writeNumberProjectsPerTimeIntervalFromStart() {
@@ -223,10 +259,9 @@ public class ProjectContentModel {
       List<Date> dateList = new ArrayList<>();
 
       for (Object itemId : itemIds) {
-        String registeredDateCol = TableColumns.PROJECTOVERVIEWTABLE.get(ColumnTypes.RAWDATAREGISTERED);
+        String registeredDateCol = TableColumns.PROJECTOVERVIEWTABLE
+            .get(ColumnTypes.RAWDATAREGISTERED);
         Property rawReg = tableContent.getContainerProperty(itemId, registeredDateCol);
-
-
 
         try {
           Date registration = dateFormat.parse(rawReg.getValue().toString());

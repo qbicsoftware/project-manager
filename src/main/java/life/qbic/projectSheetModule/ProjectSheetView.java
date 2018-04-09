@@ -11,9 +11,4 @@ public interface ProjectSheetView {
 
   void setDefaultContent();
 
-  void setProjectCode(String id);
-
-  void showProjectLayout();
-
-
 }

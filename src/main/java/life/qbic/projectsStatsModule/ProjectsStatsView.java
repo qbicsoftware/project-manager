@@ -1,6 +1,5 @@
 package life.qbic.projectsStatsModule;
 
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 
 /**

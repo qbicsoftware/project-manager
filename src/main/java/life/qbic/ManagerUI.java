@@ -147,9 +147,10 @@ public class ManagerUI extends UI {
     final ProjectOVPresenter projectOVPresenter = new ProjectOVPresenter(model,
         projectOverviewModule, projectDatabase, openBisConnection, log);
 
-    final ProjectSheetView projectSheetView = new ProjectSheetViewImplementation("Project Sheet");
+    final ProjectSheetView projectSheetView = new ProjectSheetViewImplementation();
 
-    final ProjectSheetPresenter projectSheetPresenter = new ProjectSheetPresenter(projectSheetView, openBisClient,
+    final ProjectSheetPresenter projectSheetPresenter = new ProjectSheetPresenter(projectSheetView,
+        openBisClient,
         log);
 
     final OverviewChartView overviewChartView = new OverviewChartView();
@@ -207,7 +208,6 @@ public class ManagerUI extends UI {
       projectOVPresenter.getSelectedProject().setValue(null);
       projectOVPresenter.clearSelection();
       projectSheetView.setDefaultContent();
-      projectSheetView.setProjectCode("");
     });
     sliderPanel.setResponsive(true);
     Responsive.makeResponsive(sliderPanel);
@@ -216,9 +216,12 @@ public class ManagerUI extends UI {
     sliderFrame.setResponsive(true);
     Responsive.makeResponsive(sliderFrame);
     statisticsPanel.addComponent(overviewChartView);
+    statisticsPanel.setMargin(true);
+    statisticsPanel.setSpacing(true);
     statisticsPanel.addComponent(projectsStatsView.getProjectStats());
     statisticsPanel.addComponent(projectSheetView.getProjectSheet());
-    statisticsPanel.setStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
+    statisticsPanel.setStyleName(ValoTheme.LAYOUT_CARD);
+    statisticsPanel.setSizeFull();
 
     Responsive.makeResponsive(statisticsPanel);
 
@@ -227,6 +230,10 @@ public class ManagerUI extends UI {
 
     mainContent.addComponent(statisticsPanel);
     mainContent.addComponent(projectDescriptionLayout);
+    mainContent.setSpacing(true);
+    mainContent.setMargin(true);
+    mainFrame.setSpacing(true);
+    mainFrame.setMargin(true);
     mainFrame.addComponent(sliderFrame);
     mainFrame.setComponentAlignment(sliderFrame, Alignment.MIDDLE_CENTER);
     mainFrame.addComponent(mainContent);

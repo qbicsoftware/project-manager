@@ -4,6 +4,7 @@ package life.qbic.projectSheetModule;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Created by sven1103 on 9/01/17.
@@ -12,23 +13,17 @@ public class ProjectSheetViewImplementation implements ProjectSheetView {
 
   private VerticalLayout projectSheet;
 
-  private String projectCode;
 
-  private Label projectLabel;
-
-  public ProjectSheetViewImplementation(String projectCode) {
-    this.projectCode = projectCode;
+  public ProjectSheetViewImplementation() {
     this.projectSheet = new VerticalLayout();
     projectSheet.setIcon(FontAwesome.INFO_CIRCLE);
-    this.projectLabel = new Label();
-    projectSheet.setSizeUndefined();
+    projectSheet.setSizeFull();
     init();
   }
 
   private void init() {
     projectSheet.removeAllComponents();
     setDefaultContent();
-    projectCode = "";
   }
 
   @Override
@@ -39,20 +34,9 @@ public class ProjectSheetViewImplementation implements ProjectSheetView {
   @Override
   public void setDefaultContent() {
     projectSheet.removeAllComponents();
-    projectLabel = new Label("Click a project in the " +
+    projectSheet.setCaption("Click a project in the " +
         "table to get detailed content here!");
-    projectSheet.addComponent(projectLabel);
+    projectSheet.setVisible(false);
   }
-
-  @Override
-  public void setProjectCode(String id) {
-    this.projectCode = id;
-  }
-
-  @Override
-  public void showProjectLayout() {
-    projectLabel.setCaption(projectCode);
-  }
-
 
 }

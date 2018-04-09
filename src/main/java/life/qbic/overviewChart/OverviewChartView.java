@@ -32,7 +32,7 @@ public class OverviewChartView extends Chart {
     conf.setPlotOptions(plotOptions);
     conf.setTitle("Project Manager");
     conf.setSubTitle("Project Status");
-    conf.getChart().setBackgroundColor(new SolidColor("#fafafa"));
+    conf.getChart().setBackgroundColor(new SolidColor("#ffffff"));
 
     series.setName("projects");
     conf.setSeries(series);

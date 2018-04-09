@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import life.qbic.openbis.OpenBisConnection;
 import life.qbic.beans.ProjectBean;
 import life.qbic.database.projectInvestigatorDB.WrongArgumentSettingsException;
+import life.qbic.openbis.OpenBisConnection;
 import org.vaadin.teemu.switchui.Switch;
 
 /**
