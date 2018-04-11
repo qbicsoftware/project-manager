@@ -1,12 +1,12 @@
 package life.qbic;
 
 import com.vaadin.data.Property;
-import life.qbic.database.projectInvestigatorDB.ProjectFilter;
-import life.qbic.overviewChart.OverviewChartPresenter;
-import life.qbic.projectFollowerModule.ProjectFollowerPresenter;
-import life.qbic.projectOverviewModule.ProjectOVPresenter;
-import life.qbic.projectSheetModule.ProjectSheetPresenter;
-import life.qbic.projectsStatsModule.ProjectsStatsPresenter;
+import life.qbic.connection.database.projectInvestigatorDB.ProjectFilter;
+import life.qbic.module.overviewChartModule.OverviewChartPresenter;
+import life.qbic.module.projectFollowerModule.ProjectFollowerPresenter;
+import life.qbic.module.projectOverviewModule.ProjectOVPresenter;
+import life.qbic.module.projectSheetModule.ProjectSheetPresenter;
+import life.qbic.module.projectsStatsModule.ProjectsStatsPresenter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

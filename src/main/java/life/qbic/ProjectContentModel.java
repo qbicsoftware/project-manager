@@ -6,6 +6,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,11 +17,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import life.qbic.database.projectInvestigatorDB.ColumnTypes;
-import life.qbic.database.projectInvestigatorDB.ProjectDatabaseConnector;
-import life.qbic.database.projectInvestigatorDB.TableColumns;
-import life.qbic.database.projectInvestigatorDB.WrongArgumentSettingsException;
-import life.qbic.database.userManagementDB.UserManagementDB;
+import life.qbic.connection.database.projectInvestigatorDB.ColumnTypes;
+import life.qbic.connection.database.projectInvestigatorDB.ProjectDatabaseConnector;
+import life.qbic.connection.database.projectInvestigatorDB.TableColumns;
+import life.qbic.connection.database.projectInvestigatorDB.WrongArgumentSettingsException;
+import life.qbic.connection.database.userManagementDB.UserManagementDB;
 import life.qbic.openbis.openbisclient.OpenBisClient;
 import org.apache.commons.logging.Log;
 
@@ -40,6 +41,7 @@ public class ProjectContentModel {
   private OpenBisClient openBisClient;
   private UserManagementDB userManagementDB;
   private Map<String, String> taxMapInversed = new HashMap<>();
+  private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
   {
     queryArguments.put("table", "projectsoverview");
@@ -87,6 +89,7 @@ public class ProjectContentModel {
     try {
       if (getFollowingProjects().size() > 0) {
         writeInfos();
+        writeProjectStatus();
       }
     } catch (Exception exp) {
       exp.printStackTrace();
@@ -232,8 +235,37 @@ public class ProjectContentModel {
         }
       } catch (IndexOutOfBoundsException ex) {
         tableContent.getContainerProperty(itemId, "rawDataRegistered").setValue(null);
+
       }
     }
+  }
+
+  public void writeProjectStatus() {
+    if (getFollowingProjects().size() > 0) {
+      Collection<?> itemIds = tableContent.getItemIds();
+      for (Object itemId : itemIds) {
+        if (tableContent.getContainerProperty(itemId, "rawDataRegistered").getValue() == null) {
+          tableContent.getContainerProperty(itemId, "projectTime").setValue("unregistered");
+        } else {
+          try {
+            Date currentDate = new Date();
+            Date registration = dateFormat.parse(
+                tableContent.getContainerProperty(itemId, "rawDataRegistered").getValue()
+                    .toString());
+            long daysPassed = TimeUnit.DAYS
+                .convert(currentDate.getTime() - registration.getTime(), TimeUnit.MILLISECONDS);
+            if (daysPassed / 7 < 6) {
+              tableContent.getContainerProperty(itemId, "projectTime").setValue("in time");
+            } else {
+              tableContent.getContainerProperty(itemId, "projectTime").setValue("overdue");
+            }
+          } catch (ParseException e) {
+            e.printStackTrace();
+          }
+        }
+      }
+    }
+
   }
 
   private void writeProjectPI(Object itemId, String projectID) {
@@ -253,8 +285,6 @@ public class ProjectContentModel {
 
     if (getFollowingProjects().size() > 0) {
       Collection<?> itemIds = tableContent.getItemIds();
-
-      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
       List<Date> dateList = new ArrayList<>();
 

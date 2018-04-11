@@ -64,13 +64,34 @@
     font-weight: bold
   }
 
+ .v-label.overdue {
+    color: #c20047;
+    font-size: 18px;
+    font-weight: bold
+  }
+
+.v-label.unregistered {
+    color: #ff9933;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+.v-label.intime {
+    color: #26A65B;
+    font-weight: bold;
+    font-size: 18px;
+  }
+
   .v-grid-row.overdue {
     color: #c20047;
-    font-weight: bold
   }
 
   .v-grid-row.unregistered {
     color: #ff9933;
+  }
+
+  .v-grid-row.intime {
+    color: #26A65B;
   }
 
   .v-error-indicator-color {

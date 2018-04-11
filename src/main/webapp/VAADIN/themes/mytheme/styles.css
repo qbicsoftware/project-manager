@@ -13022,13 +13022,34 @@ div.v-layout.v-horizontal.v-widget {
 	font-weight: bold;
 }
 
+.mytheme .v-label.overdue {
+	color: #c20047;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.mytheme .v-label.unregistered {
+	color: #ff9933;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.mytheme .v-label.intime {
+	color: #26A65B;
+	font-weight: bold;
+	font-size: 18px;
+}
+
 .mytheme .v-grid-row.overdue {
 	color: #c20047;
-	font-weight: bold;
 }
 
 .mytheme .v-grid-row.unregistered {
 	color: #ff9933;
+}
+
+.mytheme .v-grid-row.intime {
+	color: #26A65B;
 }
 
 .mytheme .v-error-indicator-color {
