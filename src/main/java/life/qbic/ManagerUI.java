@@ -145,18 +145,19 @@ public class ManagerUI extends UI {
 
     final ProjectOverviewModule projectOverviewModule = new ProjectOverviewModule();
 
+
+    final OverviewChartView overviewChartView = new OverviewChartView();
+    final OverviewChartPresenter overviewChartPresenter = new OverviewChartPresenter(model,
+        overviewChartView);
+
     final ProjectOVPresenter projectOVPresenter = new ProjectOVPresenter(model,
-        projectOverviewModule, projectDatabase, openBisConnection, log);
+        projectOverviewModule, overviewChartPresenter, openBisConnection, projectDatabase, log);
 
     final ProjectSheetView projectSheetView = new ProjectSheetViewImplementation();
 
     final ProjectSheetPresenter projectSheetPresenter = new ProjectSheetPresenter(projectSheetView,
         openBisClient,
         log);
-
-    final OverviewChartView overviewChartView = new OverviewChartView();
-    final OverviewChartPresenter overviewChartPresenter = new OverviewChartPresenter(model,
-        overviewChartView);
 
     final ProjectsStatsView projectsStatsView = new ProjectsStatsViewImpl();
     //Init project stats
@@ -187,7 +188,7 @@ public class ManagerUI extends UI {
         log.info("Unfollow: " + id);
         Utils.notification("Unfollow successful", "You unfollowed project " + id, "success");
         projectOverviewModule.getOverviewGrid().deselectAll();
-        projectSheetView.setDefaultContent();
+        projectSheetView.reset();
       } catch (SQLException | WrongArgumentSettingsException | NullPointerException e) {
         log.error("Unfollowing project failed");
         Utils.notification("Unfollowing project failed", "Please try again later.", "error");
@@ -207,8 +208,9 @@ public class ManagerUI extends UI {
         sliderPanel.collapse();
       }
       projectOVPresenter.getSelectedProject().setValue(null);
+      projectSheetPresenter.init();
       projectOVPresenter.clearSelection();
-      projectSheetView.setDefaultContent();
+      projectSheetView.reset();
     });
     sliderPanel.setResponsive(true);
     Responsive.makeResponsive(sliderPanel);

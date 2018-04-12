@@ -50,6 +50,22 @@
     text-align: center;
   }
 
+  .red {
+    color: #c20047;
+    font-size: 25px;
+  }
+
+  .orange {
+    color: #ff9a00;
+    font-size: 25px;
+    text-align: center;
+  }
+
+  .green {
+    color: #26A65B;
+    font-size: 25px;
+  }
+
   .center {
     text-align: center;
     margin-right: auto;
@@ -64,34 +80,19 @@
     font-weight: bold
   }
 
- .v-label.overdue {
-    color: #c20047;
-    font-size: 18px;
-    font-weight: bold
-  }
-
-.v-label.unregistered {
-    color: #ff9933;
-    font-size: 18px;
-    font-weight: bold;
-  }
-
-.v-label.intime {
-    color: #26A65B;
-    font-weight: bold;
-    font-size: 18px;
-  }
-
   .v-grid-row.overdue {
     color: #c20047;
+    font-weight: bold
   }
 
   .v-grid-row.unregistered {
     color: #ff9933;
+    font-weight: bold
   }
 
   .v-grid-row.intime {
     color: #26A65B;
+    font-weight: bold
   }
 
   .v-error-indicator-color {

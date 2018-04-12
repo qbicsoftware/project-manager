@@ -118,7 +118,6 @@ public class UserManagementDB {
     String query = "SELECT email " +
         "FROM " + "qbic_usermanagement_db" + ".persons" +
         " WHERE " + "id" + "=" + personID;
-    System.out.println(query);
     try {
       stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery(query);
@@ -141,7 +140,6 @@ public class UserManagementDB {
 
   public String getProjectPI(String projectCode) {
     String pi = getPI(getPIID(getProjectID(projectCode)));
-    System.out.println(pi);
     return pi;
   }
 

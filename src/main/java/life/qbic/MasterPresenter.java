@@ -61,13 +61,12 @@ public class MasterPresenter {
 
     //projectOverviewPresenter.getStatusKeyFigures().forEach(pieChartStatusModule::update);
 
-    projectOverviewPresenter.getSelectedProject().addValueChangeListener(event ->
+    projectOverviewPresenter.getSelectedProject().addValueChangeListener(event -> {
+        projectSheetPresenter.init();
         projectSheetPresenter
-            .showInfoForProject(projectOverviewPresenter.getSelectedProjectItem()));
+            .showInfoForProject(projectOverviewPresenter.getSelectedProjectItem());
+  });
 
-    //pieChartStatusModule.addPointClickListener(event -> {
-    //            projectOverviewPresenter.setFilter("projectStatus", pieChartStatusModule.getDataSeriesObject(event));
-    //        });
 
     projectOverviewPresenter.getIsChangedFlag().addValueChangeListener(this::refreshModuleViews);
 

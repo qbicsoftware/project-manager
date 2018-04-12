@@ -9,6 +9,6 @@ public interface ProjectSheetView {
 
   VerticalLayout getProjectSheet();
 
-  void setDefaultContent();
+  void reset();
 
 }

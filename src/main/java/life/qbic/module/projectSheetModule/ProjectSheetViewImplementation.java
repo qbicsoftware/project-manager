@@ -2,6 +2,7 @@ package life.qbic.module.projectSheetModule;
 
 
 import com.vaadin.server.FontAwesome;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -17,13 +18,12 @@ public class ProjectSheetViewImplementation implements ProjectSheetView {
   public ProjectSheetViewImplementation() {
     this.projectSheet = new VerticalLayout();
     projectSheet.setIcon(FontAwesome.INFO_CIRCLE);
-    projectSheet.setSizeFull();
+    projectSheet.setWidth("400px");
     init();
   }
 
   private void init() {
-    projectSheet.removeAllComponents();
-    setDefaultContent();
+    reset();
   }
 
   @Override
@@ -32,11 +32,10 @@ public class ProjectSheetViewImplementation implements ProjectSheetView {
   }
 
   @Override
-  public void setDefaultContent() {
+  public void reset() {
     projectSheet.removeAllComponents();
-    projectSheet.setCaption("Click a project in the " +
-        "table to get detailed content here!");
-    projectSheet.setVisible(false);
+    projectSheet.setCaption("Project Details: Click on a project in the table.");
   }
+
 
 }

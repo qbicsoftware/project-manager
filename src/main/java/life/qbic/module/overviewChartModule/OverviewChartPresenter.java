@@ -23,4 +23,8 @@ public class OverviewChartPresenter {
     }
     view.drawChart();
   }
+
+  public OverviewChartView getChart() {
+    return view;
+  }
 }

@@ -1,5 +1,6 @@
 package life.qbic.module.projectOverviewModule;
 
+import com.vaadin.addon.charts.PointClickListener;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -17,6 +18,9 @@ import com.vaadin.ui.Grid.CellReference;
 import com.vaadin.ui.Grid.CellStyleGenerator;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.renderers.ButtonRenderer;
+import com.vaadin.ui.renderers.ClickableRenderer;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -36,6 +40,7 @@ import life.qbic.connection.database.projectInvestigatorDB.ProjectDatabaseConnec
 import life.qbic.connection.database.projectInvestigatorDB.TableColumns;
 import life.qbic.connection.database.projectInvestigatorDB.WrongArgumentSettingsException;
 import life.qbic.connection.openbis.OpenBisConnection;
+import life.qbic.module.overviewChartModule.OverviewChartPresenter;
 import org.apache.commons.logging.Log;
 import org.vaadin.gridutil.cell.GridCellFilter;
 
@@ -61,9 +66,10 @@ public class ProjectOVPresenter {
 
   private final ProjectDatabaseConnector connection;
 
-  private final OpenBisConnection openBisConnection;
-
   private final Button unfollowButton = new Button("Unfollow");
+
+  private OverviewChartPresenter overviewChartPresenter;
+  private OpenBisConnection openbis;
 
   private final String portalURL = "https://portal.qbic.uni-tuebingen.de/portal/web/qbic/qnavigator#!project/";
   private final ColumnFieldTypes columnFieldTypes;
@@ -71,14 +77,16 @@ public class ProjectOVPresenter {
 
   public ProjectOVPresenter(ProjectContentModel model,
       ProjectOverviewModule overViewModule,
+      OverviewChartPresenter overviewChartPresenter,
+      OpenBisConnection openbis,
       ProjectDatabaseConnector connection,
-      OpenBisConnection openBisConnection,
       Log log) {
     this.contentModel = model;
+    this.overviewChartPresenter = overviewChartPresenter;
+    this.openbis = openbis;
     this.log = log;
     this.overViewModule = overViewModule;
     this.connection = connection;
-    this.openBisConnection = openBisConnection;
     columnFieldTypes = new ColumnFieldTypes();
 
     unfollowButton.setIcon(FontAwesome.MINUS_CIRCLE);
@@ -134,6 +142,9 @@ public class ProjectOVPresenter {
     });
 
     renderTable();
+    overviewChartPresenter.getChart().addPointClickListener((PointClickListener) event -> {
+      setFilter("projectTime", overviewChartPresenter.getChart().getDataSeriesObject(event));
+    });
 
   }
 
@@ -150,12 +161,14 @@ public class ProjectOVPresenter {
     overViewModule.getOverviewGrid().addColumn("investigatorName")
         .setHeaderCaption("Principal Investigator");
     overViewModule.getOverviewGrid().addColumn("species");
+    overViewModule.getOverviewGrid().addColumn("samples").setEditable(false);
     overViewModule.getOverviewGrid().addColumn("projectRegisteredDate")
         .setHeaderCaption("Project Registered");
     overViewModule.getOverviewGrid().addColumn("rawDataRegistered")
         .setHeaderCaption("Raw Data Registered");
     overViewModule.getOverviewGrid().addColumn("dataAnalyzedDate")
         .setHeaderCaption("Data Analyzed");
+
     overViewModule.getOverviewGrid().getColumn("projectID").setEditable(false);
     overViewModule.getOverviewGrid().getColumn("investigatorName").setEditable(false);
     overViewModule.getOverviewGrid().getColumn("species").setEditable(false);
@@ -176,8 +189,9 @@ public class ProjectOVPresenter {
       }
       else if (rowRef.getItem().getItemProperty("projectTime").getValue().equals("unregistered")) {
         return "unregistered";
-      }
+      } else {
         return null;
+      }
     });
 
     columnFieldTypes.clearFromParents();    // Clear from parent nodes (when reloading page)
@@ -196,7 +210,7 @@ public class ProjectOVPresenter {
       @Override
       public String convertToPresentation(String project, Class<? extends String> aClass,
           Locale locale) throws ConversionException {
-        String space = openBisConnection.getSpaceOfProject(project);
+        String space = openbis.getSpaceOfProject(project);
         return String
             .format("<a href='%s/%s/%s' target='_blank'>%s</a>", portalURL,
                 space, project, project);
@@ -256,6 +270,7 @@ public class ProjectOVPresenter {
     filter.setTextFilter("offerID", true, false);
     filter.setTextFilter("investigatorName", true, false);
     filter.setTextFilter("species", true, false);
+    filter.setNumberFilter("samples");
     filter.setTextFilter("invoice", true, false);
 
   }
@@ -269,7 +284,7 @@ public class ProjectOVPresenter {
   private void initExtraHeaderRow(final Grid grid, final GridCellFilter filter) {
     Grid.HeaderRow firstHeaderRow = grid.prependHeaderRow();
     // "projectStatus removed (#25)
-    firstHeaderRow.join("projectID", "projectTime", "investigatorName", "species", "projectRegisteredDate",
+    firstHeaderRow.join("projectID", "projectTime", "investigatorName", "species", "samples", "projectRegisteredDate",
         "rawDataRegistered", "dataAnalyzedDate", "offerID", "invoice");
     HorizontalLayout buttonLayout = new HorizontalLayout();
     buttonLayout.setSpacing(true);
