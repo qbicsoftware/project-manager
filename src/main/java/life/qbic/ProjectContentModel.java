@@ -149,8 +149,6 @@ public class ProjectContentModel {
   }
 
   private void writeDataAnalyzedDate(Object itemId, String projectIdentifier) {
-    if (tableContent.getContainerProperty(itemId, "dataAnalyzedDate")
-        .getValue() == null) {
       List<DataSet> dataSets = openBisClient
           .getDataSetsOfProjectByIdentifier(projectIdentifier);
       List<Date> resultDates = new ArrayList<>();
@@ -168,10 +166,9 @@ public class ProjectContentModel {
         }
       }
       if (!resultDates.isEmpty()) {
-        Date lastResult = Collections.max(resultDates);
+        Date lastResult = Collections.min(resultDates);
         tableContent.getContainerProperty(itemId, "dataAnalyzedDate").setValue(lastResult);
       }
-    }
   }
 
 
@@ -205,8 +202,6 @@ public class ProjectContentModel {
 
 
   private void writeRawDate(Object itemId, String projectIdentifier) {
-    if (tableContent.getContainerProperty(itemId, "rawDataRegistered")
-        .getValue() == null) {
       try {
         List<DataSet> dataSets = openBisClient
             .getDataSetsOfProjectByIdentifier(projectIdentifier);
@@ -225,14 +220,13 @@ public class ProjectContentModel {
           }
         }
         if (!rawDates.isEmpty()) {
-          Date lastResult = Collections.max(rawDates);
+          Date lastResult = Collections.min(rawDates);
           tableContent.getContainerProperty(itemId, "rawDataRegistered").setValue(lastResult);
         }
       } catch (IndexOutOfBoundsException ex) {
         tableContent.getContainerProperty(itemId, "rawDataRegistered").setValue(null);
 
       }
-    }
   }
 
   public void writeProjectStatus() {
