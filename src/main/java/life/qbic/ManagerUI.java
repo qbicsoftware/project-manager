@@ -24,12 +24,8 @@ import life.qbic.connection.database.projectInvestigatorDB.WrongArgumentSettings
 import life.qbic.connection.database.userManagementDB.UserManagementDB;
 import life.qbic.connection.openbis.OpenBisConnection;
 import life.qbic.helper.Utils;
-import life.qbic.openbis.openbisclient.OpenBisClient;
 import life.qbic.module.overviewChartModule.OverviewChartPresenter;
 import life.qbic.module.overviewChartModule.OverviewChartView;
-import life.qbic.portal.liferayandvaadinhelpers.main.ConfigurationManager;
-import life.qbic.portal.liferayandvaadinhelpers.main.ConfigurationManagerFactory;
-import life.qbic.portal.liferayandvaadinhelpers.main.LiferayAndVaadinUtils;
 import life.qbic.module.projectFollowerModule.ProjectFollowerModel;
 import life.qbic.module.projectFollowerModule.ProjectFollowerPresenter;
 import life.qbic.module.projectFollowerModule.ProjectFollowerView;
@@ -43,6 +39,10 @@ import life.qbic.module.projectsStatsModule.ProjectsStatsModel;
 import life.qbic.module.projectsStatsModule.ProjectsStatsPresenter;
 import life.qbic.module.projectsStatsModule.ProjectsStatsView;
 import life.qbic.module.projectsStatsModule.ProjectsStatsViewImpl;
+import life.qbic.openbis.openbisclient.OpenBisClient;
+import life.qbic.portal.liferayandvaadinhelpers.main.ConfigurationManager;
+import life.qbic.portal.liferayandvaadinhelpers.main.ConfigurationManagerFactory;
+import life.qbic.portal.liferayandvaadinhelpers.main.LiferayAndVaadinUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.vaadin.sliderpanel.SliderPanel;
@@ -144,7 +144,6 @@ public class ManagerUI extends UI {
         followerModel.getAllFollowingProjects(), log, openBisClient);
 
     final ProjectOverviewModule projectOverviewModule = new ProjectOverviewModule();
-
 
     final OverviewChartView overviewChartView = new OverviewChartView();
     final OverviewChartPresenter overviewChartPresenter = new OverviewChartPresenter(model,

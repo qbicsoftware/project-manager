@@ -2,7 +2,6 @@ package life.qbic;
 
 import ch.systemsx.cisd.openbis.dss.client.api.v1.DataSet;
 import ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.Sample;
-import com.vaadin.data.Property;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -284,11 +283,14 @@ public class ProjectContentModel {
     inTimeProjects = 0;
     overdueProjects = 0;
     for (Object itemId : tableContent.getItemIds()) {
-      if (tableContent.getContainerProperty(itemId, "projectTime").getValue().equals("unregistered")) {
+      if (tableContent.getContainerProperty(itemId, "projectTime").getValue()
+          .equals("unregistered")) {
         unregisteredProjects = unregisteredProjects + 1;
-      } else if (tableContent.getContainerProperty(itemId, "projectTime").getValue().equals("in time")) {
+      } else if (tableContent.getContainerProperty(itemId, "projectTime").getValue()
+          .equals("in time")) {
         inTimeProjects = inTimeProjects + 1;
-      } else if (tableContent.getContainerProperty(itemId, "projectTime").getValue().equals("overdue")) {
+      } else if (tableContent.getContainerProperty(itemId, "projectTime").getValue()
+          .equals("overdue")) {
         overdueProjects = overdueProjects + 1;
       }
     }
