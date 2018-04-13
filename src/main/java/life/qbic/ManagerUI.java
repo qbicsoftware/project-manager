@@ -208,7 +208,7 @@ public class ManagerUI extends UI {
     UI.getCurrent().addClickListener((MouseEvents.ClickListener) event -> {
       if (sliderPanel.isExpanded()) {
         sliderPanel.collapse();
-      }ä
+      }
       projectOVPresenter.getSelectedProject().setValue(null);
       projectSheetPresenter.init();
       projectOVPresenter.clearSelection();
