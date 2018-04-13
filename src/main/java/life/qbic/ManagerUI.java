@@ -5,9 +5,11 @@ import com.vaadin.annotations.Widgetset;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -224,11 +226,11 @@ public class ManagerUI extends UI {
     statisticsPanel.addComponent(projectsStatsView.getProjectStats());
     statisticsPanel.addComponent(projectSheetView.getProjectSheet());
     statisticsPanel.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
+    statisticsPanel.setSizeFull();
 
     Responsive.makeResponsive(statisticsPanel);
 
     projectsStatsPresenter.update();
-    //pieChartStatusModule.setSizeUndefined();
 
     mainContent.addComponent(statisticsPanel);
     mainContent.addComponent(projectDescriptionLayout);

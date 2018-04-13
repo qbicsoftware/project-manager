@@ -2,10 +2,7 @@ package life.qbic.module.projectSheetModule;
 
 
 import com.vaadin.server.FontAwesome;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Created by sven1103 on 9/01/17.

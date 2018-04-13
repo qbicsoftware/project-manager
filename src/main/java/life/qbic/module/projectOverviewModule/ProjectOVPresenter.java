@@ -14,13 +14,8 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.Grid.CellReference;
-import com.vaadin.ui.Grid.CellStyleGenerator;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.renderers.ButtonRenderer;
-import com.vaadin.ui.renderers.ClickableRenderer;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -67,12 +62,10 @@ public class ProjectOVPresenter {
   private final ProjectDatabaseConnector connection;
 
   private final Button unfollowButton = new Button("Unfollow");
-
-  private OverviewChartPresenter overviewChartPresenter;
-  private OpenBisConnection openbis;
-
   private final String portalURL = "https://portal.qbic.uni-tuebingen.de/portal/web/qbic/qnavigator#!project/";
   private final ColumnFieldTypes columnFieldTypes;
+  private OverviewChartPresenter overviewChartPresenter;
+  private OpenBisConnection openbis;
   private Item selectedProjectItem = null;
 
   public ProjectOVPresenter(ProjectContentModel model,
@@ -97,7 +90,7 @@ public class ProjectOVPresenter {
   /**
    * Call and validate database connection of the business logic.
    */
-  public void init() throws Exception {
+  public void init() {
     if (contentModel == null) {
       log.error("The model was not instantiated yet!");
       return;
@@ -175,20 +168,36 @@ public class ProjectOVPresenter {
     overViewModule.getOverviewGrid().getColumn("projectRegisteredDate").setEditable(false);
     overViewModule.getOverviewGrid().getColumn("rawDataRegistered").setEditable(false);
     overViewModule.getOverviewGrid().getColumn("dataAnalyzedDate").setEditable(false);
+    overViewModule.getOverviewGrid().getColumn("projectTime").setEditable(false);
     overViewModule.getOverviewGrid().addColumn("offerID").setHeaderCaption("Offer");
     overViewModule.getOverviewGrid().addColumn("invoice").setHeaderCaption("Invoice");
     overViewModule.getOverviewGrid().getColumn("offerID").setEditable(true);
     overViewModule.getOverviewGrid().getColumn("invoice").setEditable(true);
 
-    overViewModule.getOverviewGrid().setRowStyleGenerator(rowRef -> {// Java 8
-      if (rowRef.getItem().getItemProperty("projectTime").getValue().equals("overdue")) {
-        return "overdue";
-      }
-      else if (rowRef.getItem().getItemProperty("projectTime").getValue().equals("in time")) {
-        return "intime";
-      }
-      else if (rowRef.getItem().getItemProperty("projectTime").getValue().equals("unregistered")) {
-        return "unregistered";
+//    overViewModule.getOverviewGrid().setRowStyleGenerator(rowRef -> {// Java 8
+//      if (rowRef.getItem().getItemProperty("projectTime").getValue().equals("projectTime")) {
+//        return "overdue";
+//      }
+//      else if (rowRef.getItem().getItemProperty("projectTime").getValue().equals("in time")) {
+//        return "intime";
+//      }
+//      else if (rowRef.getItem().getItemProperty("projectTime").getValue().equals("unregistered")) {
+//        return "unregistered";
+//      } else {
+//        return null;
+//      }
+//    });
+
+    overViewModule.getOverviewGrid().setCellStyleGenerator(cellRef -> {// Java 8
+      if (cellRef.getPropertyId().equals("projectTime") && cellRef.getItem()
+          .getItemProperty("projectTime").getValue().toString().equals("overdue")) {
+        return "ov";
+      } else if (cellRef.getPropertyId().equals("projectTime") && cellRef.getItem()
+          .getItemProperty("projectTime").getValue().toString().equals("unregistered")) {
+        return "un";
+      } else if (cellRef.getPropertyId().equals("projectTime") && cellRef.getItem()
+          .getItemProperty("projectTime").getValue().toString().equals("in time")) {
+        return "in";
       } else {
         return null;
       }
@@ -230,7 +239,6 @@ public class ProjectOVPresenter {
     final GridCellFilter filter = new GridCellFilter(overViewModule.getOverviewGrid());
     configureFilter(filter);
 
-
     overViewModule.getOverviewGrid().getColumn("rawDataRegistered").
         setRenderer(new DateRenderer(new SimpleDateFormat("yyyy-MM-dd")));
     overViewModule.getOverviewGrid().getColumn("projectRegisteredDate").
@@ -243,14 +251,14 @@ public class ProjectOVPresenter {
           column.getHeaderCaption().equals("Offer") ||
           column.getHeaderCaption().equals("Invoice")) {
         column.setWidth(230);
-      } else if (column.getHeaderCaption().equals("Project")) {
+      } else if (column.getHeaderCaption().equals("Project") || column.getHeaderCaption()
+          .equals("Samples")) {
         column.setWidth(110);
-      }
-      else {
+      } else {
         column.setWidth(180);
       }
     }
-    overViewModule.getOverviewGrid().setFrozenColumnCount(1);
+    overViewModule.getOverviewGrid().setFrozenColumnCount(2);
   }
 
   /**
@@ -284,7 +292,8 @@ public class ProjectOVPresenter {
   private void initExtraHeaderRow(final Grid grid, final GridCellFilter filter) {
     Grid.HeaderRow firstHeaderRow = grid.prependHeaderRow();
     // "projectStatus removed (#25)
-    firstHeaderRow.join("projectID", "projectTime", "investigatorName", "species", "samples", "projectRegisteredDate",
+    firstHeaderRow.join("projectID", "projectTime", "investigatorName", "species", "samples",
+        "projectRegisteredDate",
         "rawDataRegistered", "dataAnalyzedDate", "offerID", "invoice");
     HorizontalLayout buttonLayout = new HorizontalLayout();
     buttonLayout.setSpacing(true);

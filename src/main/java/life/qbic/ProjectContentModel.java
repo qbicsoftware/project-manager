@@ -130,15 +130,15 @@ public class ProjectContentModel {
     if (getFollowingProjects().size() > 0) {
       Collection<?> itemIds = tableContent.getItemIds();
       for (Object itemId : itemIds) {
-          String projectID = tableContent.getContainerProperty(itemId, "projectID").getValue()
-              .toString();
-         log.info("Update " + projectID);
-          String projectIdentifier = openBisClient.getProjectByCode(projectID).getIdentifier();
-          writeProjectDate(itemId, projectIdentifier);
-          writeDataAnalyzedDate(itemId, projectIdentifier);
-          writeRawDate(itemId, projectIdentifier);
-          writeProjectPI(itemId, projectID);
-          writeFurtherInfo(itemId, projectIdentifier);
+        String projectID = tableContent.getContainerProperty(itemId, "projectID").getValue()
+            .toString();
+        log.info("Update " + projectID);
+        String projectIdentifier = openBisClient.getProjectByCode(projectID).getIdentifier();
+        writeProjectDate(itemId, projectIdentifier);
+        writeDataAnalyzedDate(itemId, projectIdentifier);
+        writeRawDate(itemId, projectIdentifier);
+        writeProjectPI(itemId, projectID);
+        writeFurtherInfo(itemId, projectIdentifier);
       }
     }
   }
@@ -180,8 +180,8 @@ public class ProjectContentModel {
 
 
   public void writeFurtherInfo(Object itemId, String projectIdentifier) {
-          String species = null;
-          int sample_counter = 0;
+    String species = null;
+    int sample_counter = 0;
     if (tableContent.getContainerProperty(itemId, "description")
         .getValue() == null) {
       String description = openBisClient.getProjectByIdentifier(projectIdentifier).getDescription();
@@ -206,7 +206,6 @@ public class ProjectContentModel {
       tableContent.getContainerProperty(itemId, "samples").setValue(sample_counter);
     }
   }
-
 
 
   private void writeRawDate(Object itemId, String projectIdentifier) {
@@ -271,7 +270,8 @@ public class ProjectContentModel {
   private void writeProjectPI(Object itemId, String projectID) {
     if (tableContent.getContainerProperty(itemId, "investigatorName")
         .getValue() == null) {
-      tableContent.getContainerProperty(itemId, "investigatorName").setValue(userManagementDB.getProjectPI(projectID));
+      tableContent.getContainerProperty(itemId, "investigatorName")
+          .setValue(userManagementDB.getProjectPI(projectID));
     }
   }
 

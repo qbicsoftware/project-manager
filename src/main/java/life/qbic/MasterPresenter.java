@@ -62,11 +62,10 @@ public class MasterPresenter {
     //projectOverviewPresenter.getStatusKeyFigures().forEach(pieChartStatusModule::update);
 
     projectOverviewPresenter.getSelectedProject().addValueChangeListener(event -> {
-        projectSheetPresenter.init();
-        projectSheetPresenter
-            .showInfoForProject(projectOverviewPresenter.getSelectedProjectItem());
-  });
-
+      projectSheetPresenter.init();
+      projectSheetPresenter
+          .showInfoForProject(projectOverviewPresenter.getSelectedProjectItem());
+    });
 
     projectOverviewPresenter.getIsChangedFlag().addValueChangeListener(this::refreshModuleViews);
 

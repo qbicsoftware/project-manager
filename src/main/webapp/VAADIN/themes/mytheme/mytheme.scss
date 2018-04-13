@@ -69,7 +69,7 @@
   .center {
     text-align: center;
     margin-right: auto;
-    margin-left: auto
+    margin-left: auto;
   }
 
   .header {
@@ -77,22 +77,23 @@
     text-align: center;
     margin-left: auto;
     margin-right: auto;
-    font-weight: bold
+    font-weight: bold;
   }
 
-  .v-grid-row.overdue {
+  .v-grid-cell.ov {
     color: #c20047;
-    font-weight: bold
+    font-weight: bold;
+    font-size: 20px;
   }
 
-  .v-grid-row.unregistered {
+  .v-grid-cell.un {
     color: #ff9933;
-    font-weight: bold
+    font-size: 20px;
   }
 
-  .v-grid-row.intime {
+  .v-grid-cell.in {
     color: #26A65B;
-    font-weight: bold
+    font-size: 20px;
   }
 
   .v-error-indicator-color {

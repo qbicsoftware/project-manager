@@ -13038,19 +13038,20 @@ div.v-layout.v-horizontal.v-widget {
 	font-weight: bold;
 }
 
-.mytheme .v-grid-row.overdue {
+.mytheme .v-grid-cell.ov {
 	color: #c20047;
 	font-weight: bold;
+	font-size: 20px;
 }
 
-.mytheme .v-grid-row.unregistered {
+.mytheme .v-grid-cell.un {
 	color: #ff9933;
-	font-weight: bold;
+	font-size: 20px;
 }
 
-.mytheme .v-grid-row.intime {
+.mytheme .v-grid-cell.in {
 	color: #26A65B;
-	font-weight: bold;
+	font-size: 20px;
 }
 
 .mytheme .v-error-indicator-color {
