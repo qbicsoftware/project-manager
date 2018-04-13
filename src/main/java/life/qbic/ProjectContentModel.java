@@ -297,10 +297,6 @@ public class ProjectContentModel {
     container.put("in time", inTimeProjects);
     container.put("overdue", overdueProjects);
 
-    System.out.println(unregisteredProjects);
-    System.out.println(inTimeProjects);
-    System.out.println(overdueProjects);
-
     return container;
   }
 
