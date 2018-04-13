@@ -17,9 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import life.qbic.connection.database.projectInvestigatorDB.ColumnTypes;
 import life.qbic.connection.database.projectInvestigatorDB.ProjectDatabaseConnector;
-import life.qbic.connection.database.projectInvestigatorDB.TableColumns;
 import life.qbic.connection.database.projectInvestigatorDB.WrongArgumentSettingsException;
 import life.qbic.connection.database.userManagementDB.UserManagementDB;
 import life.qbic.openbis.openbisclient.OpenBisClient;
@@ -132,7 +130,6 @@ public class ProjectContentModel {
       for (Object itemId : itemIds) {
         String projectID = tableContent.getContainerProperty(itemId, "projectID").getValue()
             .toString();
-        log.info("Update " + projectID);
         String projectIdentifier = openBisClient.getProjectByCode(projectID).getIdentifier();
         writeProjectDate(itemId, projectIdentifier);
         writeDataAnalyzedDate(itemId, projectIdentifier);
@@ -251,9 +248,14 @@ public class ProjectContentModel {
             Date registration = dateFormat.parse(
                 tableContent.getContainerProperty(itemId, "rawDataRegistered").getValue()
                     .toString());
+            Date analyzed = dateFormat.parse(
+                tableContent.getContainerProperty(itemId, "dataAnalyzedDate").getValue()
+                    .toString());
             long daysPassed = TimeUnit.DAYS
                 .convert(currentDate.getTime() - registration.getTime(), TimeUnit.MILLISECONDS);
-            if (daysPassed / 7 < 6) {
+            long daysFromRegToAnalisis = TimeUnit.DAYS
+                .convert(analyzed.getTime() - registration.getTime(), TimeUnit.MILLISECONDS);
+            if ((daysPassed / 7 < 6) || (daysFromRegToAnalisis / 7 < 6)) {
               tableContent.getContainerProperty(itemId, "projectTime").setValue("in time");
             } else {
               tableContent.getContainerProperty(itemId, "projectTime").setValue("overdue");
@@ -278,50 +280,28 @@ public class ProjectContentModel {
   private LinkedHashMap<String, Integer> writeNumberProjectsPerTimeIntervalFromStart() {
 
     LinkedHashMap<String, Integer> container = new LinkedHashMap<>();
-
-    container.put("unregistered", 0);
-    container.put("in time", 0);
-    container.put("overdue", 0);
-
-    if (getFollowingProjects().size() > 0) {
-      Collection<?> itemIds = tableContent.getItemIds();
-
-      List<Date> dateList = new ArrayList<>();
-
-      for (Object itemId : itemIds) {
-        String registeredDateCol = TableColumns.PROJECTOVERVIEWTABLE
-            .get(ColumnTypes.RAWDATAREGISTERED);
-        Property rawReg = tableContent.getContainerProperty(itemId, registeredDateCol);
-
-        try {
-          Date registration = dateFormat.parse(rawReg.getValue().toString());
-          if (registration != null) {
-            dateList.add(registration);
-          }
-        } catch (Exception exc) {
-          //Do nothing
-        }
-
-
+    unregisteredProjects = 0;
+    inTimeProjects = 0;
+    overdueProjects = 0;
+    for (Object itemId : tableContent.getItemIds()) {
+      if (tableContent.getContainerProperty(itemId, "projectTime").getValue().equals("unregistered")) {
+        unregisteredProjects = unregisteredProjects + 1;
+      } else if (tableContent.getContainerProperty(itemId, "projectTime").getValue().equals("in time")) {
+        inTimeProjects = inTimeProjects + 1;
+      } else if (tableContent.getContainerProperty(itemId, "projectTime").getValue().equals("overdue")) {
+        overdueProjects = overdueProjects + 1;
       }
-
-      Date currentDate = new Date();
-      unregisteredProjects = followingProjects.size() - dateList.size();
-      container.put("unregistered", unregisteredProjects);
-      for (Date date : dateList) {
-        long daysPassed = TimeUnit.DAYS
-            .convert(currentDate.getTime() - date.getTime(), TimeUnit.MILLISECONDS);
-        if (daysPassed / 7 < 6) {
-          container.put("in time", container.get("in time") + 1);
-        } else {
-          container.put("overdue", container.get("overdue") + 1);
-        }
-      }
-      inTimeProjects = container.get("in time");
-      overdueProjects = container.get("overdue");
     }
-    return container;
 
+    container.put("unregistered", unregisteredProjects);
+    container.put("in time", inTimeProjects);
+    container.put("overdue", overdueProjects);
+
+    System.out.println(unregisteredProjects);
+    System.out.println(inTimeProjects);
+    System.out.println(overdueProjects);
+
+    return container;
   }
 
 
