@@ -146,6 +146,7 @@ public class ProjectOVPresenter {
     overViewModule.getOverviewGrid().removeAllColumns();
     overViewModule.getOverviewGrid().addColumn("projectID").setHeaderCaption("Project");
     overViewModule.getOverviewGrid().addColumn("projectTime").setHeaderCaption("Status");
+    overViewModule.getOverviewGrid().addColumn("projectStatus").setHeaderCaption("Progress");
     overViewModule.getOverviewGrid().addColumn("investigatorName")
         .setHeaderCaption("Principal Investigator");
     overViewModule.getOverviewGrid().addColumn("species");
@@ -157,6 +158,8 @@ public class ProjectOVPresenter {
         .setHeaderCaption("Raw Data Registered");
     overViewModule.getOverviewGrid().addColumn("dataAnalyzedDate")
         .setHeaderCaption("Data Analyzed");
+    overViewModule.getOverviewGrid().addColumn("offerID").setHeaderCaption("Offer");
+    overViewModule.getOverviewGrid().addColumn("invoice").setHeaderCaption("Invoice");
 
     overViewModule.getOverviewGrid().getColumn("projectID").setEditable(false);
     overViewModule.getOverviewGrid().getColumn("investigatorName").setEditable(false);
@@ -167,8 +170,6 @@ public class ProjectOVPresenter {
     overViewModule.getOverviewGrid().getColumn("rawDataRegistered").setEditable(false);
     overViewModule.getOverviewGrid().getColumn("dataAnalyzedDate").setEditable(false);
     overViewModule.getOverviewGrid().getColumn("projectTime").setEditable(false);
-    overViewModule.getOverviewGrid().addColumn("offerID").setHeaderCaption("Offer");
-    overViewModule.getOverviewGrid().addColumn("invoice").setHeaderCaption("Invoice");
     overViewModule.getOverviewGrid().getColumn("offerID").setEditable(true);
     overViewModule.getOverviewGrid().getColumn("invoice").setEditable(true);
 
@@ -196,12 +197,19 @@ public class ProjectOVPresenter {
       } else if (cellRef.getPropertyId().equals("projectTime") && cellRef.getItem()
           .getItemProperty("projectTime").getValue().toString().equals("in time")) {
         return "in";
+      } else if (cellRef.getPropertyId().equals("projectStatus") && cellRef.getItem()
+          .getItemProperty("projectStatus").getValue().toString().equals("completed")) {
+        return "in";
+      } else if (cellRef.getPropertyId().equals("projectStatus") && cellRef.getItem()
+          .getItemProperty("projectStatus").getValue().toString().equals("open")) {
+        return "un";
       } else {
         return null;
       }
     });
 
     columnFieldTypes.clearFromParents();    // Clear from parent nodes (when reloading page)
+    setFieldType("projectStatus", columnFieldTypes.getPROJECTSTATUS());
 
     final Grid.Column projectID = overViewModule.getOverviewGrid().
         getColumn(TableColumns.PROJECTOVERVIEWTABLE.get(ColumnTypes.PROJECTID));
@@ -269,7 +277,12 @@ public class ProjectOVPresenter {
     projectTimeStatus.add("overdue");
     projectTimeStatus.add("in time");
     projectTimeStatus.add("unregistered");
+
+    final List<String> projectStatus = new ArrayList<>();
+    projectStatus.add("open");
+    projectStatus.add("completed");
     filter.setComboBoxFilter("projectTime", projectTimeStatus);
+    filter.setComboBoxFilter("projectStatus", projectStatus);
     filter.setDateFilter("rawDataRegistered", new SimpleDateFormat("yyyy-MM-dd"), true);
     filter.setDateFilter("projectRegisteredDate", new SimpleDateFormat("yyyy-MM-dd"), true);
     filter.setDateFilter("dataAnalyzedDate", new SimpleDateFormat("yyyy-MM-dd"), true);
@@ -291,7 +304,7 @@ public class ProjectOVPresenter {
   private void initExtraHeaderRow(final Grid grid, final GridCellFilter filter) {
     Grid.HeaderRow firstHeaderRow = grid.prependHeaderRow();
     // "projectStatus removed (#25)
-    firstHeaderRow.join("projectID", "projectTime", "investigatorName", "species", "samples", "sampleTypes",
+    firstHeaderRow.join("projectID", "projectTime", "projectStatus", "investigatorName", "species", "samples", "sampleTypes",
         "projectRegisteredDate",
         "rawDataRegistered", "dataAnalyzedDate", "offerID", "invoice");
     HorizontalLayout buttonLayout = new HorizontalLayout();

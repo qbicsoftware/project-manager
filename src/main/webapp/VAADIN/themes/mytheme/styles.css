@@ -1557,6 +1557,26 @@ div.v-layout.v-horizontal.v-widget {
 	vertical-align: top;
 }
 
+.mytheme .v-grid-cell > .cr-component-cell {
+	display: flex;
+	align-items: center;
+	box-sizing: border-box;
+	height: 100%;
+	width: 100%;
+}
+
+.mytheme .v-grid-editor-cells .cr-editor-field {
+	padding-left: 18px;
+	padding-right: 18px;
+	height: 100%;
+	width: 100%;
+}
+
+.mytheme .v-grid-editor-cells .cr-editor-field .v-checkbox {
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
 .mytheme.v-app, .mytheme.v-app-loading {
 	font: 300 16px/1.55 "Open Sans", sans-serif;
 	color: #464646;
