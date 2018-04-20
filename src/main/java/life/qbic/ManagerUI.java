@@ -1,5 +1,8 @@
 package life.qbic;
 
+import ch.ethz.sis.openbis.generic.asapi.v3.IApplicationServerApi;
+import ch.ethz.sis.openbis.generic.dssapi.v3.IDataStoreServerApi;
+import ch.systemsx.cisd.common.spring.HttpInvokerUtils;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.event.MouseEvents;
@@ -8,7 +11,6 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -39,7 +41,6 @@ import life.qbic.module.projectsStatsModule.ProjectsStatsModel;
 import life.qbic.module.projectsStatsModule.ProjectsStatsPresenter;
 import life.qbic.module.projectsStatsModule.ProjectsStatsView;
 import life.qbic.module.projectsStatsModule.ProjectsStatsViewImpl;
-import life.qbic.openbis.openbisclient.OpenBisClient;
 import life.qbic.portal.liferayandvaadinhelpers.main.ConfigurationManager;
 import life.qbic.portal.liferayandvaadinhelpers.main.ConfigurationManagerFactory;
 import life.qbic.portal.liferayandvaadinhelpers.main.LiferayAndVaadinUtils;
@@ -62,7 +63,7 @@ public class ManagerUI extends UI {
    */
   private final static Log log =
       LogFactory.getLog(ManagerUI.class.getName());
-  private String userID, url, pw, mysqlUser, mysqlPW;
+  private String userID, pw, mysqlUser, mysqlPW;
 
   @Override
   protected void init(VaadinRequest vaadinRequest) {
@@ -109,13 +110,30 @@ public class ManagerUI extends UI {
     }
 
     final CssLayout projectDescriptionLayout = new CssLayout();
-    final OpenBisClient openBisClient;
+    // Reference the DSS
+
+    // Connect to openbis
+    IDataStoreServerApi dss =
+        HttpInvokerUtils.createStreamSupportingServiceStub(IDataStoreServerApi.class,
+            "https://qbis.qbic.uni-tuebingen.de:444/datastore_server"
+                + IDataStoreServerApi.SERVICE_URL, 10000);
+
+    // get a reference to AS API
+    IApplicationServerApi app = HttpInvokerUtils.createServiceStub(IApplicationServerApi.class,
+        "https://qbis.qbic.uni-tuebingen.de/openbis/openbis" + IApplicationServerApi.SERVICE_URL,
+        10000);
+
+    String sessionToken = "";
+
     if (LiferayAndVaadinUtils.isLiferayPortlet()) {
-      openBisClient = new OpenBisClient(config.getDataSourceUser(), config.getDataSourcePassword(),
-          config.getDataSourceUrl());
+      // login to obtain a session token
+      sessionToken = app.login(config.getDataSourceUser(), config.getDataSourcePassword());
     } else {
-      openBisClient = new OpenBisClient(userID, pw, url);
+      sessionToken = app.login(userID, pw);
     }
+
+    OpenBisConnection openBisConnection = new OpenBisConnection(app, dss, sessionToken);
+    openBisConnection.getSpaceOfProject("QGTSG");
 
     final ProjectFollowerModel followerModel = new ProjectFollowerModel(projectDatabase);
 
@@ -123,12 +141,6 @@ public class ManagerUI extends UI {
         .setSpaceCaption("Institution")
         .setProjectCaption("Project")
         .build();
-
-    final OpenBisConnection openBisConnection = new OpenBisConnection();
-
-    if (!openBisConnection.initConnection(openBisClient)) {
-      Notification.show("Could not connect to openBis!");
-    }
 
     final ProjectFollowerPresenter followerPresenter = new ProjectFollowerPresenter(followerView,
         followerModel, openBisConnection);
@@ -141,7 +153,7 @@ public class ManagerUI extends UI {
     }
 
     final ProjectContentModel model = new ProjectContentModel(projectDatabase, userManagementDB,
-        followerModel.getAllFollowingProjects(), log, openBisClient);
+        followerModel.getAllFollowingProjects(), log, openBisConnection);
 
     final ProjectOverviewModule projectOverviewModule = new ProjectOverviewModule();
 
@@ -155,7 +167,7 @@ public class ManagerUI extends UI {
     final ProjectSheetView projectSheetView = new ProjectSheetViewImplementation();
 
     final ProjectSheetPresenter projectSheetPresenter = new ProjectSheetPresenter(projectSheetView,
-        openBisClient,
+        openBisConnection,
         log);
 
     final ProjectsStatsView projectsStatsView = new ProjectsStatsViewImpl();
@@ -255,7 +267,6 @@ public class ManagerUI extends UI {
       prop.load(input);
 
       // get the property value and print it out
-      url = prop.getProperty("datasource.url");
       pw = prop.getProperty("datasource.password");
       mysqlPW = prop.getProperty("mysql.pass");
       mysqlUser = prop.getProperty("mysql.user");

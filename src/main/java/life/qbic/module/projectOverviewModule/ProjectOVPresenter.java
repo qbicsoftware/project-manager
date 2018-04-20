@@ -33,7 +33,6 @@ import life.qbic.ProjectContentModel;
 import life.qbic.connection.database.projectInvestigatorDB.ColumnTypes;
 import life.qbic.connection.database.projectInvestigatorDB.ProjectDatabaseConnector;
 import life.qbic.connection.database.projectInvestigatorDB.TableColumns;
-import life.qbic.connection.database.projectInvestigatorDB.WrongArgumentSettingsException;
 import life.qbic.connection.openbis.OpenBisConnection;
 import life.qbic.module.overviewChartModule.OverviewChartPresenter;
 import org.apache.commons.logging.Log;
@@ -100,10 +99,6 @@ public class ProjectOVPresenter {
     } catch (SQLException exp) {
       log.error(exp);
       overViewModule.sendError("Database Error", "Could not connect to database :(");
-      return;
-    } catch (WrongArgumentSettingsException exp) {
-      log.error(exp);
-      overViewModule.sendError("Database Error", "Could not connect to database");
       return;
     }
 
@@ -298,7 +293,7 @@ public class ProjectOVPresenter {
     HorizontalLayout buttonLayout = new HorizontalLayout();
     buttonLayout.setSpacing(true);
     firstHeaderRow.getCell("projectID").setComponent(buttonLayout);
-    Button clearAllFilters = new Button("clear All Filters", (Button.ClickListener) clickEvent ->
+    Button clearAllFilters = new Button("clear Filters", (Button.ClickListener) clickEvent ->
         filter.clearAllFilters());
     clearAllFilters.setIcon(FontAwesome.TIMES);
     clearAllFilters.addStyleName(ValoTheme.BUTTON_PRIMARY);
