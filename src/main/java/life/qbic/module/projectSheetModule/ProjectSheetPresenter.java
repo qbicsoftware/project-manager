@@ -15,7 +15,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import life.qbic.openbis.openbisclient.OpenBisClient;
+import life.qbic.connection.openbis.OpenBisConnection;
 import org.apache.commons.logging.Log;
 
 /**
@@ -27,23 +27,21 @@ public class ProjectSheetPresenter {
   private final Log log;
   private final ObjectProperty<Boolean> informationCommittedFlag;
   private Item currentItem;
-  private OpenBisClient openBisClient;
+  private OpenBisConnection openBisConnection;
   private Map<String, String> taxMapInversed = new HashMap<>();
 
-  public ProjectSheetPresenter(ProjectSheetView projectSheetView, OpenBisClient openbisClient,
+  public ProjectSheetPresenter(ProjectSheetView projectSheetView,
+      OpenBisConnection openBisConnection,
       Log log) {
     this.projectSheetView = projectSheetView;
     this.log = log;
     this.informationCommittedFlag = new ObjectProperty<>(false);
-    this.openBisClient = openbisClient;
+    this.openBisConnection = openBisConnection;
     init();
   }
 
   public void init() {
-    Map<String, String> taxMap = openBisClient.getVocabCodesAndLabelsForVocab("Q_NCBI_TAXONOMY");
-    for (String key : taxMap.keySet()) {
-      taxMapInversed.put(taxMap.get(key), key);
-    }
+
   }
 
   public void showInfoForProject(Item project) {
