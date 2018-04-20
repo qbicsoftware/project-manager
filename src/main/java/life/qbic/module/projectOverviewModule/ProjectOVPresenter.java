@@ -149,7 +149,8 @@ public class ProjectOVPresenter {
     overViewModule.getOverviewGrid().addColumn("investigatorName")
         .setHeaderCaption("Principal Investigator");
     overViewModule.getOverviewGrid().addColumn("species");
-    overViewModule.getOverviewGrid().addColumn("samples").setEditable(false);
+    overViewModule.getOverviewGrid().addColumn("samples");
+    overViewModule.getOverviewGrid().addColumn("sampleTypes");
     overViewModule.getOverviewGrid().addColumn("projectRegisteredDate")
         .setHeaderCaption("Project Registered");
     overViewModule.getOverviewGrid().addColumn("rawDataRegistered")
@@ -160,6 +161,8 @@ public class ProjectOVPresenter {
     overViewModule.getOverviewGrid().getColumn("projectID").setEditable(false);
     overViewModule.getOverviewGrid().getColumn("investigatorName").setEditable(false);
     overViewModule.getOverviewGrid().getColumn("species").setEditable(false);
+    overViewModule.getOverviewGrid().getColumn("samples").setEditable(false);
+    overViewModule.getOverviewGrid().getColumn("sampleTypes").setEditable(false);
     overViewModule.getOverviewGrid().getColumn("projectRegisteredDate").setEditable(false);
     overViewModule.getOverviewGrid().getColumn("rawDataRegistered").setEditable(false);
     overViewModule.getOverviewGrid().getColumn("dataAnalyzedDate").setEditable(false);
@@ -273,6 +276,7 @@ public class ProjectOVPresenter {
     filter.setTextFilter("offerID", true, false);
     filter.setTextFilter("investigatorName", true, false);
     filter.setTextFilter("species", true, false);
+    filter.setTextFilter("sampleTypes", true, false);
     filter.setNumberFilter("samples");
     filter.setTextFilter("invoice", true, false);
 
@@ -287,7 +291,7 @@ public class ProjectOVPresenter {
   private void initExtraHeaderRow(final Grid grid, final GridCellFilter filter) {
     Grid.HeaderRow firstHeaderRow = grid.prependHeaderRow();
     // "projectStatus removed (#25)
-    firstHeaderRow.join("projectID", "projectTime", "investigatorName", "species", "samples",
+    firstHeaderRow.join("projectID", "projectTime", "investigatorName", "species", "samples", "sampleTypes",
         "projectRegisteredDate",
         "rawDataRegistered", "dataAnalyzedDate", "offerID", "invoice");
     HorizontalLayout buttonLayout = new HorizontalLayout();

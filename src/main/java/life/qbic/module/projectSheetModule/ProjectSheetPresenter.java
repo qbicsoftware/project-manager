@@ -27,8 +27,6 @@ public class ProjectSheetPresenter {
   private final Log log;
   private final ObjectProperty<Boolean> informationCommittedFlag;
   private Item currentItem;
-  private OpenBisConnection openBisConnection;
-  private Map<String, String> taxMapInversed = new HashMap<>();
 
   public ProjectSheetPresenter(ProjectSheetView projectSheetView,
       OpenBisConnection openBisConnection,
@@ -36,7 +34,6 @@ public class ProjectSheetPresenter {
     this.projectSheetView = projectSheetView;
     this.log = log;
     this.informationCommittedFlag = new ObjectProperty<>(false);
-    this.openBisConnection = openBisConnection;
     init();
   }
 
@@ -94,7 +91,7 @@ public class ProjectSheetPresenter {
   }
 
   private Label getProjectDetail() {
-    String pi, species, samples;
+    String pi, species, samples, sampleTypes;
     try {
       pi = currentItem.getItemProperty("investigatorName").getValue().toString();
     } catch (NullPointerException ex) {
@@ -113,11 +110,18 @@ public class ProjectSheetPresenter {
       samples = "Unknown";
     }
 
+    try {
+      sampleTypes = currentItem.getItemProperty("sampleTypes").getValue().toString();
+    } catch (NullPointerException ex) {
+      sampleTypes = "Unknown";
+    }
+
     Label label = new Label(
         "<ul>" +
             "  <li><b><font color=\"#007ae4\">PI: </b></font>" + pi + "</li>" +
             "  <li><b><font color=\"#007ae4\">Species: </b></font>" + species + "</li>" +
             "  <li><b><font color=\"#007ae4\">Samples: </b></font>" + samples + "</li>" +
+            "  <li><b><font color=\"#007ae4\">Types: </b></font>" + sampleTypes + "</li>" +
             "</ul> ",
         ContentMode.HTML);
     return label;
@@ -141,6 +145,7 @@ public class ProjectSheetPresenter {
     String projectPI = "PI: " + currentItem.getItemProperty("investigatorName");
     String projectSpecies = "Species: " + currentItem.getItemProperty("species");
     String projectSamples = "Samples: " + currentItem.getItemProperty("samples");
+    String projectSampleTypes = "Sample Types: " + currentItem.getItemProperty("sampleTypes");
 
     try {
       File projectFile = File.createTempFile(fileName, ".txt");
@@ -157,6 +162,8 @@ public class ProjectSheetPresenter {
       bw.write(projectSpecies);
       bw.newLine();
       bw.write(projectSamples);
+      bw.newLine();
+      bw.write(projectSampleTypes);
       bw.close();
       fw.close();
       FileResource res = new FileResource(projectFile);
