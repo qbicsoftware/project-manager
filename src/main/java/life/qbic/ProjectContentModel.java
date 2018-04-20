@@ -125,6 +125,7 @@ public class ProjectContentModel {
         writeProjectPI(itemId, project);
         writeSamples(itemId, project);
         writeSpecies(itemId, project);
+        writeSampleTypes(itemId, project);
       }
     }
   }
@@ -150,6 +151,11 @@ public class ProjectContentModel {
 
   private void writeAnalyzedDate(Object itemId, Project project) {
     tableContent.getContainerProperty(itemId, "rawDataRegistered").setValue(openBisConnection.getFirstAnalyzedDate(project));
+  }
+
+  private void writeSampleTypes(Object itemId, Project project) {
+    String sampleTypes = String.join(",", openBisConnection.getSampleTypesOfProject(project));
+    tableContent.getContainerProperty(itemId, "sampleTypes").setValue(sampleTypes);
   }
 
   public void writeProjectStatus() {

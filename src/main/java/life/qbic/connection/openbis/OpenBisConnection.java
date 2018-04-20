@@ -22,7 +22,9 @@ import com.vaadin.data.util.BeanItemContainer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import life.qbic.beans.ProjectBean;
 import life.qbic.beans.ProjectToProjectBeanConverter;
 
@@ -94,6 +96,23 @@ public class OpenBisConnection {
     }
     return species;
 
+  }
+
+  public Set<String> getSampleTypesOfProject(Project project) {
+    Set<String> sampleTypes = new HashSet<>();
+    SampleSearchCriteria sampleSearchCriteria = new SampleSearchCriteria();
+    sampleSearchCriteria.withExperiment().withProject().withCode().thatEquals(project.getCode());
+    sampleSearchCriteria.withType().withCode().thatEquals("Q_TEST_SAMPLE");
+    SampleFetchOptions fetchOptions = new SampleFetchOptions();
+    fetchOptions.withProperties();
+    SearchResult<Sample> samples = app
+        .searchSamples(sessionToken, sampleSearchCriteria, fetchOptions);
+
+    for (Sample sample : samples.getObjects()) {
+      sampleTypes.add(sample.getProperty("Q_SAMPLE_TYPE"));
+    }
+
+    return sampleTypes;
   }
 
 
