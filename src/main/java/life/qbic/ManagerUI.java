@@ -41,6 +41,8 @@ import life.qbic.module.projectsStatsModule.ProjectsStatsModel;
 import life.qbic.module.projectsStatsModule.ProjectsStatsPresenter;
 import life.qbic.module.projectsStatsModule.ProjectsStatsView;
 import life.qbic.module.projectsStatsModule.ProjectsStatsViewImpl;
+import life.qbic.module.timelineChartModule.TimelineChartPresenter;
+import life.qbic.module.timelineChartModule.TimelineChartView;
 import life.qbic.portal.liferayandvaadinhelpers.main.ConfigurationManager;
 import life.qbic.portal.liferayandvaadinhelpers.main.ConfigurationManagerFactory;
 import life.qbic.portal.liferayandvaadinhelpers.main.LiferayAndVaadinUtils;
@@ -161,6 +163,9 @@ public class ManagerUI extends UI {
     final OverviewChartPresenter overviewChartPresenter = new OverviewChartPresenter(model,
         overviewChartView);
 
+    final TimelineChartView timelineChartView = new TimelineChartView();
+    final TimelineChartPresenter timelineChartPresenter = new TimelineChartPresenter(model, timelineChartView);
+
     final ProjectOVPresenter projectOVPresenter = new ProjectOVPresenter(model,
         projectOverviewModule, overviewChartPresenter, openBisConnection, projectDatabase, log);
 
@@ -177,11 +182,11 @@ public class ManagerUI extends UI {
         projectsStatsView);
     projectsStatsPresenter.update();
 
-    //removed pieChartStatusModule #25
     final MasterPresenter masterPresenter = new MasterPresenter(projectOVPresenter,
         projectSheetPresenter, followerPresenter, projectFilter, //timeLineChartPresenter,
         overviewChartPresenter,
-        projectsStatsPresenter);
+        projectsStatsPresenter,
+        timelineChartPresenter);
 
     projectOverviewModule.setWidth(100, Unit.PERCENTAGE);
     projectOverviewModule.addStyleName("overview-module-style");
@@ -234,6 +239,7 @@ public class ManagerUI extends UI {
     VerticalLayout statsLayout = new VerticalLayout();
     statsLayout.addComponents(overviewChartView, projectsStatsView.getStatsLayout());
     statisticsPanel.addComponent(statsLayout);
+    statisticsPanel.addComponent(timelineChartView);
     statisticsPanel.addComponent(projectSheetView.getProjectSheet());
     statisticsPanel.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
     statisticsPanel.setSizeFull();

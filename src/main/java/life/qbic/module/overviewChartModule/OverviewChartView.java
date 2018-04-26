@@ -17,6 +17,11 @@ public class OverviewChartView extends Chart {
 
   private PlotOptionsPie plotOptions;
 
+  @Override
+  public String getDescription() {
+    return "Shows the project status";
+  }
+
 
   public OverviewChartView() {
     super(ChartType.PIE);
