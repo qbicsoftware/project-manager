@@ -1,5 +1,6 @@
 package life.qbic.module.timelineChartModule;
 
+import com.vaadin.addon.charts.model.DataSeries;
 import com.vaadin.addon.charts.model.DataSeriesItem;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import java.util.Collection;
@@ -24,38 +25,34 @@ public class TimelineChartPresenter {
 
     Collection<?> itemIds = tableContent.getItemIds();
     for (Object itemId : itemIds) {
-      DataSeriesItem item;
+      // Get project info
       String projectID = tableContent.getContainerProperty(itemId, "projectID").getValue().toString();
+      System.out.println(projectID);
       Date projectRegisteredDate = (Date) tableContent.getContainerProperty(itemId, "projectRegisteredDate").getValue();
+      System.out.println(projectRegisteredDate);
       Date rawDataRegisteredDate = (Date) tableContent.getContainerProperty(itemId, "rawDataRegistered").getValue();
-      item = new DataSeriesItem();
+      System.out.println(rawDataRegisteredDate);
+
+      // Create chart item
+      DataSeriesItem item = new DataSeriesItem();
       item.setName(projectID);
+      System.out.println(item.getName());
       item.setLow(projectRegisteredDate.getTime());
       if (rawDataRegisteredDate != null) {
         item.setHigh(rawDataRegisteredDate.getTime());
       } else {
         item.setHigh(new Date().getTime());
       }
-
       view.getUnregisteredSeries().add(item);
-
-//      long dataAnalyzedDate = rawDataRegisteredDate + 100000000 * 10;
-//      item = new DataSeriesItem();
-//      item.setName("Project 1");
-//      item.setLow(rawDataRegisteredDate);
-//      item.setHigh(dataAnalyzedDate);
-//      intimeSeries.add(item);
-//
-//      item = new DataSeriesItem();
-//      item.setName("Project 1");
-//      item.setLow(dataAnalyzedDate);
-//      item.setHigh(dataAnalyzedDate + 100000000 * 10);
-//      overdueSeries.add(item);
-
-      view.drawChart();
     }
+
+    for (DataSeriesItem item : view.getUnregisteredSeries().getData()){
+      System.out.println(item.getName());
+    }
+    view.drawChart();
   }
 
-  public TimelineChartView getChart() { return view;
+  public TimelineChartView getChart() {
+    return view;
   }
 }

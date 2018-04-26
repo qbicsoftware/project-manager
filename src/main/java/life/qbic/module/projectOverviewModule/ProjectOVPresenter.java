@@ -304,9 +304,11 @@ public class ProjectOVPresenter {
   private void initExtraHeaderRow(final Grid grid, final GridCellFilter filter) {
     Grid.HeaderRow firstHeaderRow = grid.prependHeaderRow();
     // "projectStatus removed (#25)
-    firstHeaderRow.join("projectID", "projectTime", "projectStatus", "investigatorName", "species", "samples", "sampleTypes",
-        "projectRegisteredDate",
-        "rawDataRegistered", "dataAnalyzedDate", "offerID", "invoice");
+    firstHeaderRow
+        .join("projectID", "projectTime", "projectStatus", "investigatorName", "species", "samples",
+            "sampleTypes",
+            "projectRegisteredDate",
+            "rawDataRegistered", "dataAnalyzedDate", "offerID", "invoice");
     HorizontalLayout buttonLayout = new HorizontalLayout();
     buttonLayout.setSpacing(true);
     firstHeaderRow.getCell("projectID").setComponent(buttonLayout);

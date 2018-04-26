@@ -19,5 +19,5 @@
 
   <inherits name="org.vaadin.sliderpanel.WidgetSet"/>
 
-    <inherits name="de.datenhahn.vaadin.componentrenderer.ComponentRendererWidgetSet" />
+  <inherits name="de.datenhahn.vaadin.componentrenderer.ComponentRendererWidgetSet"/>
 </module>

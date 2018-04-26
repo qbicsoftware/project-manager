@@ -3,8 +3,6 @@ package life.qbic.connection.openbis;
 import ch.ethz.sis.openbis.generic.asapi.v3.IApplicationServerApi;
 import ch.ethz.sis.openbis.generic.asapi.v3.dto.common.search.SearchResult;
 import ch.ethz.sis.openbis.generic.asapi.v3.dto.dataset.DataSet;
-import ch.ethz.sis.openbis.generic.asapi.v3.dto.dataset.fetchoptions.DataSetFetchOptions;
-import ch.ethz.sis.openbis.generic.asapi.v3.dto.dataset.search.DataSetSearchCriteria;
 import ch.ethz.sis.openbis.generic.asapi.v3.dto.project.Project;
 import ch.ethz.sis.openbis.generic.asapi.v3.dto.project.fetchoptions.ProjectFetchOptions;
 import ch.ethz.sis.openbis.generic.asapi.v3.dto.project.search.ProjectSearchCriteria;
@@ -15,9 +13,6 @@ import ch.ethz.sis.openbis.generic.asapi.v3.dto.vocabulary.VocabularyTerm;
 import ch.ethz.sis.openbis.generic.asapi.v3.dto.vocabulary.fetchoptions.VocabularyTermFetchOptions;
 import ch.ethz.sis.openbis.generic.asapi.v3.dto.vocabulary.search.VocabularyTermSearchCriteria;
 import ch.ethz.sis.openbis.generic.dssapi.v3.IDataStoreServerApi;
-import ch.ethz.sis.openbis.generic.dssapi.v3.dto.datasetfile.DataSetFile;
-import ch.ethz.sis.openbis.generic.dssapi.v3.dto.datasetfile.fetchoptions.DataSetFileFetchOptions;
-import ch.ethz.sis.openbis.generic.dssapi.v3.dto.datasetfile.search.DataSetFileSearchCriteria;
 import com.vaadin.data.util.BeanItemContainer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -122,13 +117,14 @@ public class OpenBisConnection {
     sampleSearchCriteria.withType().withCode().thatEquals("Q_NGS_SINGLE_SAMPLE_RUN");
     SampleFetchOptions fetchOptions = new SampleFetchOptions();
     fetchOptions.withDataSets();
-    SearchResult<Sample> samples = app.searchSamples(sessionToken, sampleSearchCriteria, fetchOptions);
+    SearchResult<Sample> samples = app
+        .searchSamples(sessionToken, sampleSearchCriteria, fetchOptions);
 
     ArrayList<Date> datesRegistered = new ArrayList<>();
     for (int i = 0; i < samples.getObjects().size(); i++) {
       Sample rawDataSample = samples.getObjects().get(i);
       for (DataSet dataSet : rawDataSample.getDataSets()) {
-          datesRegistered.add(dataSet.getRegistrationDate());
+        datesRegistered.add(dataSet.getRegistrationDate());
       }
     }
 
@@ -145,18 +141,19 @@ public class OpenBisConnection {
     sampleSearchCriteria.withExperiment().withProject().withCode().thatEquals(project.getCode());
     SampleFetchOptions fetchOptions = new SampleFetchOptions();
     fetchOptions.withDataSets().withType();
-    SearchResult<Sample> samples = app.searchSamples(sessionToken, sampleSearchCriteria, fetchOptions);
+    SearchResult<Sample> samples = app
+        .searchSamples(sessionToken, sampleSearchCriteria, fetchOptions);
 
     ArrayList<Date> datesAnalyzed = new ArrayList<>();
     for (int i = 0; i < samples.getObjects().size(); i++) {
       Sample rawDataSample = samples.getObjects().get(i);
       for (DataSet dataSet : rawDataSample.getDataSets()) {
-        if (dataSet.getType().getCode().contains("RESULT") || dataSet.getType().getCode().contains("result")) {
+        if (dataSet.getType().getCode().contains("RESULT") || dataSet.getType().getCode()
+            .contains("result")) {
           datesAnalyzed.add(dataSet.getRegistrationDate());
         }
       }
     }
-
 
     Date firstAnalyzed = null;
     if (!datesAnalyzed.isEmpty()) {

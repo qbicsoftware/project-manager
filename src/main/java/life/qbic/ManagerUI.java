@@ -164,7 +164,8 @@ public class ManagerUI extends UI {
         overviewChartView);
 
     final TimelineChartView timelineChartView = new TimelineChartView();
-    final TimelineChartPresenter timelineChartPresenter = new TimelineChartPresenter(model, timelineChartView);
+    final TimelineChartPresenter timelineChartPresenter = new TimelineChartPresenter(model,
+        timelineChartView);
 
     final ProjectOVPresenter projectOVPresenter = new ProjectOVPresenter(model,
         projectOverviewModule, overviewChartPresenter, openBisConnection, projectDatabase, log);

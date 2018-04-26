@@ -1,36 +1,24 @@
 package life.qbic.module.timelineChartModule;
 
-import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.addon.charts.Chart;
 import com.vaadin.addon.charts.model.AxisType;
 import com.vaadin.addon.charts.model.ChartType;
 import com.vaadin.addon.charts.model.Configuration;
 import com.vaadin.addon.charts.model.DataLabelsRange;
 import com.vaadin.addon.charts.model.DataSeries;
-import com.vaadin.addon.charts.model.DataSeriesItem;
 import com.vaadin.addon.charts.model.PlotOptionsColumnrange;
 import com.vaadin.addon.charts.model.Tooltip;
 import com.vaadin.addon.charts.model.XAxis;
 import com.vaadin.addon.charts.model.YAxis;
 import com.vaadin.addon.charts.model.style.SolidColor;
-import java.util.Collection;
-import java.util.Date;
 
-@SuppressWarnings("serial")
 public class TimelineChartView extends Chart {
 
   private DataSeries unregisteredSeries, intimeSeries, overdueSeries;
 
   private Configuration conf;
 
-  private Date currentDate = new Date();
-
-  @Override
-  public String getDescription() {
-    return "Shows the progress of each project";
-  }
-
-  public TimelineChartView () {
+  public TimelineChartView() {
     super(ChartType.COLUMNRANGE);
     conf = this.getConfiguration();
     conf.setTitle("Project Timeline");
@@ -46,7 +34,8 @@ public class TimelineChartView extends Chart {
     conf.addyAxis(yAxis);
 
     Tooltip tooltip = new Tooltip();
-    tooltip.setFormatter("this.dataseries.name +': '+ Highcharts.dateFormat('YYYY/mm/dd', this.point.low) + ' - ' + Highcharts.dateFormat('YYYY/mm/dd', this.point.high)");
+    tooltip.setFormatter(
+        "this.dataseries.name +': '+ Highcharts.dateFormat('YYYY/mm/dd', this.point.low) + ' - ' + Highcharts.dateFormat('YYYY/mm/dd', this.point.high)");
     conf.setTooltip(tooltip);
 
     PlotOptionsColumnrange columnRange = new PlotOptionsColumnrange();
@@ -78,9 +67,17 @@ public class TimelineChartView extends Chart {
     intimeSeries.setPlotOptions(o);
     intimeSeries.setName("In time");
 
-    conf.setSeries(unregisteredSeries, intimeSeries, overdueSeries);
+    conf.getChart().setBackgroundColor(new SolidColor("#fafafa"));
+    conf.addSeries(unregisteredSeries);
+    conf.addSeries(overdueSeries);
+    conf.addSeries(intimeSeries);
 
     this.drawChart();
+  }
+
+  @Override
+  public String getDescription() {
+    return "Shows the progress of each project";
   }
 
   public DataSeries getUnregisteredSeries() {
@@ -94,4 +91,5 @@ public class TimelineChartView extends Chart {
   public DataSeries getOverdueSeries() {
     return overdueSeries;
   }
+
 }

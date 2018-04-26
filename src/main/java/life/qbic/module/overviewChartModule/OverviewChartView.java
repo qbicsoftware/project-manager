@@ -17,12 +17,6 @@ public class OverviewChartView extends Chart {
 
   private PlotOptionsPie plotOptions;
 
-  @Override
-  public String getDescription() {
-    return "Shows the project status";
-  }
-
-
   public OverviewChartView() {
     super(ChartType.PIE);
     conf = this.getConfiguration();
@@ -48,6 +42,11 @@ public class OverviewChartView extends Chart {
     this.setImmediate(true);
     this.drawChart(conf);
 
+  }
+
+  @Override
+  public String getDescription() {
+    return "Shows the project status";
   }
 
   public DataSeries getSeries() {

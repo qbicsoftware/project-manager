@@ -1,9 +1,6 @@
 package life.qbic;
 
 import com.vaadin.data.Property;
-import java.sql.Time;
-import javafx.animation.Timeline;
-import javax.naming.TimeLimitExceededException;
 import life.qbic.connection.database.projectInvestigatorDB.ProjectFilter;
 import life.qbic.module.overviewChartModule.OverviewChartPresenter;
 import life.qbic.module.projectFollowerModule.ProjectFollowerPresenter;
@@ -104,6 +101,7 @@ public class MasterPresenter {
     //projectOverviewPresenter.getStatusKeyFigures().forEach(pieChartStatusModule::update);
     //timeLineChartPresenter.updateData(projectOverviewPresenter.getTimeLineStats());
     overviewChartPresenter.update();
+    timelineChartPresenter.update();
     projectsStatsPresenter.update();
     if (projectFollowerPresenter.getFollowingProjects().size() == 0) {
       projectSheetPresenter.getProjectSheetView().getProjectSheet().setVisible(false);
