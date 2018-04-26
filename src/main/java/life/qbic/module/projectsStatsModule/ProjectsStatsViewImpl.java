@@ -1,7 +1,7 @@
 package life.qbic.module.projectsStatsModule;
 
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.VerticalLayout;
 import life.qbic.NumberIndicator;
 
 /**
@@ -9,23 +9,17 @@ import life.qbic.NumberIndicator;
  */
 public class ProjectsStatsViewImpl implements ProjectsStatsView {
 
-  private VerticalLayout projectStatsLayout;
-  private HorizontalLayout stats1Layout, stats2Layout;
+  private HorizontalLayout statsLayout;
   private NumberIndicator totalProjectsNI, overdueProjectsNI, unregisteredProjectsNI, inTimeProjectsNI;
 
   public ProjectsStatsViewImpl() {
-    projectStatsLayout = new VerticalLayout();
-    stats2Layout = new HorizontalLayout();
-    stats1Layout = new HorizontalLayout();
+    statsLayout = new HorizontalLayout();
     init();
   }
 
   public void init() {
-    projectStatsLayout.removeAllComponents();
-    projectStatsLayout.setHeight("200px");
 
-    stats1Layout.removeAllComponents();
-    stats2Layout.removeAllComponents();
+    statsLayout.removeAllComponents();
 
     totalProjectsNI = new NumberIndicator();
     totalProjectsNI.setHeader("All Projects");
@@ -42,18 +36,9 @@ public class ProjectsStatsViewImpl implements ProjectsStatsView {
     inTimeProjectsNI.setHeader("In Time");
     inTimeProjectsNI.setNumber(0);
     inTimeProjectsNI.getNumber().setStyleName("intime");
-    stats1Layout.addComponents(totalProjectsNI, inTimeProjectsNI);
-    stats2Layout.addComponents(overdueProjectsNI, unregisteredProjectsNI);
-    projectStatsLayout.addComponents(stats1Layout, stats2Layout);
-    projectStatsLayout.setSizeFull();
-    stats1Layout.setSpacing(true);
-    stats2Layout.setSpacing(true);
-    projectStatsLayout.setSpacing(true);
-  }
-
-  @Override
-  public VerticalLayout getProjectStats() {
-    return projectStatsLayout;
+    statsLayout.addComponents(totalProjectsNI, inTimeProjectsNI, overdueProjectsNI, unregisteredProjectsNI);
+    statsLayout.setSpacing(true);
+    statsLayout.setMargin(new MarginInfo(false, true, true, true));
   }
 
   @Override
@@ -76,4 +61,8 @@ public class ProjectsStatsViewImpl implements ProjectsStatsView {
     inTimeProjectsNI.setNumber(number);
   }
 
+  @Override
+  public HorizontalLayout getStatsLayout() {
+    return statsLayout;
+  }
 }

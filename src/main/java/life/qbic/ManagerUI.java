@@ -229,10 +229,11 @@ public class ManagerUI extends UI {
     sliderFrame.setSizeFull();
     sliderFrame.setResponsive(true);
     Responsive.makeResponsive(sliderFrame);
-    statisticsPanel.addComponent(overviewChartView);
     statisticsPanel.setMargin(true);
     statisticsPanel.setSpacing(true);
-    statisticsPanel.addComponent(projectsStatsView.getProjectStats());
+    VerticalLayout statsLayout = new VerticalLayout();
+    statsLayout.addComponents(overviewChartView, projectsStatsView.getStatsLayout());
+    statisticsPanel.addComponent(statsLayout);
     statisticsPanel.addComponent(projectSheetView.getProjectSheet());
     statisticsPanel.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
     statisticsPanel.setSizeFull();
