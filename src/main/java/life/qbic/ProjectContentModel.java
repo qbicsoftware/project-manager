@@ -150,7 +150,7 @@ public class ProjectContentModel {
   }
 
   private void writeAnalyzedDate(Object itemId, Project project) {
-    tableContent.getContainerProperty(itemId, "rawDataRegistered").setValue(openBisConnection.getFirstAnalyzedDate(project));
+    tableContent.getContainerProperty(itemId, "dataAnalyzedDate").setValue(openBisConnection.getFirstAnalyzedDate(project));
   }
 
   private void writeSampleTypes(Object itemId, Project project) {
@@ -170,13 +170,18 @@ public class ProjectContentModel {
             Date registration = dateFormat.parse(
                 tableContent.getContainerProperty(itemId, "rawDataRegistered").getValue()
                     .toString());
-            Date analyzed = dateFormat.parse(
-                tableContent.getContainerProperty(itemId, "dataAnalyzedDate").getValue()
-                    .toString());
+
+            Date analyzed = null;
+            long daysFromRegToAnalisis = 1000;
+            if (tableContent.getContainerProperty(itemId, "dataAnalyzedDate").getValue() != null) {
+              analyzed = dateFormat.parse(
+                  tableContent.getContainerProperty(itemId, "dataAnalyzedDate").getValue()
+                      .toString());
+              daysFromRegToAnalisis = TimeUnit.DAYS
+                  .convert(analyzed.getTime() - registration.getTime(), TimeUnit.MILLISECONDS);
+            }
             long daysPassed = TimeUnit.DAYS
                 .convert(currentDate.getTime() - registration.getTime(), TimeUnit.MILLISECONDS);
-            long daysFromRegToAnalisis = TimeUnit.DAYS
-                .convert(analyzed.getTime() - registration.getTime(), TimeUnit.MILLISECONDS);
             if ((daysPassed / 7 < 6) || (daysFromRegToAnalisis / 7 < 6)) {
               tableContent.getContainerProperty(itemId, "projectTime").setValue("in time");
             } else {
