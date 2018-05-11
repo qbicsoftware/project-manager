@@ -8,6 +8,7 @@ import com.vaadin.annotations.Widgetset;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -261,35 +262,4 @@ public class ManagerUI extends UI {
     mainFrame.setStyleName("mainpage");
     setContent(mainFrame);
   }
-
-  private void getCredentials() {
-    Properties prop = new Properties();
-    InputStream input = null;
-
-    try {
-
-      input = new FileInputStream("/Users/spaethju/liferay/qbic-ext.properties");
-
-      // load a properties file
-      prop.load(input);
-
-      // get the property value and print it out
-      pw = prop.getProperty("datasource.password");
-      mysqlPW = prop.getProperty("mysql.pass");
-      mysqlUser = prop.getProperty("mysql.user");
-
-    } catch (IOException ex) {
-      ex.printStackTrace();
-    } finally {
-      if (input != null) {
-        try {
-          input.close();
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-      }
-    }
-
-  }
-
 }
