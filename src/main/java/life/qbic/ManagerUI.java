@@ -8,10 +8,10 @@ import com.vaadin.annotations.Widgetset;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -73,9 +73,9 @@ public class ManagerUI extends UI {
 
     log.info("Started project-manager.");
 
-    getCredentials();
+    //getCredentials();
 
-    userID = "zxmqw74";
+    //userID = "zxmqw74";
     //set userID here:
     if (LiferayAndVaadinUtils.isLiferayPortlet()) {
       userID = LiferayAndVaadinUtils.getUser().getScreenName();
