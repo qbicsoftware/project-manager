@@ -8,12 +8,14 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import life.qbic.connection.openbis.OpenBisConnection;
+import life.qbic.module.singleTimelineModule.SingleTimelinePresenter;
+import life.qbic.module.singleTimelineModule.SingleTimelineView;
 import org.apache.commons.logging.Log;
 
 /**
@@ -26,9 +28,7 @@ public class ProjectSheetPresenter {
   private final ObjectProperty<Boolean> informationCommittedFlag;
   private Item currentItem;
 
-  public ProjectSheetPresenter(ProjectSheetView projectSheetView,
-      OpenBisConnection openBisConnection,
-      Log log) {
+  public ProjectSheetPresenter(ProjectSheetView projectSheetView, Log log) {
     this.projectSheetView = projectSheetView;
     this.log = log;
     this.informationCommittedFlag = new ObjectProperty<>(false);
@@ -48,14 +48,17 @@ public class ProjectSheetPresenter {
       currentItem = project;
       projectSheetView.getProjectSheet()
           .setCaption("Project Details");
-      projectSheetView.getProjectSheet().addComponent(getProject());
-      projectSheetView.getProjectSheet().addComponent(getDescription());
-      projectSheetView.getProjectSheet().addComponent(getProjectDetail());
-      //ProjectInfoDownloader projectInfoDownloader = new ProjectInfoDownloader(project);
+      VerticalLayout projectDetailLayout = new VerticalLayout();
       HorizontalLayout bottomLayout = new HorizontalLayout();
       bottomLayout.setSpacing(true);
       bottomLayout.addComponents(getProjectTime(), getExportButton());
-      projectSheetView.getProjectSheet().addComponent(bottomLayout);
+      projectDetailLayout.addComponents(getProject(), getDescription(), getProjectDetail(), bottomLayout);
+
+      SingleTimelinePresenter st = new SingleTimelinePresenter(currentItem, new SingleTimelineView());
+      projectSheetView.getProjectSheet().addComponent(projectDetailLayout);
+      projectSheetView.getProjectSheet().addComponent(st.getChart());
+
+      st.update();
     }
 
   }

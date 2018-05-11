@@ -11,6 +11,7 @@ import com.vaadin.addon.charts.model.Tooltip;
 import com.vaadin.addon.charts.model.XAxis;
 import com.vaadin.addon.charts.model.YAxis;
 import com.vaadin.addon.charts.model.style.SolidColor;
+import com.vaadin.addon.charts.util.SVGGenerator;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -37,6 +38,7 @@ public class TimelineChartView extends Chart {
     cal.add(Calendar.YEAR, -3);
     yAxis.setMin(cal.getTime());
     conf.addyAxis(yAxis);
+    this.setSizeFull();
 
     Tooltip tooltip = new Tooltip();
     tooltip.setFormatter(
@@ -45,7 +47,7 @@ public class TimelineChartView extends Chart {
 
     PlotOptionsColumnrange columnRange = new PlotOptionsColumnrange();
     columnRange.setCursor(Cursor.POINTER);
-    columnRange.setAllowPointSelect(true);
+    //columnRange.setAllowPointSelect(true);
     columnRange.setGrouping(false);
 
     conf.setPlotOptions(columnRange);

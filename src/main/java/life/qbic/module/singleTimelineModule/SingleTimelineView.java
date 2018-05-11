@@ -1,4 +1,4 @@
-package life.qbic.module.timelineChartModule;
+package life.qbic.module.singleTimelineModule;
 
 import com.vaadin.addon.charts.Chart;
 import com.vaadin.addon.charts.model.AxisType;
@@ -6,22 +6,22 @@ import com.vaadin.addon.charts.model.ChartType;
 import com.vaadin.addon.charts.model.Configuration;
 import com.vaadin.addon.charts.model.Cursor;
 import com.vaadin.addon.charts.model.DataSeries;
+import com.vaadin.addon.charts.model.DateTimeLabelFormats;
 import com.vaadin.addon.charts.model.PlotOptionsColumnrange;
 import com.vaadin.addon.charts.model.Tooltip;
 import com.vaadin.addon.charts.model.XAxis;
 import com.vaadin.addon.charts.model.YAxis;
 import com.vaadin.addon.charts.model.style.SolidColor;
-import com.vaadin.addon.charts.util.SVGGenerator;
 import java.util.Calendar;
 import java.util.Date;
 
-public class TimelineChartView extends Chart {
+public class SingleTimelineView extends Chart {
 
   private DataSeries unregisteredSeries, intimeSeries, overdueSeries, potentialtimeSeries;
 
   private Configuration conf;
 
-  public TimelineChartView() {
+  public SingleTimelineView() {
     super(ChartType.COLUMNRANGE);
     conf = this.getConfiguration();
     conf.setTitle("Timeline");
@@ -33,20 +33,14 @@ public class TimelineChartView extends Chart {
     YAxis yAxis = new YAxis();
     yAxis.setType(AxisType.DATETIME);
     yAxis.setTitle("Time");
-    Calendar cal = Calendar.getInstance();
-    yAxis.setMax(new Date().getTime());
-    cal.add(Calendar.YEAR, -3);
-    yAxis.setMin(cal.getTime());
     conf.addyAxis(yAxis);
-
+    this.setSizeFull();
     Tooltip tooltip = new Tooltip();
     tooltip.setFormatter(
         "this.dataseries.name +': '+ Highcharts.dateFormat('YYYY/mm/dd', this.point.low) + ' - ' + Highcharts.dateFormat('YYYY/mm/dd', this.point.high)");
     conf.setTooltip(tooltip);
 
     PlotOptionsColumnrange columnRange = new PlotOptionsColumnrange();
-    columnRange.setCursor(Cursor.POINTER);
-    //columnRange.setAllowPointSelect(true);
     columnRange.setGrouping(false);
 
     conf.setPlotOptions(columnRange);

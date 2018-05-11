@@ -21,7 +21,6 @@ public class ProjectSheetViewImplementation implements ProjectSheetView {
     this.projectSheet = new VerticalLayout();
 
     projectSheet.setIcon(FontAwesome.INFO_CIRCLE);
-    projectSheet.setWidth("400px");
     projectSheet.setMargin(true);
     projectSheet.setSpacing(true);
     init();
@@ -45,14 +44,18 @@ public class ProjectSheetViewImplementation implements ProjectSheetView {
   @Override
   public void createSubWindow() {
     subWindow = new Window("Project Details");
+    projectSheet.setSizeFull();
     subWindow.setContent(projectSheet);
     subWindow.center();
     subWindow.setModal(true);
+    subWindow.setWidth("70%");
+    subWindow.setHeight("100%");
+
 
     //Somehow two windows open. This is a quick workaround.
     subWindow.addCloseListener((CloseListener) e -> {
       for (Window window : UI.getCurrent().getWindows()) {
-        UI.getCurrent().removeWindow(window);
+        UI.getCurrent().getUI().removeWindow(window);
       }
     });
     UI.getCurrent().addWindow(subWindow);

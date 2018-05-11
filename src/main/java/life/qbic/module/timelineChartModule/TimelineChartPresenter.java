@@ -51,8 +51,8 @@ public class TimelineChartPresenter {
           .getValue();
 
       // Create chart items
-      createUnregisteredItem(projectID, projectRegisteredDate, rawDataRegisteredDate, currentDate);
-      createItem(projectID, rawDataRegisteredDate, dataAnalyzedDate, currentDate);
+
+      createItem(projectID, rawDataRegisteredDate, dataAnalyzedDate, currentDate, projectRegisteredDate);
 
 
     }
@@ -79,24 +79,25 @@ public class TimelineChartPresenter {
   }
 
   private void createItem(String projectID, Date rawDataRegisteredDate, Date dataAnalyzedDate,
-      Date currentDate) {
+      Date currentDate, Date projectRegisteredDate) {
+    createUnregisteredItem(projectID, projectRegisteredDate, rawDataRegisteredDate, currentDate);
     if (rawDataRegisteredDate != null) {
       DataSeriesItem intimeItem = new DataSeriesItem();
       intimeItem.setName(projectID);
       intimeItem.setLow(rawDataRegisteredDate.getTime());
       DataSeriesItem pottimeItem = new DataSeriesItem();
-      pottimeItem.setName(projectID);
-      pottimeItem.setLow(rawDataRegisteredDate.getTime());
       Calendar c = Calendar.getInstance();
       c.setTime(rawDataRegisteredDate);
       c.add(Calendar.DATE, 42);
       Date overdueDate = c.getTime();
+      pottimeItem.setName(projectID);
+      pottimeItem.setLow(rawDataRegisteredDate.getTime());
+      pottimeItem.setHigh(overdueDate.getTime());
 
       if (dataAnalyzedDate == null) {
         long diffRawToday = getDateDiff(rawDataRegisteredDate, currentDate);
         if (diffRawToday < 42) {
           intimeItem.setHigh(currentDate.getTime());
-          pottimeItem.setHigh(overdueDate.getTime());
         } else {
           intimeItem.setHigh(overdueDate.getTime());
           DataSeriesItem overdueItem = new DataSeriesItem();

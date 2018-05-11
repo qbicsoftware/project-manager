@@ -70,7 +70,8 @@ public class MasterPresenter {
       projectSheetPresenter.init();
       projectSheetPresenter
           .showInfoForProject(projectOverviewPresenter.getSelectedProjectItem());
-      if (projectOverviewPresenter.getSelectedProject() != null) {
+      if (projectOverviewPresenter.getSelectedProject().getValue() != null) {
+        System.out.println(projectOverviewPresenter.getSelectedProject().getValue());
         projectSheetPresenter.getProjectSheetView().createSubWindow();
       }
     });
