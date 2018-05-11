@@ -1,14 +1,10 @@
 package life.qbic.module.singleTimelineModule;
 
 import com.vaadin.addon.charts.model.DataSeriesItem;
-import com.vaadin.addon.charts.model.XAxis;
 import com.vaadin.data.Item;
-import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import life.qbic.ProjectContentModel;
 
 public class SingleTimelinePresenter {
 
@@ -32,15 +28,16 @@ public class SingleTimelinePresenter {
   }
 
   public void update() {
-      // Get project info
-      Date currentDate = new Date();
-      String projectID = item.getItemProperty("projectID").getValue().toString();
-      Date projectRegisteredDate = (Date) item.getItemProperty("projectRegisteredDate").getValue();
-      Date rawDataRegisteredDate = (Date) item.getItemProperty("rawDataRegistered").getValue();
-      Date dataAnalyzedDate = (Date) item.getItemProperty("dataAnalyzedDate").getValue();
+    // Get project info
+    Date currentDate = new Date();
+    String projectID = item.getItemProperty("projectID").getValue().toString();
+    Date projectRegisteredDate = (Date) item.getItemProperty("projectRegisteredDate").getValue();
+    Date rawDataRegisteredDate = (Date) item.getItemProperty("rawDataRegistered").getValue();
+    Date dataAnalyzedDate = (Date) item.getItemProperty("dataAnalyzedDate").getValue();
 
-      // Create chart items
-      createItem(projectID, rawDataRegisteredDate, dataAnalyzedDate, currentDate, projectRegisteredDate);
+    // Create chart items
+    createItem(projectID, rawDataRegisteredDate, dataAnalyzedDate, currentDate,
+        projectRegisteredDate);
 
     view.drawChart();
   }

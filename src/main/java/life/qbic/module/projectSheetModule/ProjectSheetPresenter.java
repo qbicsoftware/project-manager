@@ -52,9 +52,11 @@ public class ProjectSheetPresenter {
       HorizontalLayout bottomLayout = new HorizontalLayout();
       bottomLayout.setSpacing(true);
       bottomLayout.addComponents(getProjectTime(), getExportButton());
-      projectDetailLayout.addComponents(getProject(), getDescription(), getProjectDetail(), bottomLayout);
+      projectDetailLayout
+          .addComponents(getProject(), getDescription(), getProjectDetail(), bottomLayout);
 
-      SingleTimelinePresenter st = new SingleTimelinePresenter(currentItem, new SingleTimelineView());
+      SingleTimelinePresenter st = new SingleTimelinePresenter(currentItem,
+          new SingleTimelineView());
       projectSheetView.getProjectSheet().addComponent(projectDetailLayout);
       projectSheetView.getProjectSheet().addComponent(st.getChart());
 

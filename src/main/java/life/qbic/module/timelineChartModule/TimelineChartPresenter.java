@@ -52,7 +52,8 @@ public class TimelineChartPresenter {
 
       // Create chart items
 
-      createItem(projectID, rawDataRegisteredDate, dataAnalyzedDate, currentDate, projectRegisteredDate);
+      createItem(projectID, rawDataRegisteredDate, dataAnalyzedDate, currentDate,
+          projectRegisteredDate);
 
 
     }

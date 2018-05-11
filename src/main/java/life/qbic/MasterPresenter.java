@@ -1,7 +1,6 @@
 package life.qbic;
 
 import com.vaadin.data.Property;
-import com.vaadin.ui.UI;
 import life.qbic.connection.database.projectInvestigatorDB.ProjectFilter;
 import life.qbic.module.overviewChartModule.OverviewChartPresenter;
 import life.qbic.module.projectFollowerModule.ProjectFollowerPresenter;

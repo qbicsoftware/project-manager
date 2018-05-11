@@ -11,7 +11,6 @@ import com.vaadin.addon.charts.model.Tooltip;
 import com.vaadin.addon.charts.model.XAxis;
 import com.vaadin.addon.charts.model.YAxis;
 import com.vaadin.addon.charts.model.style.SolidColor;
-import com.vaadin.addon.charts.util.SVGGenerator;
 import java.util.Calendar;
 import java.util.Date;
 

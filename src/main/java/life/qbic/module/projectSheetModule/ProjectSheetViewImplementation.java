@@ -5,7 +5,6 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 
 /**
@@ -50,7 +49,6 @@ public class ProjectSheetViewImplementation implements ProjectSheetView {
     subWindow.setModal(true);
     subWindow.setWidth("70%");
     subWindow.setHeight("100%");
-
 
     //Somehow two windows open. This is a quick workaround.
     subWindow.addCloseListener((CloseListener) e -> {
