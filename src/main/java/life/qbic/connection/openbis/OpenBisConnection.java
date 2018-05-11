@@ -114,12 +114,10 @@ public class OpenBisConnection {
   public Date getFirstRegisteredDate(Project project) {
     SampleSearchCriteria sampleSearchCriteria = new SampleSearchCriteria();
     sampleSearchCriteria.withExperiment().withProject().withCode().thatEquals(project.getCode());
-    sampleSearchCriteria.withType().withCode().thatEquals("Q_NGS_SINGLE_SAMPLE_RUN");
     SampleFetchOptions fetchOptions = new SampleFetchOptions();
     fetchOptions.withDataSets();
     SearchResult<Sample> samples = app
         .searchSamples(sessionToken, sampleSearchCriteria, fetchOptions);
-
     ArrayList<Date> datesRegistered = new ArrayList<>();
     for (int i = 0; i < samples.getObjects().size(); i++) {
       Sample rawDataSample = samples.getObjects().get(i);

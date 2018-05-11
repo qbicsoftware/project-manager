@@ -112,7 +112,6 @@ public class ManagerUI extends UI {
     }
 
     final CssLayout projectDescriptionLayout = new CssLayout();
-    // Reference the DSS
 
     // Connect to openbis
     IDataStoreServerApi dss =
@@ -235,7 +234,6 @@ public class ManagerUI extends UI {
     sliderFrame.setSizeFull();
     sliderFrame.setResponsive(true);
     Responsive.makeResponsive(sliderFrame);
-    statisticsPanel.setMargin(true);
     statisticsPanel.setSpacing(true);
     VerticalLayout statsLayout = new VerticalLayout();
     statsLayout.addComponents(overviewChartView, projectsStatsView.getStatsLayout());
@@ -244,6 +242,7 @@ public class ManagerUI extends UI {
     statisticsPanel.addComponent(projectSheetView.getProjectSheet());
     statisticsPanel.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
     statisticsPanel.setSizeFull();
+    statisticsPanel.setSpacing(true);
 
     Responsive.makeResponsive(statisticsPanel);
 
@@ -252,9 +251,7 @@ public class ManagerUI extends UI {
     mainContent.addComponent(statisticsPanel);
     mainContent.addComponent(projectDescriptionLayout);
     mainContent.setSpacing(true);
-    mainContent.setMargin(true);
     mainFrame.setSpacing(true);
-    mainFrame.setMargin(true);
     mainFrame.addComponent(sliderFrame);
     mainFrame.setComponentAlignment(sliderFrame, Alignment.MIDDLE_CENTER);
     mainFrame.addComponent(mainContent);
@@ -263,7 +260,7 @@ public class ManagerUI extends UI {
     setContent(mainFrame);
   }
 
-  public void getCredentials() {
+  private void getCredentials() {
     Properties prop = new Properties();
     InputStream input = null;
 

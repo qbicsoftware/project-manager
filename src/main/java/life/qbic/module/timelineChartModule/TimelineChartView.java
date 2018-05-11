@@ -4,32 +4,38 @@ import com.vaadin.addon.charts.Chart;
 import com.vaadin.addon.charts.model.AxisType;
 import com.vaadin.addon.charts.model.ChartType;
 import com.vaadin.addon.charts.model.Configuration;
-import com.vaadin.addon.charts.model.DataLabelsRange;
+import com.vaadin.addon.charts.model.Cursor;
 import com.vaadin.addon.charts.model.DataSeries;
 import com.vaadin.addon.charts.model.PlotOptionsColumnrange;
 import com.vaadin.addon.charts.model.Tooltip;
 import com.vaadin.addon.charts.model.XAxis;
 import com.vaadin.addon.charts.model.YAxis;
 import com.vaadin.addon.charts.model.style.SolidColor;
+import java.util.Calendar;
+import java.util.Date;
 
 public class TimelineChartView extends Chart {
 
-  private DataSeries unregisteredSeries, intimeSeries, overdueSeries;
+  private DataSeries unregisteredSeries, intimeSeries, overdueSeries, potentialtimeSeries;
 
   private Configuration conf;
 
   public TimelineChartView() {
     super(ChartType.COLUMNRANGE);
     conf = this.getConfiguration();
-    conf.setTitle("Project Timeline");
+    conf.setTitle("Timeline");
     conf.getChart().setInverted(true);
 
     XAxis xAxis = new XAxis();
     conf.addxAxis(xAxis);
 
     YAxis yAxis = new YAxis();
-    yAxis.setTitle("Time");
     yAxis.setType(AxisType.DATETIME);
+    yAxis.setTitle("Time");
+    Calendar cal = Calendar.getInstance();
+    yAxis.setMax(new Date().getTime());
+    cal.add(Calendar.YEAR, -3);
+    yAxis.setMin(cal.getTime());
     conf.addyAxis(yAxis);
 
     Tooltip tooltip = new Tooltip();
@@ -38,13 +44,9 @@ public class TimelineChartView extends Chart {
     conf.setTooltip(tooltip);
 
     PlotOptionsColumnrange columnRange = new PlotOptionsColumnrange();
+    columnRange.setCursor(Cursor.POINTER);
+    columnRange.setAllowPointSelect(true);
     columnRange.setGrouping(false);
-    DataLabelsRange dataLabels = new DataLabelsRange(true);
-    dataLabels
-        .setFormatter("this.y == this.point.low ? '' : this.series.name");
-    dataLabels.setInside(true);
-    dataLabels.setColor(new SolidColor("white"));
-    columnRange.setDataLabels(dataLabels);
 
     conf.setPlotOptions(columnRange);
 
@@ -66,7 +68,14 @@ public class TimelineChartView extends Chart {
     intimeSeries.setPlotOptions(o);
     intimeSeries.setName("In time");
 
+    potentialtimeSeries = new DataSeries();
+    o = new PlotOptionsColumnrange();
+    o.setColor(new SolidColor("#79A65B"));
+    potentialtimeSeries.setPlotOptions(o);
+    potentialtimeSeries.setName("pot. time");
+
     conf.getChart().setBackgroundColor(new SolidColor("#fafafa"));
+    conf.addSeries(potentialtimeSeries);
     conf.addSeries(unregisteredSeries);
     conf.addSeries(overdueSeries);
     conf.addSeries(intimeSeries);
@@ -91,4 +100,11 @@ public class TimelineChartView extends Chart {
     return overdueSeries;
   }
 
+  public Configuration getConf() {
+    return conf;
+  }
+
+  public DataSeries getPotentialtimeSeries() {
+    return potentialtimeSeries;
+  }
 }

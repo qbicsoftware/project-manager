@@ -16,6 +16,8 @@ public class ProjectSheetViewImplementation implements ProjectSheetView {
     this.projectSheet = new VerticalLayout();
     projectSheet.setIcon(FontAwesome.INFO_CIRCLE);
     projectSheet.setWidth("400px");
+    projectSheet.setMargin(true);
+    projectSheet.setSpacing(true);
     init();
   }
 

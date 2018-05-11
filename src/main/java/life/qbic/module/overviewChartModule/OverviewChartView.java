@@ -33,8 +33,7 @@ public class OverviewChartView extends Chart {
     this.setHeight("300px");
     this.setWidth("400px");
     conf.setPlotOptions(plotOptions);
-    conf.setTitle("Project Manager");
-    conf.setSubTitle("Project Status");
+    conf.setTitle("Status");
     conf.getChart().setBackgroundColor(new SolidColor("#fafafa"));
 
     series.setName("projects");
