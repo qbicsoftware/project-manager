@@ -1,6 +1,7 @@
 package life.qbic;
 
 import com.vaadin.data.Property;
+import com.vaadin.ui.UI;
 import life.qbic.connection.database.projectInvestigatorDB.ProjectFilter;
 import life.qbic.module.overviewChartModule.OverviewChartPresenter;
 import life.qbic.module.projectFollowerModule.ProjectFollowerPresenter;
@@ -69,6 +70,9 @@ public class MasterPresenter {
       projectSheetPresenter.init();
       projectSheetPresenter
           .showInfoForProject(projectOverviewPresenter.getSelectedProjectItem());
+      if (projectOverviewPresenter.getSelectedProject() != null) {
+        projectSheetPresenter.getProjectSheetView().createSubWindow();
+      }
     });
 
     projectOverviewPresenter.getIsChangedFlag().addValueChangeListener(this::refreshModuleViews);

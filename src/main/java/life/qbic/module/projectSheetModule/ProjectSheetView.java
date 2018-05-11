@@ -11,4 +11,6 @@ public interface ProjectSheetView {
 
   void reset();
 
+  void createSubWindow();
+
 }
