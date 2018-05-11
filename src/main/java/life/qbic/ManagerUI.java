@@ -172,9 +172,7 @@ public class ManagerUI extends UI {
 
     final ProjectSheetView projectSheetView = new ProjectSheetViewImplementation();
 
-    final ProjectSheetPresenter projectSheetPresenter = new ProjectSheetPresenter(projectSheetView,
-        openBisConnection,
-        log);
+    final ProjectSheetPresenter projectSheetPresenter = new ProjectSheetPresenter(projectSheetView, log);
 
     final ProjectsStatsView projectsStatsView = new ProjectsStatsViewImpl();
     //Init project stats

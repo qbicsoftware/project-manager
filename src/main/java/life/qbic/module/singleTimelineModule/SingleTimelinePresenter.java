@@ -1,7 +1,8 @@
-package life.qbic.module.timelineChartModule;
+package life.qbic.module.singleTimelineModule;
 
 import com.vaadin.addon.charts.model.DataSeriesItem;
 import com.vaadin.addon.charts.model.XAxis;
+import com.vaadin.data.Item;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import java.util.Calendar;
 import java.util.Collection;
@@ -9,13 +10,13 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import life.qbic.ProjectContentModel;
 
-public class TimelineChartPresenter {
+public class SingleTimelinePresenter {
 
-  private TimelineChartView view;
-  private ProjectContentModel model;
+  private SingleTimelineView view;
+  private Item item;
 
-  public TimelineChartPresenter(ProjectContentModel model, TimelineChartView view) {
-    this.model = model;
+  public SingleTimelinePresenter(Item item, SingleTimelineView view) {
+    this.item = item;
     this.view = view;
   }
 
@@ -31,36 +32,20 @@ public class TimelineChartPresenter {
   }
 
   public void update() {
-    SQLContainer tableContent = model.getTableContent();
-    view.getConf().addxAxis(new XAxis());
-    view.getUnregisteredSeries().clear();
-    view.getIntimeSeries().clear();
-    view.getOverdueSeries().clear();
-
-    Collection<?> itemIds = tableContent.getItemIds();
-    for (Object itemId : itemIds) {
       // Get project info
       Date currentDate = new Date();
-      String projectID = tableContent.getContainerProperty(itemId, "projectID").getValue()
-          .toString();
-      Date projectRegisteredDate = (Date) tableContent
-          .getContainerProperty(itemId, "projectRegisteredDate").getValue();
-      Date rawDataRegisteredDate = (Date) tableContent
-          .getContainerProperty(itemId, "rawDataRegistered").getValue();
-      Date dataAnalyzedDate = (Date) tableContent.getContainerProperty(itemId, "dataAnalyzedDate")
-          .getValue();
+      String projectID = item.getItemProperty("projectID").getValue().toString();
+      Date projectRegisteredDate = (Date) item.getItemProperty("projectRegisteredDate").getValue();
+      Date rawDataRegisteredDate = (Date) item.getItemProperty("rawDataRegistered").getValue();
+      Date dataAnalyzedDate = (Date) item.getItemProperty("dataAnalyzedDate").getValue();
 
       // Create chart items
-
       createItem(projectID, rawDataRegisteredDate, dataAnalyzedDate, currentDate, projectRegisteredDate);
-
-
-    }
 
     view.drawChart();
   }
 
-  public TimelineChartView getChart() {
+  public SingleTimelineView getChart() {
     return view;
   }
 
@@ -86,18 +71,18 @@ public class TimelineChartPresenter {
       intimeItem.setName(projectID);
       intimeItem.setLow(rawDataRegisteredDate.getTime());
       DataSeriesItem pottimeItem = new DataSeriesItem();
-      pottimeItem.setName(projectID);
-      pottimeItem.setLow(rawDataRegisteredDate.getTime());
       Calendar c = Calendar.getInstance();
       c.setTime(rawDataRegisteredDate);
       c.add(Calendar.DATE, 42);
       Date overdueDate = c.getTime();
+      pottimeItem.setName(projectID);
+      pottimeItem.setLow(rawDataRegisteredDate.getTime());
+      pottimeItem.setHigh(overdueDate.getTime());
 
       if (dataAnalyzedDate == null) {
         long diffRawToday = getDateDiff(rawDataRegisteredDate, currentDate);
         if (diffRawToday < 42) {
           intimeItem.setHigh(currentDate.getTime());
-          pottimeItem.setHigh(overdueDate.getTime());
         } else {
           intimeItem.setHigh(overdueDate.getTime());
           DataSeriesItem overdueItem = new DataSeriesItem();
