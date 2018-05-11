@@ -1,12 +1,14 @@
 package life.qbic;
 
 import com.vaadin.data.Property;
+import com.vaadin.ui.UI;
 import life.qbic.connection.database.projectInvestigatorDB.ProjectFilter;
 import life.qbic.module.overviewChartModule.OverviewChartPresenter;
 import life.qbic.module.projectFollowerModule.ProjectFollowerPresenter;
 import life.qbic.module.projectOverviewModule.ProjectOVPresenter;
 import life.qbic.module.projectSheetModule.ProjectSheetPresenter;
 import life.qbic.module.projectsStatsModule.ProjectsStatsPresenter;
+import life.qbic.module.timelineChartModule.TimelineChartPresenter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -27,6 +29,7 @@ public class MasterPresenter {
   private final ProjectFilter projectFilter;
   private final OverviewChartPresenter overviewChartPresenter;
   private final ProjectsStatsPresenter projectsStatsPresenter;
+  private final TimelineChartPresenter timelineChartPresenter;
 
   //removed PieChartStatusModule pieChartStatusModule #25
   MasterPresenter(ProjectOVPresenter projectOverviewPresenter,
@@ -35,7 +38,8 @@ public class MasterPresenter {
       ProjectFilter projectFilter,
       //TimeLineChartPresenter timeLineChartPresenter,
       OverviewChartPresenter overviewChartPresenter,
-      ProjectsStatsPresenter projectsStatsPresenter) {
+      ProjectsStatsPresenter projectsStatsPresenter,
+      TimelineChartPresenter timelineChartPresenter) {
     //this.pieChartStatusModule = pieChartStatusModule;
     this.projectOverviewPresenter = projectOverviewPresenter;
     this.projectFollowerPresenter = projectFollowerPresenter;
@@ -44,6 +48,7 @@ public class MasterPresenter {
     //this.timeLineChartPresenter = timeLineChartPresenter;
     this.overviewChartPresenter = overviewChartPresenter;
     this.projectsStatsPresenter = projectsStatsPresenter;
+    this.timelineChartPresenter = timelineChartPresenter;
 
     init();
   }
@@ -65,6 +70,9 @@ public class MasterPresenter {
       projectSheetPresenter.init();
       projectSheetPresenter
           .showInfoForProject(projectOverviewPresenter.getSelectedProjectItem());
+      if (projectOverviewPresenter.getSelectedProject() != null) {
+        projectSheetPresenter.getProjectSheetView().createSubWindow();
+      }
     });
 
     projectOverviewPresenter.getIsChangedFlag().addValueChangeListener(this::refreshModuleViews);
@@ -86,6 +94,7 @@ public class MasterPresenter {
       //timeLineChartPresenter.setCategories(projectOverviewPresenter.getTimeLineStats());
       makeFilter();
       overviewChartPresenter.update();
+      timelineChartPresenter.update();
     }
 
   }
@@ -96,6 +105,7 @@ public class MasterPresenter {
     //projectOverviewPresenter.getStatusKeyFigures().forEach(pieChartStatusModule::update);
     //timeLineChartPresenter.updateData(projectOverviewPresenter.getTimeLineStats());
     overviewChartPresenter.update();
+    timelineChartPresenter.update();
     projectsStatsPresenter.update();
     if (projectFollowerPresenter.getFollowingProjects().size() == 0) {
       projectSheetPresenter.getProjectSheetView().getProjectSheet().setVisible(false);

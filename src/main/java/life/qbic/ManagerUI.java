@@ -8,6 +8,7 @@ import com.vaadin.annotations.Widgetset;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -41,6 +42,8 @@ import life.qbic.module.projectsStatsModule.ProjectsStatsModel;
 import life.qbic.module.projectsStatsModule.ProjectsStatsPresenter;
 import life.qbic.module.projectsStatsModule.ProjectsStatsView;
 import life.qbic.module.projectsStatsModule.ProjectsStatsViewImpl;
+import life.qbic.module.timelineChartModule.TimelineChartPresenter;
+import life.qbic.module.timelineChartModule.TimelineChartView;
 import life.qbic.portal.liferayandvaadinhelpers.main.ConfigurationManager;
 import life.qbic.portal.liferayandvaadinhelpers.main.ConfigurationManagerFactory;
 import life.qbic.portal.liferayandvaadinhelpers.main.LiferayAndVaadinUtils;
@@ -110,7 +113,6 @@ public class ManagerUI extends UI {
     }
 
     final CssLayout projectDescriptionLayout = new CssLayout();
-    // Reference the DSS
 
     // Connect to openbis
     IDataStoreServerApi dss =
@@ -161,6 +163,10 @@ public class ManagerUI extends UI {
     final OverviewChartPresenter overviewChartPresenter = new OverviewChartPresenter(model,
         overviewChartView);
 
+    final TimelineChartView timelineChartView = new TimelineChartView();
+    final TimelineChartPresenter timelineChartPresenter = new TimelineChartPresenter(model,
+        timelineChartView);
+
     final ProjectOVPresenter projectOVPresenter = new ProjectOVPresenter(model,
         projectOverviewModule, overviewChartPresenter, openBisConnection, projectDatabase, log);
 
@@ -177,11 +183,11 @@ public class ManagerUI extends UI {
         projectsStatsView);
     projectsStatsPresenter.update();
 
-    //removed pieChartStatusModule #25
     final MasterPresenter masterPresenter = new MasterPresenter(projectOVPresenter,
         projectSheetPresenter, followerPresenter, projectFilter, //timeLineChartPresenter,
         overviewChartPresenter,
-        projectsStatsPresenter);
+        projectsStatsPresenter,
+        timelineChartPresenter);
 
     projectOverviewModule.setWidth(100, Unit.PERCENTAGE);
     projectOverviewModule.addStyleName("overview-module-style");
@@ -229,14 +235,17 @@ public class ManagerUI extends UI {
     sliderFrame.setSizeFull();
     sliderFrame.setResponsive(true);
     Responsive.makeResponsive(sliderFrame);
-    statisticsPanel.setMargin(true);
-    statisticsPanel.setSpacing(true);
     VerticalLayout statsLayout = new VerticalLayout();
     statsLayout.addComponents(overviewChartView, projectsStatsView.getStatsLayout());
+    statsLayout.setSizeFull();
+    statsLayout.setComponentAlignment(projectsStatsView.getStatsLayout(), Alignment.MIDDLE_CENTER);
+    statisticsPanel.addComponent(timelineChartView);
     statisticsPanel.addComponent(statsLayout);
-    statisticsPanel.addComponent(projectSheetView.getProjectSheet());
+    //statisticsPanel.addComponent(projectSheetView.getProjectSheet());
     statisticsPanel.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
     statisticsPanel.setSizeFull();
+    statisticsPanel.setMargin(new MarginInfo(false, true, false, false));
+    statisticsPanel.setSpacing(false);
 
     Responsive.makeResponsive(statisticsPanel);
 
@@ -245,9 +254,7 @@ public class ManagerUI extends UI {
     mainContent.addComponent(statisticsPanel);
     mainContent.addComponent(projectDescriptionLayout);
     mainContent.setSpacing(true);
-    mainContent.setMargin(true);
     mainFrame.setSpacing(true);
-    mainFrame.setMargin(true);
     mainFrame.addComponent(sliderFrame);
     mainFrame.setComponentAlignment(sliderFrame, Alignment.MIDDLE_CENTER);
     mainFrame.addComponent(mainContent);
@@ -256,7 +263,7 @@ public class ManagerUI extends UI {
     setContent(mainFrame);
   }
 
-  public void getCredentials() {
+  private void getCredentials() {
     Properties prop = new Properties();
     InputStream input = null;
 

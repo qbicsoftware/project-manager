@@ -36,7 +36,8 @@ public class ProjectsStatsViewImpl implements ProjectsStatsView {
     inTimeProjectsNI.setHeader("In Time");
     inTimeProjectsNI.setNumber(0);
     inTimeProjectsNI.getNumber().setStyleName("intime");
-    statsLayout.addComponents(totalProjectsNI, inTimeProjectsNI, overdueProjectsNI, unregisteredProjectsNI);
+    statsLayout.addComponents(totalProjectsNI, inTimeProjectsNI, overdueProjectsNI,
+        unregisteredProjectsNI);
     statsLayout.setSpacing(true);
     statsLayout.setMargin(new MarginInfo(false, true, true, true));
   }

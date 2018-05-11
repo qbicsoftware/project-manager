@@ -137,20 +137,24 @@ public class ProjectContentModel {
 
 
   public void writeSamples(Object itemId, Project project) {
-    tableContent.getContainerProperty(itemId, "samples").setValue(openBisConnection.getSamplesOfProject(project).size());
+    tableContent.getContainerProperty(itemId, "samples")
+        .setValue(openBisConnection.getSamplesOfProject(project).size());
   }
 
   public void writeSpecies(Object itemId, Project project) {
-    tableContent.getContainerProperty(itemId, "species").setValue(openBisConnection.getSpeciesOfProject(project));
+    tableContent.getContainerProperty(itemId, "species")
+        .setValue(openBisConnection.getSpeciesOfProject(project));
   }
 
 
   private void writeRawDate(Object itemId, Project project) {
-    tableContent.getContainerProperty(itemId, "rawDataRegistered").setValue(openBisConnection.getFirstRegisteredDate(project));
+    tableContent.getContainerProperty(itemId, "rawDataRegistered")
+        .setValue(openBisConnection.getFirstRegisteredDate(project));
   }
 
   private void writeAnalyzedDate(Object itemId, Project project) {
-    tableContent.getContainerProperty(itemId, "dataAnalyzedDate").setValue(openBisConnection.getFirstAnalyzedDate(project));
+    tableContent.getContainerProperty(itemId, "dataAnalyzedDate")
+        .setValue(openBisConnection.getFirstAnalyzedDate(project));
   }
 
   private void writeSampleTypes(Object itemId, Project project) {
