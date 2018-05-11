@@ -8,10 +8,10 @@ import com.vaadin.annotations.Widgetset;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -54,16 +54,11 @@ import org.vaadin.sliderpanel.SliderPanelBuilder;
 import org.vaadin.sliderpanel.client.SliderMode;
 import org.vaadin.sliderpanel.client.SliderTabPosition;
 
-
 @Theme("mytheme")
 @SuppressWarnings("serial")
 @Widgetset("life.qbic.AppWidgetSet")
 public class ManagerUI extends UI {
 
-
-  /**
-   * Get static logger instance
-   */
   private final static Log log =
       LogFactory.getLog(ManagerUI.class.getName());
   private String userID, pw, mysqlUser, mysqlPW;
@@ -72,15 +67,6 @@ public class ManagerUI extends UI {
   protected void init(VaadinRequest vaadinRequest) {
 
     log.info("Started project-manager.");
-
-    //getCredentials();
-
-    //userID = "zxmqw74";
-    //set userID here:
-    if (LiferayAndVaadinUtils.isLiferayPortlet()) {
-      userID = LiferayAndVaadinUtils.getUser().getScreenName();
-      log.info("UserID = " + userID);
-    }
 
     final VerticalLayout mainFrame = new VerticalLayout();
 
@@ -97,12 +83,16 @@ public class ManagerUI extends UI {
 
     final ProjectDatabaseConnector projectDatabase;
     if (LiferayAndVaadinUtils.isLiferayPortlet()) {
-      projectDatabase = new ProjectDatabase(config.getMysqlUser(), config.getMysqlPass(),
-          projectFilter);
+      mysqlUser = config.getMysqlUser();
+      mysqlPW = config.getMysqlPass();
+      userID = LiferayAndVaadinUtils.getUser().getScreenName();
+      log.info("UserID = " + userID);
     } else {
-      projectDatabase = new ProjectDatabase(mysqlUser, mysqlPW, projectFilter);
+      getCredentials();
+      userID = "zxmqw74";
     }
 
+    projectDatabase = new ProjectDatabase(mysqlUser, mysqlPW, projectFilter);
     final UserManagementDB userManagementDB = new UserManagementDB(mysqlUser, mysqlPW);
 
     try {
@@ -262,6 +252,7 @@ public class ManagerUI extends UI {
     setContent(mainFrame);
   }
 
+
   private void getCredentials() {
     Properties prop = new Properties();
     InputStream input = null;
@@ -291,5 +282,4 @@ public class ManagerUI extends UI {
     }
 
   }
-
 }
