@@ -1,5 +1,8 @@
 package life.qbic;
 
+import ch.ethz.sis.openbis.generic.asapi.v3.IApplicationServerApi;
+import ch.ethz.sis.openbis.generic.dssapi.v3.IDataStoreServerApi;
+import ch.systemsx.cisd.common.spring.HttpInvokerUtils;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.event.MouseEvents;
@@ -24,12 +27,8 @@ import life.qbic.connection.database.projectInvestigatorDB.WrongArgumentSettings
 import life.qbic.connection.database.userManagementDB.UserManagementDB;
 import life.qbic.connection.openbis.OpenBisConnection;
 import life.qbic.helper.Utils;
-import life.qbic.openbis.openbisclient.OpenBisClient;
 import life.qbic.module.overviewChartModule.OverviewChartPresenter;
 import life.qbic.module.overviewChartModule.OverviewChartView;
-import life.qbic.portal.liferayandvaadinhelpers.main.ConfigurationManager;
-import life.qbic.portal.liferayandvaadinhelpers.main.ConfigurationManagerFactory;
-import life.qbic.portal.liferayandvaadinhelpers.main.LiferayAndVaadinUtils;
 import life.qbic.module.projectFollowerModule.ProjectFollowerModel;
 import life.qbic.module.projectFollowerModule.ProjectFollowerPresenter;
 import life.qbic.module.projectFollowerModule.ProjectFollowerView;
@@ -43,6 +42,11 @@ import life.qbic.module.projectsStatsModule.ProjectsStatsModel;
 import life.qbic.module.projectsStatsModule.ProjectsStatsPresenter;
 import life.qbic.module.projectsStatsModule.ProjectsStatsView;
 import life.qbic.module.projectsStatsModule.ProjectsStatsViewImpl;
+import life.qbic.module.timelineChartModule.TimelineChartPresenter;
+import life.qbic.module.timelineChartModule.TimelineChartView;
+import life.qbic.portal.liferayandvaadinhelpers.main.ConfigurationManager;
+import life.qbic.portal.liferayandvaadinhelpers.main.ConfigurationManagerFactory;
+import life.qbic.portal.liferayandvaadinhelpers.main.LiferayAndVaadinUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.vaadin.sliderpanel.SliderPanel;
@@ -62,7 +66,7 @@ public class ManagerUI extends UI {
    */
   private final static Log log =
       LogFactory.getLog(ManagerUI.class.getName());
-  private String userID, url, pw, mysqlUser, mysqlPW;
+  private String userID, pw, mysqlUser, mysqlPW;
 
   @Override
   protected void init(VaadinRequest vaadinRequest) {
@@ -109,13 +113,29 @@ public class ManagerUI extends UI {
     }
 
     final CssLayout projectDescriptionLayout = new CssLayout();
-    final OpenBisClient openBisClient;
+
+    // Connect to openbis
+    IDataStoreServerApi dss =
+        HttpInvokerUtils.createStreamSupportingServiceStub(IDataStoreServerApi.class,
+            "https://qbis.qbic.uni-tuebingen.de:444/datastore_server"
+                + IDataStoreServerApi.SERVICE_URL, 10000);
+
+    // get a reference to AS API
+    IApplicationServerApi app = HttpInvokerUtils.createServiceStub(IApplicationServerApi.class,
+        "https://qbis.qbic.uni-tuebingen.de/openbis/openbis" + IApplicationServerApi.SERVICE_URL,
+        10000);
+
+    String sessionToken = "";
+
     if (LiferayAndVaadinUtils.isLiferayPortlet()) {
-      openBisClient = new OpenBisClient(config.getDataSourceUser(), config.getDataSourcePassword(),
-          config.getDataSourceUrl());
+      // login to obtain a session token
+      sessionToken = app.login(config.getDataSourceUser(), config.getDataSourcePassword());
     } else {
-      openBisClient = new OpenBisClient(userID, pw, url);
+      sessionToken = app.login(userID, pw);
     }
+
+    OpenBisConnection openBisConnection = new OpenBisConnection(app, dss, sessionToken);
+    openBisConnection.getSpaceOfProject("QGTSG");
 
     final ProjectFollowerModel followerModel = new ProjectFollowerModel(projectDatabase);
 
@@ -123,12 +143,6 @@ public class ManagerUI extends UI {
         .setSpaceCaption("Institution")
         .setProjectCaption("Project")
         .build();
-
-    final OpenBisConnection openBisConnection = new OpenBisConnection();
-
-    if (!openBisConnection.initConnection(openBisClient)) {
-      Notification.show("Could not connect to openBis!");
-    }
 
     final ProjectFollowerPresenter followerPresenter = new ProjectFollowerPresenter(followerView,
         followerModel, openBisConnection);
@@ -141,14 +155,17 @@ public class ManagerUI extends UI {
     }
 
     final ProjectContentModel model = new ProjectContentModel(projectDatabase, userManagementDB,
-        followerModel.getAllFollowingProjects(), log, openBisClient);
+        followerModel.getAllFollowingProjects(), log, openBisConnection);
 
     final ProjectOverviewModule projectOverviewModule = new ProjectOverviewModule();
-
 
     final OverviewChartView overviewChartView = new OverviewChartView();
     final OverviewChartPresenter overviewChartPresenter = new OverviewChartPresenter(model,
         overviewChartView);
+
+    final TimelineChartView timelineChartView = new TimelineChartView();
+    final TimelineChartPresenter timelineChartPresenter = new TimelineChartPresenter(model,
+        timelineChartView);
 
     final ProjectOVPresenter projectOVPresenter = new ProjectOVPresenter(model,
         projectOverviewModule, overviewChartPresenter, openBisConnection, projectDatabase, log);
@@ -156,7 +173,6 @@ public class ManagerUI extends UI {
     final ProjectSheetView projectSheetView = new ProjectSheetViewImplementation();
 
     final ProjectSheetPresenter projectSheetPresenter = new ProjectSheetPresenter(projectSheetView,
-        openBisClient,
         log);
 
     final ProjectsStatsView projectsStatsView = new ProjectsStatsViewImpl();
@@ -166,11 +182,11 @@ public class ManagerUI extends UI {
         projectsStatsView);
     projectsStatsPresenter.update();
 
-    //removed pieChartStatusModule #25
     final MasterPresenter masterPresenter = new MasterPresenter(projectOVPresenter,
         projectSheetPresenter, followerPresenter, projectFilter, //timeLineChartPresenter,
         overviewChartPresenter,
-        projectsStatsPresenter);
+        projectsStatsPresenter,
+        timelineChartPresenter);
 
     projectOverviewModule.setWidth(100, Unit.PERCENTAGE);
     projectOverviewModule.addStyleName("overview-module-style");
@@ -218,13 +234,17 @@ public class ManagerUI extends UI {
     sliderFrame.setSizeFull();
     sliderFrame.setResponsive(true);
     Responsive.makeResponsive(sliderFrame);
-    statisticsPanel.addComponent(overviewChartView);
-    statisticsPanel.setMargin(true);
-    statisticsPanel.setSpacing(true);
-    statisticsPanel.addComponent(projectsStatsView.getProjectStats());
-    statisticsPanel.addComponent(projectSheetView.getProjectSheet());
+    VerticalLayout statsLayout = new VerticalLayout();
+    statsLayout.addComponents(overviewChartView, projectsStatsView.getStatsLayout());
+    statsLayout.setSizeFull();
+    statsLayout.setComponentAlignment(projectsStatsView.getStatsLayout(), Alignment.MIDDLE_CENTER);
+    statisticsPanel.addComponent(timelineChartView);
+    statisticsPanel.addComponent(statsLayout);
+    //statisticsPanel.addComponent(projectSheetView.getProjectSheet());
     statisticsPanel.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
     statisticsPanel.setSizeFull();
+    statisticsPanel.setMargin(new MarginInfo(false, true, false, false));
+    statisticsPanel.setSpacing(false);
 
     Responsive.makeResponsive(statisticsPanel);
 
@@ -233,9 +253,7 @@ public class ManagerUI extends UI {
     mainContent.addComponent(statisticsPanel);
     mainContent.addComponent(projectDescriptionLayout);
     mainContent.setSpacing(true);
-    mainContent.setMargin(true);
     mainFrame.setSpacing(true);
-    mainFrame.setMargin(true);
     mainFrame.addComponent(sliderFrame);
     mainFrame.setComponentAlignment(sliderFrame, Alignment.MIDDLE_CENTER);
     mainFrame.addComponent(mainContent);
@@ -244,7 +262,7 @@ public class ManagerUI extends UI {
     setContent(mainFrame);
   }
 
-  public void getCredentials() {
+  private void getCredentials() {
     Properties prop = new Properties();
     InputStream input = null;
 
@@ -256,7 +274,6 @@ public class ManagerUI extends UI {
       prop.load(input);
 
       // get the property value and print it out
-      url = prop.getProperty("datasource.url");
       pw = prop.getProperty("datasource.password");
       mysqlPW = prop.getProperty("mysql.pass");
       mysqlUser = prop.getProperty("mysql.user");

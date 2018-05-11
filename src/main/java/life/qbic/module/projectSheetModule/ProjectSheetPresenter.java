@@ -8,14 +8,14 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import life.qbic.openbis.openbisclient.OpenBisClient;
+import life.qbic.module.singleTimelineModule.SingleTimelinePresenter;
+import life.qbic.module.singleTimelineModule.SingleTimelineView;
 import org.apache.commons.logging.Log;
 
 /**
@@ -27,23 +27,16 @@ public class ProjectSheetPresenter {
   private final Log log;
   private final ObjectProperty<Boolean> informationCommittedFlag;
   private Item currentItem;
-  private OpenBisClient openBisClient;
-  private Map<String, String> taxMapInversed = new HashMap<>();
 
-  public ProjectSheetPresenter(ProjectSheetView projectSheetView, OpenBisClient openbisClient,
-      Log log) {
+  public ProjectSheetPresenter(ProjectSheetView projectSheetView, Log log) {
     this.projectSheetView = projectSheetView;
     this.log = log;
     this.informationCommittedFlag = new ObjectProperty<>(false);
-    this.openBisClient = openbisClient;
     init();
   }
 
   public void init() {
-    Map<String, String> taxMap = openBisClient.getVocabCodesAndLabelsForVocab("Q_NCBI_TAXONOMY");
-    for (String key : taxMap.keySet()) {
-      taxMapInversed.put(taxMap.get(key), key);
-    }
+
   }
 
   public void showInfoForProject(Item project) {
@@ -55,14 +48,19 @@ public class ProjectSheetPresenter {
       currentItem = project;
       projectSheetView.getProjectSheet()
           .setCaption("Project Details");
-      projectSheetView.getProjectSheet().addComponent(getProject());
-      projectSheetView.getProjectSheet().addComponent(getDescription());
-      projectSheetView.getProjectSheet().addComponent(getProjectDetail());
-      //ProjectInfoDownloader projectInfoDownloader = new ProjectInfoDownloader(project);
+      VerticalLayout projectDetailLayout = new VerticalLayout();
       HorizontalLayout bottomLayout = new HorizontalLayout();
       bottomLayout.setSpacing(true);
       bottomLayout.addComponents(getProjectTime(), getExportButton());
-      projectSheetView.getProjectSheet().addComponent(bottomLayout);
+      projectDetailLayout
+          .addComponents(getProject(), getDescription(), getProjectDetail(), bottomLayout);
+
+      SingleTimelinePresenter st = new SingleTimelinePresenter(currentItem,
+          new SingleTimelineView());
+      projectSheetView.getProjectSheet().addComponent(projectDetailLayout);
+      projectSheetView.getProjectSheet().addComponent(st.getChart());
+
+      st.update();
     }
 
   }
@@ -96,7 +94,7 @@ public class ProjectSheetPresenter {
   }
 
   private Label getProjectDetail() {
-    String pi, species, samples;
+    String pi, species, samples, sampleTypes;
     try {
       pi = currentItem.getItemProperty("investigatorName").getValue().toString();
     } catch (NullPointerException ex) {
@@ -115,11 +113,18 @@ public class ProjectSheetPresenter {
       samples = "Unknown";
     }
 
+    try {
+      sampleTypes = currentItem.getItemProperty("sampleTypes").getValue().toString();
+    } catch (NullPointerException ex) {
+      sampleTypes = "Unknown";
+    }
+
     Label label = new Label(
         "<ul>" +
             "  <li><b><font color=\"#007ae4\">PI: </b></font>" + pi + "</li>" +
             "  <li><b><font color=\"#007ae4\">Species: </b></font>" + species + "</li>" +
             "  <li><b><font color=\"#007ae4\">Samples: </b></font>" + samples + "</li>" +
+            "  <li><b><font color=\"#007ae4\">Types: </b></font>" + sampleTypes + "</li>" +
             "</ul> ",
         ContentMode.HTML);
     return label;
@@ -143,6 +148,7 @@ public class ProjectSheetPresenter {
     String projectPI = "PI: " + currentItem.getItemProperty("investigatorName");
     String projectSpecies = "Species: " + currentItem.getItemProperty("species");
     String projectSamples = "Samples: " + currentItem.getItemProperty("samples");
+    String projectSampleTypes = "Sample Types: " + currentItem.getItemProperty("sampleTypes");
 
     try {
       File projectFile = File.createTempFile(fileName, ".txt");
@@ -159,6 +165,8 @@ public class ProjectSheetPresenter {
       bw.write(projectSpecies);
       bw.newLine();
       bw.write(projectSamples);
+      bw.newLine();
+      bw.write(projectSampleTypes);
       bw.close();
       fw.close();
       FileResource res = new FileResource(projectFile);

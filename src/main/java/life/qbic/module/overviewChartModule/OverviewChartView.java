@@ -17,7 +17,6 @@ public class OverviewChartView extends Chart {
 
   private PlotOptionsPie plotOptions;
 
-
   public OverviewChartView() {
     super(ChartType.PIE);
     conf = this.getConfiguration();
@@ -26,16 +25,14 @@ public class OverviewChartView extends Chart {
     plotOptions = new PlotOptionsPie();
     plotOptions.setShowInLegend(true);
     // unregistered - in time - overdue
+    this.setHeight("300px");
     plotOptions
         .setColors(new SolidColor("#ff9a00"), new SolidColor("#26A65B"), new SolidColor("#c20047"));
-    plotOptions.setSize("100px");
+    plotOptions.setSize("110px");
     plotOptions.setCursor(Cursor.POINTER);
     plotOptions.setAllowPointSelect(true);
-    this.setHeight("300px");
-    this.setWidth("400px");
     conf.setPlotOptions(plotOptions);
-    conf.setTitle("Project Manager");
-    conf.setSubTitle("Project Status");
+    conf.setTitle("Status");
     conf.getChart().setBackgroundColor(new SolidColor("#fafafa"));
 
     series.setName("projects");
@@ -43,6 +40,11 @@ public class OverviewChartView extends Chart {
     this.setImmediate(true);
     this.drawChart(conf);
 
+  }
+
+  @Override
+  public String getDescription() {
+    return "Shows the project status";
   }
 
   public DataSeries getSeries() {

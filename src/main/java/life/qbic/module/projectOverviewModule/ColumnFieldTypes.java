@@ -32,8 +32,7 @@ public class ColumnFieldTypes {
 
   private void initProjectStatus() {
     PROJECTSTATUS.addItem("open");
-    PROJECTSTATUS.addItem("in progress");
-    PROJECTSTATUS.addItem("closed");
+    PROJECTSTATUS.addItem("completed");
   }
 
   private void initProjectRegistered() {

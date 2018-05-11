@@ -33,7 +33,6 @@ import life.qbic.ProjectContentModel;
 import life.qbic.connection.database.projectInvestigatorDB.ColumnTypes;
 import life.qbic.connection.database.projectInvestigatorDB.ProjectDatabaseConnector;
 import life.qbic.connection.database.projectInvestigatorDB.TableColumns;
-import life.qbic.connection.database.projectInvestigatorDB.WrongArgumentSettingsException;
 import life.qbic.connection.openbis.OpenBisConnection;
 import life.qbic.module.overviewChartModule.OverviewChartPresenter;
 import org.apache.commons.logging.Log;
@@ -101,10 +100,6 @@ public class ProjectOVPresenter {
       log.error(exp);
       overViewModule.sendError("Database Error", "Could not connect to database :(");
       return;
-    } catch (WrongArgumentSettingsException exp) {
-      log.error(exp);
-      overViewModule.sendError("Database Error", "Could not connect to database");
-      return;
     }
 
     log.info("Successfully connected to database");
@@ -151,26 +146,30 @@ public class ProjectOVPresenter {
     overViewModule.getOverviewGrid().removeAllColumns();
     overViewModule.getOverviewGrid().addColumn("projectID").setHeaderCaption("Project");
     overViewModule.getOverviewGrid().addColumn("projectTime").setHeaderCaption("Status");
+    overViewModule.getOverviewGrid().addColumn("projectStatus").setHeaderCaption("Progress");
     overViewModule.getOverviewGrid().addColumn("investigatorName")
         .setHeaderCaption("Principal Investigator");
     overViewModule.getOverviewGrid().addColumn("species");
-    overViewModule.getOverviewGrid().addColumn("samples").setEditable(false);
+    overViewModule.getOverviewGrid().addColumn("samples");
+    overViewModule.getOverviewGrid().addColumn("sampleTypes");
     overViewModule.getOverviewGrid().addColumn("projectRegisteredDate")
         .setHeaderCaption("Project Registered");
     overViewModule.getOverviewGrid().addColumn("rawDataRegistered")
         .setHeaderCaption("Raw Data Registered");
     overViewModule.getOverviewGrid().addColumn("dataAnalyzedDate")
         .setHeaderCaption("Data Analyzed");
+    overViewModule.getOverviewGrid().addColumn("offerID").setHeaderCaption("Offer");
+    overViewModule.getOverviewGrid().addColumn("invoice").setHeaderCaption("Invoice");
 
     overViewModule.getOverviewGrid().getColumn("projectID").setEditable(false);
     overViewModule.getOverviewGrid().getColumn("investigatorName").setEditable(false);
     overViewModule.getOverviewGrid().getColumn("species").setEditable(false);
+    overViewModule.getOverviewGrid().getColumn("samples").setEditable(false);
+    overViewModule.getOverviewGrid().getColumn("sampleTypes").setEditable(false);
     overViewModule.getOverviewGrid().getColumn("projectRegisteredDate").setEditable(false);
     overViewModule.getOverviewGrid().getColumn("rawDataRegistered").setEditable(false);
     overViewModule.getOverviewGrid().getColumn("dataAnalyzedDate").setEditable(false);
     overViewModule.getOverviewGrid().getColumn("projectTime").setEditable(false);
-    overViewModule.getOverviewGrid().addColumn("offerID").setHeaderCaption("Offer");
-    overViewModule.getOverviewGrid().addColumn("invoice").setHeaderCaption("Invoice");
     overViewModule.getOverviewGrid().getColumn("offerID").setEditable(true);
     overViewModule.getOverviewGrid().getColumn("invoice").setEditable(true);
 
@@ -198,12 +197,19 @@ public class ProjectOVPresenter {
       } else if (cellRef.getPropertyId().equals("projectTime") && cellRef.getItem()
           .getItemProperty("projectTime").getValue().toString().equals("in time")) {
         return "in";
+      } else if (cellRef.getPropertyId().equals("projectStatus") && cellRef.getItem()
+          .getItemProperty("projectStatus").getValue().toString().equals("completed")) {
+        return "in";
+      } else if (cellRef.getPropertyId().equals("projectStatus") && cellRef.getItem()
+          .getItemProperty("projectStatus").getValue().toString().equals("open")) {
+        return "un";
       } else {
         return null;
       }
     });
 
     columnFieldTypes.clearFromParents();    // Clear from parent nodes (when reloading page)
+    setFieldType("projectStatus", columnFieldTypes.getPROJECTSTATUS());
 
     final Grid.Column projectID = overViewModule.getOverviewGrid().
         getColumn(TableColumns.PROJECTOVERVIEWTABLE.get(ColumnTypes.PROJECTID));
@@ -220,9 +226,7 @@ public class ProjectOVPresenter {
       public String convertToPresentation(String project, Class<? extends String> aClass,
           Locale locale) throws ConversionException {
         String space = openbis.getSpaceOfProject(project);
-        return String
-            .format("<a href='%s/%s/%s' target='_blank'>%s</a>", portalURL,
-                space, project, project);
+        return String.format("<a href='%s/%s/%s' target='_blank' style='color:black; font-weight:bold'>%s</a>", portalURL, space, project, project);
       }
 
       @Override
@@ -271,13 +275,19 @@ public class ProjectOVPresenter {
     projectTimeStatus.add("overdue");
     projectTimeStatus.add("in time");
     projectTimeStatus.add("unregistered");
+
+    final List<String> projectStatus = new ArrayList<>();
+    projectStatus.add("open");
+    projectStatus.add("completed");
     filter.setComboBoxFilter("projectTime", projectTimeStatus);
+    filter.setComboBoxFilter("projectStatus", projectStatus);
     filter.setDateFilter("rawDataRegistered", new SimpleDateFormat("yyyy-MM-dd"), true);
     filter.setDateFilter("projectRegisteredDate", new SimpleDateFormat("yyyy-MM-dd"), true);
     filter.setDateFilter("dataAnalyzedDate", new SimpleDateFormat("yyyy-MM-dd"), true);
     filter.setTextFilter("offerID", true, false);
     filter.setTextFilter("investigatorName", true, false);
     filter.setTextFilter("species", true, false);
+    filter.setTextFilter("sampleTypes", true, false);
     filter.setNumberFilter("samples");
     filter.setTextFilter("invoice", true, false);
 
@@ -292,13 +302,15 @@ public class ProjectOVPresenter {
   private void initExtraHeaderRow(final Grid grid, final GridCellFilter filter) {
     Grid.HeaderRow firstHeaderRow = grid.prependHeaderRow();
     // "projectStatus removed (#25)
-    firstHeaderRow.join("projectID", "projectTime", "investigatorName", "species", "samples",
-        "projectRegisteredDate",
-        "rawDataRegistered", "dataAnalyzedDate", "offerID", "invoice");
+    firstHeaderRow
+        .join("projectID", "projectTime", "projectStatus", "investigatorName", "species", "samples",
+            "sampleTypes",
+            "projectRegisteredDate",
+            "rawDataRegistered", "dataAnalyzedDate", "offerID", "invoice");
     HorizontalLayout buttonLayout = new HorizontalLayout();
     buttonLayout.setSpacing(true);
     firstHeaderRow.getCell("projectID").setComponent(buttonLayout);
-    Button clearAllFilters = new Button("clear All Filters", (Button.ClickListener) clickEvent ->
+    Button clearAllFilters = new Button("clear Filters", (Button.ClickListener) clickEvent ->
         filter.clearAllFilters());
     clearAllFilters.setIcon(FontAwesome.TIMES);
     clearAllFilters.addStyleName(ValoTheme.BUTTON_PRIMARY);

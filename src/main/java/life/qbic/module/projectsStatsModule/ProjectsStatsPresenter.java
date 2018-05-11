@@ -2,7 +2,6 @@ package life.qbic.module.projectsStatsModule;
 
 import java.util.List;
 import life.qbic.ProjectContentModel;
-import life.qbic.connection.openbis.OpenBisConnection;
 
 /**
  * Created by spaethju on 12.04.17.
@@ -13,7 +12,6 @@ public class ProjectsStatsPresenter {
   private ProjectsStatsView view;
   private List<String> projects;
   private Integer overdueProjects, unregisteredProjects, intimeProjects;
-  private OpenBisConnection connection;
 
   public ProjectsStatsPresenter(ProjectContentModel model, ProjectsStatsView view) {
     this.model = model;
