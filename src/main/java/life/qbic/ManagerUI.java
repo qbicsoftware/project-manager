@@ -8,6 +8,7 @@ import com.vaadin.annotations.Widgetset;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -234,15 +235,17 @@ public class ManagerUI extends UI {
     sliderFrame.setSizeFull();
     sliderFrame.setResponsive(true);
     Responsive.makeResponsive(sliderFrame);
-    statisticsPanel.setSpacing(true);
     VerticalLayout statsLayout = new VerticalLayout();
     statsLayout.addComponents(overviewChartView, projectsStatsView.getStatsLayout());
-    statisticsPanel.addComponent(statsLayout);
+    statsLayout.setSizeFull();
+    statsLayout.setComponentAlignment(projectsStatsView.getStatsLayout(), Alignment.MIDDLE_CENTER);
     statisticsPanel.addComponent(timelineChartView);
-    statisticsPanel.addComponent(projectSheetView.getProjectSheet());
+    statisticsPanel.addComponent(statsLayout);
+    //statisticsPanel.addComponent(projectSheetView.getProjectSheet());
     statisticsPanel.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
     statisticsPanel.setSizeFull();
-    statisticsPanel.setSpacing(true);
+    statisticsPanel.setMargin(new MarginInfo(false, true, false, false));
+    statisticsPanel.setSpacing(false);
 
     Responsive.makeResponsive(statisticsPanel);
 

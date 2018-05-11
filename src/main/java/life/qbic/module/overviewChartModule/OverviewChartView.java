@@ -25,13 +25,12 @@ public class OverviewChartView extends Chart {
     plotOptions = new PlotOptionsPie();
     plotOptions.setShowInLegend(true);
     // unregistered - in time - overdue
+    this.setHeight("300px");
     plotOptions
         .setColors(new SolidColor("#ff9a00"), new SolidColor("#26A65B"), new SolidColor("#c20047"));
-    plotOptions.setSize("100px");
+    plotOptions.setSize("110px");
     plotOptions.setCursor(Cursor.POINTER);
     plotOptions.setAllowPointSelect(true);
-    this.setHeight("300px");
-    this.setWidth("400px");
     conf.setPlotOptions(plotOptions);
     conf.setTitle("Status");
     conf.getChart().setBackgroundColor(new SolidColor("#fafafa"));
