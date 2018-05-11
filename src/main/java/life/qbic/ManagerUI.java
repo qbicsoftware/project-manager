@@ -104,28 +104,34 @@ public class ManagerUI extends UI {
 
     final CssLayout projectDescriptionLayout = new CssLayout();
 
-    // Connect to openbis
-    IDataStoreServerApi dss =
-        HttpInvokerUtils.createStreamSupportingServiceStub(IDataStoreServerApi.class,
-            "https://qbis.qbic.uni-tuebingen.de:444/datastore_server"
-                + IDataStoreServerApi.SERVICE_URL, 10000);
+    OpenBisConnection openBisConnection = null;
+    try {
+      // Connect to openbis
+      IDataStoreServerApi dss =
+          HttpInvokerUtils.createStreamSupportingServiceStub(IDataStoreServerApi.class,
+              "https://qbis.qbic.uni-tuebingen.de:444/datastore_server"
+                  + IDataStoreServerApi.SERVICE_URL, 10000);
 
-    // get a reference to AS API
-    IApplicationServerApi app = HttpInvokerUtils.createServiceStub(IApplicationServerApi.class,
-        "https://qbis.qbic.uni-tuebingen.de/openbis/openbis" + IApplicationServerApi.SERVICE_URL,
-        10000);
+      // get a reference to AS API
+      IApplicationServerApi app = HttpInvokerUtils.createServiceStub(IApplicationServerApi.class,
+          "https://qbis.qbic.uni-tuebingen.de/openbis/openbis" + IApplicationServerApi.SERVICE_URL,
+          10000);
 
-    String sessionToken = "";
+      String sessionToken = "";
 
-    if (LiferayAndVaadinUtils.isLiferayPortlet()) {
-      // login to obtain a session token
-      sessionToken = app.login(config.getDataSourceUser(), config.getDataSourcePassword());
-    } else {
-      sessionToken = app.login(userID, pw);
+      if (LiferayAndVaadinUtils.isLiferayPortlet()) {
+        // login to obtain a session token
+        sessionToken = app.login(config.getDataSourceUser(), config.getDataSourcePassword());
+      } else {
+        sessionToken = app.login(userID, pw);
+      }
+
+      openBisConnection = new OpenBisConnection(app, dss, sessionToken);
+      log.info("Openbis connection established succesfully.");
+    } catch (Exception e) {
+      log.error("Openbis connection failed.");
+      e.printStackTrace();
     }
-
-    OpenBisConnection openBisConnection = new OpenBisConnection(app, dss, sessionToken);
-    openBisConnection.getSpaceOfProject("QGTSG");
 
     final ProjectFollowerModel followerModel = new ProjectFollowerModel(projectDatabase);
 
